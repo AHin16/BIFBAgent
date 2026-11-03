@@ -8,6 +8,7 @@
   <link rel="icon" href="/static/brand.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/style.css">
   <script src="/static/app.js" defer></script>
+  <script src="/static/knowledge.js" defer></script>
 </head>
 <body>
   <aside class="sidebar">
@@ -20,7 +21,7 @@
       <button class="nav-item" data-nav="flow"><svg><use href="/static/icons.svg#layers"></use></svg>流态监测预警</button>
       <button class="nav-item" data-coming="气含率估算"><svg><use href="/static/icons.svg#flow"></use></svg>气含率估算</button>
       <button class="nav-item" data-coming="运行参数优化"><svg><use href="/static/icons.svg#settings"></use></svg>运行参数优化</button>
-      <button class="nav-item" data-coming="专业知识问答"><svg><use href="/static/icons.svg#book"></use></svg>专业知识问答</button>
+      <button class="nav-item" data-nav="knowledge"><svg><use href="/static/icons.svg#book"></use></svg>专业知识问答</button>
     </nav>
     <div class="sidebar-bottom">
       <div class="local-note"><span class="tiny-dot"></span> 本地实验数据工作空间</div>
@@ -46,7 +47,7 @@
         <button class="feature-card" data-nav="flow"><span class="feature-icon"><svg><use href="/static/icons.svg#layers"></use></svg></span><h3>流态监测预警</h3><p>基线对比 · 持续异常分析</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-coming="气含率估算"><span class="feature-icon"><svg><use href="/static/icons.svg#chart"></use></svg></span><h3>气含率估算</h3><p>图像特征 · 几何估算</p><span class="feature-state">推进中</span></button>
         <button class="feature-card" data-coming="运行参数优化"><span class="feature-icon"><svg><use href="/static/icons.svg#settings"></use></svg></span><h3>运行参数优化</h3><p>参数搜索 · 约束检查</p><span class="feature-state">推进中</span></button>
-        <button class="feature-card" data-coming="专业知识问答"><span class="feature-icon"><svg><use href="/static/icons.svg#book"></use></svg></span><h3>专业知识问答</h3><p>文献检索 · 理论解释</p><span class="feature-state">推进中</span></button>
+        <button class="feature-card" data-nav="knowledge"><span class="feature-icon"><svg><use href="/static/icons.svg#book"></use></svg></span><h3>专业知识问答</h3><p>原文检索 · 有据可查</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
       </div>
       <section class="welcome-card">
         <div class="welcome-heading"><span class="robot-icon"><svg><use href="/static/icons.svg#robot"></use></svg></span><div><h2>欢迎使用 BIFB 智能分析与优化 Agent</h2><p>用自然语言提出研究任务，让 Agent 组织分析流程。</p></div></div>
@@ -59,6 +60,22 @@
         <div class="welcome-footer"><div><button id="home-folder" class="text-button"><svg><use href="/static/icons.svg#folder"></use></svg>读取本地文件夹</button><span id="home-asset-count">尚未添加数据</span></div><span>分析结论以真实工具结果为依据</span></div>
       </section>
       <div class="home-bottom"><span class="home-bottom-icon">✧</span><p>让每一次实验，都有可解释的发现。</p><span>YOLO + CSV + LLM</span></div>
+    </section>
+    <section id="knowledge-view" class="workbench-view" aria-label="专业知识问答" hidden>
+      <div class="workbench-title"><div><span class="eyebrow">EVIDENCE-BASED KNOWLEDGE</span><h1>专业知识问答</h1><p>从论文原文出发，解释专业问题，也为实验分析补充依据。</p></div><button class="button secondary" data-nav="home">返回首页</button></div>
+      <div class="knowledge-layout">
+        <aside class="panel knowledge-library"><div class="section-heading"><h2>我的专业资料</h2><span id="knowledge-count" class="counter">0</span></div><p class="small muted">勾选本轮参考文档。解析与检索在本地完成。</p>
+          <label class="button folder-button"><input id="knowledge-file-input" type="file" accept=".pdf,.txt,.md" hidden><svg><use href="/static/icons.svg#upload"></use></svg>导入 PDF / 文本</label>
+          <details class="path-details"><summary>从本地文档路径导入</summary><form id="knowledge-path-form"><input id="knowledge-path" aria-label="知识文档本地路径" placeholder="C:\papers\article.pdf" required><button class="button secondary" type="submit">导入资料</button></form></details>
+          <div id="knowledge-import-status" class="knowledge-status" role="status"></div><div id="knowledge-documents" class="knowledge-documents"><p class="small muted">正在读取资料…</p></div>
+          <p class="knowledge-note">支持文本型 PDF、TXT、Markdown。扫描件 OCR 正在推进中。页码按 PDF 第 1 页起计算，公式与表格请打开原页核验。</p>
+        </aside>
+        <section class="panel knowledge-chat"><div class="chat-heading"><span class="assistant-avatar"><svg><use href="/static/icons.svg#book"></use></svg></span><div><h2>专业问答助手</h2><p>检索原文 → 核对依据 → 回答问题</p></div></div>
+          <div id="knowledge-messages" class="messages" aria-live="polite"><div id="knowledge-welcome" class="welcome"><span class="eyebrow">ASK WITH EVIDENCE</span><h3>让知识，有据可查。</h3><p>已导入的文献可以长期保留。选择资料后提问，回答中的引用可直接查看原始页。</p><button class="prompt-chip" data-knowledge-prompt="这篇 BIFB 论文使用了怎样的实验装置、物料和气速范围？">论文的实验装置与适用条件 <span>↗</span></button><button class="prompt-chip" data-knowledge-prompt="根据这篇论文，气速对气泡尺寸和上升速度分别有什么影响？请说明适用条件并引用原文。">气速如何影响气泡尺寸和上升速度？ <span>↗</span></button><button class="prompt-chip" data-knowledge-prompt="论文描述了哪四种流化状态？是否可以直接用我们当前的预警指标判断具体流型？">流化状态与当前预警能否直接对应？ <span>↗</span></button></div></div>
+          <form id="knowledge-form" class="composer"><div class="composer-input"><textarea id="knowledge-input" rows="3" aria-label="专业知识问题" placeholder="围绕所选资料提问，也可以结合刚才的实验结果…" maxlength="6000" required></textarea><div class="composer-bottom"><button id="knowledge-local-search" type="button" class="text-button">仅检索原文</button><button id="knowledge-send" type="submit" class="send-button" aria-label="发送知识问题"><svg><use href="/static/icons.svg#send"></use></svg></button></div></div><p>回答调用当前配置的 LLM · 发送问题所需片段 <button id="knowledge-stop" type="button" class="text-button" hidden>停止回答</button></p></form>
+        </section>
+        <aside class="panel knowledge-evidence"><div class="section-heading"><h2>原文与引用</h2><span class="result-badge">可核验</span></div><p id="knowledge-progress" class="knowledge-status" role="status">可先“仅检索原文”查看命中片段，无需调用模型。</p><div id="knowledge-evidence-list"><div class="evidence-empty"><svg><use href="/static/icons.svg#book"></use></svg><p>引用依据将显示在这里</p><span>检索相关度不等于结论可信度</span></div></div></aside>
+      </div>
     </section>
     <section id="flow-view" class="workbench-view" aria-label="流态监测预警" hidden>
       <div class="workbench-title"><div><span class="eyebrow">FLOW STATE MONITORING</span><h1>流态监测预警</h1><p>对照正常基线，分析气泡出现量、大气泡变化与运动状态。</p></div><button class="button secondary" data-nav="home">返回首页</button></div>
@@ -113,6 +130,7 @@
   </main>
   <dialog id="settings-dialog"><form id="settings-form"><div class="dialog-heading"><div><span class="eyebrow">LOCAL CONFIGURATION</span><h2>运行设置</h2></div><button id="settings-close" type="button" class="icon-button" aria-label="关闭设置">×</button></div><p class="muted small">配置保存在本机。API Key 不会返回页面，也不进入对话。</p><div class="settings-section"><h3><span>01</span>语言模型</h3><label>API Base URL<input name="llm_base_url" type="url" placeholder="https://example.com/v1" required></label><label>API Key<input name="llm_api_key" type="password" autocomplete="new-password" placeholder="输入 API Key"></label><div class="model-picker"><label>模型名称<input name="llm_model" list="llm-model-options" placeholder="选择或填写支持工具调用的模型"></label><button type="button" id="fetch-models" class="button secondary">获取模型列表</button></div><datalist id="llm-model-options"></datalist><label class="checkbox-label"><input name="clear_api_key" type="checkbox">清除已保存的 API Key</label><p class="field-note">获取列表使用当前地址与 Key，不会自动保存新 Key。本地免鉴权服务可留空。</p></div><div class="settings-section"><h3><span>02</span>YOLO 与测量</h3><label>YOLOTracker 项目路径<input name="yolo_tracker_path" required></label><label>气泡模型路径<input name="yolo_model_path" required></label><div class="field-pair"><label>推理设备<select name="yolo_device"><option value="auto">自动选择</option><option value="cpu">CPU</option><option value="cuda:0">CUDA:0</option></select></label><label>置信度阈值<input name="confidence" type="number" step="0.01" min="0.01" max="1" required></label></div><label>空间标定 · mm / px<input name="mm_per_pixel" type="number" step="any" min="0.000000001" placeholder="留空使用 px；100 px = 1 mm 时填 0.01"></label><p class="field-note">真实标定后才输出 mm；二维等效直径不等同于三维直径。</p></div><div id="settings-feedback" role="status"></div><div class="dialog-actions"><button type="button" id="test-connection" class="button secondary">保存并测试 LLM</button><button type="submit" class="button primary">保存设置</button></div></form></dialog>
   <dialog id="image-dialog"><button id="image-close" class="icon-button" aria-label="关闭图片">×</button><img id="expanded-image" alt="分析结果大图"></dialog>
+  <dialog id="knowledge-source-dialog"><div class="dialog-heading"><div><span class="eyebrow">SOURCE EVIDENCE</span><h2 id="knowledge-source-title">原文依据</h2></div><button id="knowledge-source-close" type="button" class="icon-button" aria-label="关闭原文">×</button></div><p id="knowledge-source-label" class="field-note"></p><div class="knowledge-source-grid"><div><h3>检索原文片段</h3><pre id="knowledge-source-text"></pre><h3>本页提取文本</h3><pre id="knowledge-source-page-text"></pre></div><figure><img id="knowledge-source-image" alt="PDF 原始页面"><figcaption>原始 PDF 页面 · 公式和表格以此页为准</figcaption></figure></div><a id="knowledge-source-download" class="button secondary" download>下载原始文件</a></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>

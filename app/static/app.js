@@ -1,9 +1,10 @@
 const byId = (id) => document.getElementById(id);
-const state = {sessionId: null, assets: [], busy: false, results: 0, source: null, pending: null, view: "home", folderPicking: false, flowConfig: null, flowRun: false, runId: null};
+const state = {sessionId: null, assets: [], busy: false, results: 0, source: null, pending: null, view: "home", folderPicking: false, flowConfig: null, flowRun: false, runId: null, knowledgeRun: false, citations: new Map()};
 const toolNames = {detect_bubbles: "YOLO · 单图气泡检测", batch_detect_bubbles: "YOLO · 实验批次分析", inspect_csv: "CSV · 数据结构检查", analyze_csv: "CSV · 科研数据分析", calculate_bubble_statistics: "气泡尺寸 · 统计分析", compare_experiments: "实验结果 · 交叉比较", calculate_bubble_velocity: "气泡运动 · 速度计算", list_files: "实验目录 · 文件检查", analyze_flow_warning: "流态监测 · 基线与持续异常分析", inspect_flow_event: "流态监测 · 事件依据查询"};
 const flowStateLabels = {normal: "正常", attention: "关注", warning: "预警", insufficient: "数据不足"};
 const flowEndLabels = {recovered: "指标已恢复", data_gap: "数据中断", stopped: "用户停止", end_of_sequence: "序列结束"};
 const examplePrompts = {image: "检测这张气泡图片，统计气泡数量、平均直径和尺寸分布。", folder: "分析这个文件夹里的全部气泡图片，统计尺寸分布并导出 CSV。", csv: "分析这个合成示例 CSV，看看气速和气泡直径的关系，并比较不同工况。"};
+Object.assign(toolNames, {search_knowledge: "知识库 · 检索原文", read_knowledge_excerpt: "知识库 · 核对原文", get_experiment_context: "实验 · 获取已确认背景"});
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -36,17 +37,20 @@ function toast(message) {
 function showView(view) {
   const home = view === "home";
   const flow = view === "flow";
-  state.view = home ? "home" : flow ? "flow" : "workbench";
+  const knowledge = view === "knowledge";
+  state.view = home ? "home" : flow ? "flow" : knowledge ? "knowledge" : "workbench";
   byId("home-view").hidden = !home;
-  byId("workbench-view").hidden = home || flow;
+  byId("workbench-view").hidden = home || flow || knowledge;
   byId("flow-view").hidden = !flow;
-  byId("view-title").textContent = home ? "首页" : flow ? "流态监测预警" : view === "csv" ? "实验数据分析" : "实验分析工作台";
+  byId("knowledge-view").hidden = !knowledge;
+  byId("view-title").textContent = home ? "首页" : flow ? "流态监测预警" : knowledge ? "专业知识问答" : view === "csv" ? "实验数据分析" : "实验分析工作台";
   document.querySelectorAll(".nav-item[data-nav]").forEach((button) => {
-    const active = button.dataset.nav === (home ? "home" : flow ? "flow" : view === "csv" ? "csv" : "workbench");
+    const active = button.dataset.nav === (home ? "home" : flow ? "flow" : knowledge ? "knowledge" : view === "csv" ? "csv" : "workbench");
     button.classList.toggle("active", active);
     if (active) button.setAttribute("aria-current", "page"); else button.removeAttribute("aria-current");
   });
-  if (!home && !flow) byId("message-input").focus({preventScroll: true});
+  if (!home && !flow && !knowledge) byId("message-input").focus({preventScroll: true});
+  if (knowledge) window.KnowledgeUI?.refresh();
   window.scrollTo({top: 0, behavior: "instant"});
 }
 
@@ -97,11 +101,17 @@ function setBusy(busy) {
   byId("activity-dot").classList.toggle("busy", busy);
   byId("activity-state").textContent = busy ? "Agent 正在行动" : "行动过程可追溯";
   byId("composer-context").textContent = busy ? "正在分析，请稍候…" : "支持多轮实验分析";
+  window.KnowledgeUI?.setBusy(busy);
 }
 
 function inlineText(target, text) {
-  for (const token of text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g)) {
-    if (token.startsWith("**") && token.endsWith("**")) target.append(element("strong", "", token.slice(2, -2)));
+  for (const token of text.split(/(\*\*[^*]+\*\*|`[^`]+`|\[K[A-Za-z0-9]+\])/g)) {
+    if (/^\[K[A-Za-z0-9]+\]$/.test(token)) {
+      const id = token.slice(1, -1); const citation = state.citations.get(id);
+      if (citation) { const button = element("button", "citation-inline", citation.page_label); button.type = "button"; button.title = citation.title; button.addEventListener("click", () => window.KnowledgeUI?.openSource(citation)); target.append(button); }
+      else target.append(document.createTextNode(token));
+    }
+    else if (token.startsWith("**") && token.endsWith("**")) target.append(element("strong", "", token.slice(2, -2)));
     else if (token.startsWith("`") && token.endsWith("`")) target.append(element("code", "", token.slice(1, -1)));
     else target.append(document.createTextNode(token));
   }
@@ -219,6 +229,7 @@ function connectEvents(runId) {
   state.runId = runId;
   sessionStorage.setItem("bifb-run", runId);
   if (state.flowRun) sessionStorage.setItem("bifb-flow-run", runId);
+  if (state.knowledgeRun) sessionStorage.setItem("bifb-knowledge-run", runId);
   state.source?.close();
   state.source = new EventSource(`/api/runs/${runId}/events`);
   const seen = new Set();
@@ -226,13 +237,15 @@ function connectEvents(runId) {
     const event = JSON.parse(received.data);
     if (seen.has(event.id)) return;
     seen.add(event.id);
+    for (const citation of event.citations || []) state.citations.set(citation.citation_id, citation);
+    window.KnowledgeUI?.onEvent(event);
     if (event.type === "flow_window") renderFlowWindow(event.window);
     if (state.flowRun && ["status", "thinking", "progress"].includes(event.type)) byId("flow-progress").textContent = event.message;
     if (event.type !== "final" && event.type !== "done") activity(event);
     if (event.type === "tool_result") addResult(event.result, event.tool);
     if (event.type === "final") { state.pending?.remove(); state.pending = null; const message = addMessage("assistant", event.message); appendArtifacts(message, event.artifacts); if (state.flowRun) { byId("flow-explanation").replaceChildren(); renderMarkdown(byId("flow-explanation"), event.message); appendArtifacts(byId("flow-explanation"), event.artifacts); } }
     if (event.type === "error") { state.pending?.remove(); state.pending = null; addMessage("assistant", event.message, "error"); if (state.flowRun) { byId("flow-explanation").textContent = event.message + " 已生成的工具结果可在下方查看。"; byId("flow-progress").textContent = "本轮分析未全部完成"; } }
-    if (event.type === "done") { state.source.close(); state.source = null; sessionStorage.removeItem("bifb-run"); sessionStorage.removeItem("bifb-flow-run"); state.pending?.remove(); setBusy(false); if (state.flowRun && event.success) byId("flow-progress").textContent = "本轮监测与状态解释已完成"; state.runId = null; }
+    if (event.type === "done") { state.source.close(); state.source = null; sessionStorage.removeItem("bifb-run"); sessionStorage.removeItem("bifb-flow-run"); sessionStorage.removeItem("bifb-knowledge-run"); state.pending?.remove(); setBusy(false); if (state.flowRun && event.success) byId("flow-progress").textContent = "本轮监测与状态解释已完成"; state.runId = null; state.knowledgeRun = false; }
   };
   state.source.onerror = () => {
     toast("连接暂时中断，正在尝试恢复行动记录。");
@@ -246,6 +259,7 @@ async function submitTask(event) {
   if (!state.sessionId) return toast("正在连接本地服务，请稍候。");
   showView("workbench");
   state.flowRun = false;
+  state.knowledgeRun = false;
   setBusy(true);
   try {
     const data = await post(`/api/sessions/${state.sessionId}/chat`, {message});
@@ -362,6 +376,7 @@ async function initialize() {
   if (!session) session = await post("/api/sessions", {});
   state.sessionId = session.session_id; sessionStorage.setItem("bifb-session", state.sessionId);
   state.assets = session.assets || []; renderAssets();
+  for (const citation of session.knowledge_citations || []) state.citations.set(citation.citation_id, citation);
   if (session.flow_config) {
     state.flowConfig = session.flow_config;
     for (const [key, value] of Object.entries(session.flow_config)) {
@@ -371,7 +386,7 @@ async function initialize() {
   }
   for (const message of session.history || []) addMessage(message.role, message.content);
   const activeRun = sessionStorage.getItem("bifb-run");
-  if (activeRun) { state.flowRun = sessionStorage.getItem("bifb-flow-run") === activeRun; if (state.flowRun) showView("flow"); setBusy(true); connectEvents(activeRun); }
+  if (activeRun) { state.flowRun = sessionStorage.getItem("bifb-flow-run") === activeRun; state.knowledgeRun = sessionStorage.getItem("bifb-knowledge-run") === activeRun; if (state.flowRun) showView("flow"); if (state.knowledgeRun) showView("knowledge"); setBusy(true); connectEvents(activeRun); }
 }
 
 function renderFlowWindow(window) {
@@ -443,6 +458,7 @@ async function startFlow(event) {
     byId("flow-config-note").textContent = `配置已确认 · 每窗口 ${state.flowConfig.frames_per_window} 帧，基线至少 ${state.flowConfig.frames_per_window * 3} 帧。`;
     const run = await post(`/api/sessions/${state.sessionId}/chat`, {message, flow_config_id: state.flowConfig.config_id});
     state.flowRun = true;
+    state.knowledgeRun = false;
     byId("flow-output").replaceChildren();
     byId("flow-explanation").textContent = "Agent 正在检查任务并选择流态监测工具…";
     byId("flow-progress").textContent = "正在建立正常基线…";

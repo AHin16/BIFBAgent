@@ -5,3 +5,4 @@ config.local.json
 data/
 *.log
 .pytest_cache/
+tmp/

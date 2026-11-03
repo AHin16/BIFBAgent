@@ -21,6 +21,7 @@ from app.config import DATA, INPUT_EXTENSIONS, ROOT, Settings, load_settings, lo
 from app.llm import LLMClient
 from app.folder_picker import select_folder
 from app.flow_warning import FlowSettings, register_flow_tools, save_flow_config
+from app.knowledge import knowledge_store, register_knowledge_tools
 from app.registry import ToolRegistry
 from app.storage import Session, ToolError, dump_json
 from app.yolo_adapter import register_vision_tools
@@ -47,6 +48,7 @@ registry = ToolRegistry()
 register_vision_tools(registry)
 register_data_tools(registry)
 register_flow_tools(registry)
+register_knowledge_tools(registry)
 
 
 @app.middleware("http")
@@ -177,11 +179,76 @@ def create_session():
     return {"session_id": session.id}
 
 
+@app.get("/api/knowledge/documents")
+def knowledge_documents():
+    return {"documents": knowledge_store.documents()}
+
+
+class KnowledgeImport(BaseModel):
+    path: str = Field(min_length=1, max_length=4096)
+
+
+@app.post("/api/knowledge/import")
+def import_knowledge(payload: KnowledgeImport):
+    return knowledge_store.import_document(payload.path)
+
+
+@app.post("/api/knowledge/uploads")
+async def upload_knowledge(file: UploadFile = File(...)):
+    name = PurePosixPath((file.filename or "").replace("\\", "/")).name
+    suffix = Path(name).suffix.lower()
+    if suffix not in {".pdf", ".txt", ".md"}:
+        raise ToolError("知识库支持文本型 PDF、TXT 和 Markdown。")
+    temporary = DATA / "knowledge" / "imports"
+    temporary.mkdir(parents=True, exist_ok=True)
+    path = temporary / (uuid.uuid4().hex + suffix)
+    try:
+        size = 0
+        with path.open("wb") as stream:
+            while block := await file.read(1024 * 1024):
+                size += len(block)
+                if size > 50 * 1024 * 1024:
+                    raise ToolError("单篇文档最多 50 MB。")
+                stream.write(block)
+        return await asyncio.to_thread(knowledge_store.import_document, path, name)
+    finally:
+        path.unlink(missing_ok=True)
+        await file.close()
+
+
+class KnowledgeSearch(BaseModel):
+    query: str = Field(min_length=1, max_length=2000)
+    document_ids: list[str] | None = None
+
+
+@app.post("/api/knowledge/search")
+def search_knowledge_local(payload: KnowledgeSearch):
+    return knowledge_store.search(payload.query, payload.document_ids)
+
+
+@app.get("/api/knowledge/documents/{document_id}/pages/{page}")
+def knowledge_page(document_id: str, page: int):
+    return knowledge_store.page(document_id, page)
+
+
+@app.get("/api/knowledge/documents/{document_id}/pages/{page}/image")
+def knowledge_page_image(document_id: str, page: int):
+    return FileResponse(knowledge_store.page_image(document_id, page), media_type="image/png")
+
+
+@app.get("/api/knowledge/documents/{document_id}/file")
+def knowledge_file(document_id: str):
+    document, path = knowledge_store.source_file(document_id)
+    return FileResponse(path, media_type="application/pdf" if document["format"] == "pdf" else "text/plain; charset=utf-8",
+                        filename=document["filename"])
+
+
 @app.get("/api/sessions/{session_id}")
 def session_state(session_id: str):
     session = get_session(session_id)
     return {"session_id": session.id, "assets": session.assets, "history": session.history, "busy": session.busy,
-            "flow_config": list(session.flow_configs.values())[-1] if session.flow_configs else None}
+            "flow_config": list(session.flow_configs.values())[-1] if session.flow_configs else None,
+            "knowledge_citations": list(session.knowledge_citations.values())}
 
 
 @app.post("/api/sessions/{session_id}/flow-config")
@@ -302,6 +369,8 @@ def add_example(session_id: str, kind: str):
 class ChatInput(BaseModel):
     message: str = Field(min_length=1, max_length=12000)
     flow_config_id: str | None = None
+    knowledge_mode: bool = False
+    knowledge_document_ids: list[str] | None = None
 
 
 @app.post("/api/sessions/{session_id}/chat")
@@ -314,10 +383,16 @@ async def chat(session_id: str, payload: ChatInput):
         raise ToolError("请先在右上角「运行设置」配置 LLM 地址、模型名称和 API Key。")
     if payload.flow_config_id and payload.flow_config_id not in session.flow_configs:
         raise ToolError("流态任务配置已失效，请重新确认。")
+    available_ids = {document["id"] for document in knowledge_store.documents()}
+    if payload.knowledge_mode and not available_ids:
+        raise ToolError("请先导入至少一篇知识文档。")
+    if payload.knowledge_document_ids is not None and (not payload.knowledge_document_ids or not set(payload.knowledge_document_ids).issubset(available_ids)):
+        raise ToolError("所选知识资料为空或已失效，请刷新资料列表。")
     session.busy = True
     run = Run(session.id)
     runs[run.id] = run
-    run.task = asyncio.create_task(run_agent(run, session, settings.model_copy(), registry, payload.message.strip(), payload.flow_config_id))
+    run.task = asyncio.create_task(run_agent(run, session, settings.model_copy(), registry, payload.message.strip(), payload.flow_config_id,
+                                           payload.knowledge_mode, payload.knowledge_document_ids))
     return {"run_id": run.id}
 
 

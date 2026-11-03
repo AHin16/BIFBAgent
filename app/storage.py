@@ -53,6 +53,7 @@ class Session:
     history: list = field(default_factory=list)
     results: dict = field(default_factory=dict)
     flow_configs: dict = field(default_factory=dict)
+    knowledge_citations: dict = field(default_factory=dict)
     busy: bool = False
 
     def grant(self, path):
@@ -90,6 +91,8 @@ class ToolContext:
     run_id: str
     emit: object = lambda *args, **kwargs: None
     stop_event: object = None
+    knowledge_scope: object = None
+    citations: dict = field(default_factory=dict)
 
     @property
     def output_dir(self):

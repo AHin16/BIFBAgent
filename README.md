@@ -18,7 +18,7 @@ conda run --no-capture-output -n BIFBAgent python desktop.py
 conda run --no-capture-output -n BIFBAgent python -m pip install -r requirements-desktop.txt
 ```
 
-首页使用红白配色的科研 Dashboard：左侧导航、五个研究模块和自然语言任务输入。图像与 CSV 分析进入工作台；流态监测预警进入专用配置与结果页面；气含率、参数优化、专业知识问答等未接入模块点击后显示“功能正在推进中”。
+首页使用红白配色的科研 Dashboard：左侧导航、五个研究模块和自然语言任务输入。图像/CSV、流态监测预警、专业知识问答已开放；气含率、参数优化点击后显示“功能正在推进中”。
 
 第一次打开软件，点右上角「运行设置」：
 
@@ -54,17 +54,31 @@ conda run --no-capture-output -n BIFBAgent python -m pip install -r requirements
 
 分析期间可以「停止并保存」；桌面关闭会先请求停止并等待已完成结果保存。数据中断、序列结束、停止不会被解释为恢复。结果输出到 Agent 的 `data/outputs/`，不修改 YOLOTracker 源代码。
 
+## 专业知识问答
+
+「专业知识问答」支持 PDF/TXT/Markdown 导入、本地路径导入、按资料选择范围、原文检索和带引用回答。本次提供的 Ma 等 BIFB 论文已经导入本机知识库，保留原始文件、10 页文本和 33 个片段，重启软件后仍可使用。
+
+- 先选择参考资料，然后输入问题。点击「仅检索原文」在本机查找，不调用 LLM；点击发送会把问题所需片段和文档信息交给已配置模型。
+- 回答引用按 PDF 从 1 起的页码显示，可点击打开提取片段与原始页面，也可下载原始文件。程序校验引用编号确实来自本轮检索，但不自动证明模型每句话都得到原文支持。
+- 可以问“论文装置、物料和气速范围是什么”“气速怎样影响气泡尺寸与上升速度”“四种流化状态如何描述”，也可结合本会话中的实验结果继续询问。
+- 论文工况不自动变为当前实验参数。扫描 PDF 会提示需要 OCR；公式、上下标和表格可能提取失真，精确表达式须查看原页。本版不做 OCR、联网检索或公式自动计算。
+- `data/knowledge/library.sqlite3` 保存文档/页码/片段和词项，`data/knowledge/<内容哈希>/` 保存原始文件及按需生成的原页预览。重复文档按内容哈希去重。
+- 检索采用本地 BM25、中英术语扩展和少量词组加权；返回相关度不等于可信度。当前没有向量模型或外部向量服务。资料不足时返回缺少依据，不生成伪论文引用。
+
 ## 验证
 
 ```powershell
 conda run --no-capture-output -n BIFBAgent python -m unittest discover -s tests -v
 conda run --no-capture-output -n BIFBAgent python scripts/verify_demo.py
 conda run --no-capture-output -n BIFBAgent python scripts/verify_flow.py
+conda run --no-capture-output -n BIFBAgent python scripts/verify_knowledge.py
 ```
 
 第二条命令默认使用本机固定模型响应，执行真实 YOLO、CSV 统计和跨轮比较，保存 `data/validation/*.json`。它验证工具协议和上下文，不验证 LLM 的理解与解释质量。需要验证实际模型时，明确选择 `python scripts/verify_demo.py --live`，该模式会将随项目提供的测试图片检测统计、合成 CSV 统计和任务文本发送到已配置的 LLM API。
 
 `verify_flow.py` 使用真实权重、原始流态算法和重复示例图检查集成，不调用 LLM API；重复图仅为接口检查，不代表真实连续实验或预警精度。流态测试覆盖正常/异常、缺少掩膜、末尾不足窗口、停止保留结果、配置确认及 LLM 取得 Observation 后解释。
+
+`verify_knowledge.py` 默认本地固定模型响应，验证提供的 BIFB 论文中装置/气泡尺寸/流化状态/测速方法的页码命中和引用闭环。`--live` 会将测试问题、文档信息和检索片段发送到已配置的 LLM，仅在明确同意发送这些内容时使用。远程自动验收脚本被自动审批拦截，未重试；当前桌面会话已有一轮真实问答记录，装置 0.33 m、3.0 m 和 0–20 mm/s 已与第 2 页原文核对，这不代表其他专业问题均已验证。
 
 ## 目录
 
@@ -75,6 +89,8 @@ conda run --no-capture-output -n BIFBAgent python scripts/verify_flow.py
 - `app/registry.py`：统一 Tool Registry、Pydantic 参数校验和错误处理。
 - `app/yolo_adapter.py`：不修改 `E:\YOLOTracker`，动态复用其 `PredictorYolo11` 和图像读取模块。
 - `app/flow_warning.py`：确认后的流态任务配置、原始工作流适配、窗口/事件摘要及工具注册。
+- `app/knowledge.py`：文档解析、SQLite 持久化、本地检索、引用核验及知识工具。
+- `app/static/knowledge.js`：资料选择、问答、本地检索及可点击原文证据。
 - `app/analysis.py`：CSV 读取、描述统计、分组、Pearson 相关、线性趋势、IQR 异常候选、图表。
 - `app/static/`：原生 HTML/CSS/JavaScript UI。
 - `data/outputs/`：每次运行的图表、检测图、CSV、JSON、Markdown 报告和 activity trace。
