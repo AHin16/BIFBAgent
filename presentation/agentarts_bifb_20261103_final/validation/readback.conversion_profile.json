@@ -1,0 +1,28 @@
+{
+  "schema": "ppt-master.source_to_md.profile.v1",
+  "converter": "ppt_to_md.py",
+  "conversion_type": "pptx",
+  "source": {
+    "path": "E:/BIFBAgent/presentation/agentarts_bifb_20261103_final/exports/AgentArts_BIFB_竞赛汇报_20页.pptx",
+    "name": "AgentArts_BIFB_竞赛汇报_20页.pptx",
+    "suffix": ".pptx",
+    "kind": "file",
+    "exists": true,
+    "size_bytes": 6024112
+  },
+  "outputs": {
+    "markdown": "readback.md",
+    "asset_dir": "",
+    "image_manifest": "",
+    "image_count": 0
+  },
+  "markdown": {
+    "line_count": 1040,
+    "char_count": 9206,
+    "heading_count": 41,
+    "table_count": 0,
+    "image_ref_count": 0,
+    "link_count": 0
+  },
+  "warnings": []
+}

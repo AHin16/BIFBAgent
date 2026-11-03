@@ -1,0 +1,2 @@
+# Includes Qt WebEngine and WebChannel. Already installed in BIFBAgent.
+PySide6>=6.8,<7

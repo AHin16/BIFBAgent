@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#bd2030">
+  <title>BIFB · 多相流智能分析与优化 Agent</title>
+  <link rel="icon" href="/static/brand.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="#home" class="brand" data-nav="home"><img src="/static/brand.svg" alt=""><span>BIFB<span class="brand-sub">多相流智能科研助手</span></span></a>
+    <div class="sidebar-label">科研工作空间</div>
+    <nav class="navigation" aria-label="主导航">
+      <button class="nav-item active" data-nav="home" aria-current="page"><svg><use href="/static/icons.svg#home"></use></svg>首页</button>
+      <button class="nav-item" data-nav="workbench"><svg><use href="/static/icons.svg#image"></use></svg>实验图像分析</button>
+      <button class="nav-item" data-nav="csv"><svg><use href="/static/icons.svg#chart"></use></svg>实验数据分析</button>
+      <button class="nav-item" data-nav="flow"><svg><use href="/static/icons.svg#layers"></use></svg>流态监测预警</button>
+      <button class="nav-item" data-coming="气含率估算"><svg><use href="/static/icons.svg#flow"></use></svg>气含率估算</button>
+      <button class="nav-item" data-coming="运行参数优化"><svg><use href="/static/icons.svg#settings"></use></svg>运行参数优化</button>
+      <button class="nav-item" data-coming="专业知识问答"><svg><use href="/static/icons.svg#book"></use></svg>专业知识问答</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="local-note"><span class="tiny-dot"></span> 本地实验数据工作空间</div>
+      <button id="new-session" class="button new-session"><svg><use href="/static/icons.svg#plus"></use></svg>新建研究会话</button>
+      <div class="sidebar-version">BIFB Research Assistant <span>DEMO</span></div>
+    </div>
+  </aside>
+  <main class="app-main">
+    <header class="topbar">
+      <div class="breadcrumb">工作空间 <span>/</span> <strong id="view-title">首页</strong></div>
+      <div class="top-actions"><span id="system-status" class="status-pill"><i></i>正在连接</span><button id="settings-open" class="button secondary"><svg><use href="/static/icons.svg#settings"></use></svg>运行设置</button></div>
+    </header>
+    <section id="home-view" class="home-view" aria-label="首页">
+      <div class="hero">
+        <div class="hero-eyebrow"><span></span> MULTIPHASE FLOW · INTELLIGENT RESEARCH</div>
+        <h1><em>BIFB</em> 多相流智能分析与优化 Agent</h1>
+        <p>面向气泡诱导逆流化床的智能实验分析与科研探索</p>
+        <div class="hero-caption"><span>真实视觉检测</span><i></i><span>专业数据计算</span><i></i><span>可追溯的科研解释</span></div>
+      </div>
+      <div class="module-heading"><h2>从实验观察到科研洞见</h2><span>选择研究方向，或直接描述你的问题</span></div>
+      <div class="feature-grid">
+        <button class="feature-card" data-nav="workbench"><span class="feature-icon"><svg><use href="/static/icons.svg#image"></use></svg></span><h3>实验图像分析</h3><p>气泡分割 · 数量与尺寸分布</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
+        <button class="feature-card" data-nav="flow"><span class="feature-icon"><svg><use href="/static/icons.svg#layers"></use></svg></span><h3>流态监测预警</h3><p>基线对比 · 持续异常分析</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
+        <button class="feature-card" data-coming="气含率估算"><span class="feature-icon"><svg><use href="/static/icons.svg#chart"></use></svg></span><h3>气含率估算</h3><p>图像特征 · 几何估算</p><span class="feature-state">推进中</span></button>
+        <button class="feature-card" data-coming="运行参数优化"><span class="feature-icon"><svg><use href="/static/icons.svg#settings"></use></svg></span><h3>运行参数优化</h3><p>参数搜索 · 约束检查</p><span class="feature-state">推进中</span></button>
+        <button class="feature-card" data-coming="专业知识问答"><span class="feature-icon"><svg><use href="/static/icons.svg#book"></use></svg></span><h3>专业知识问答</h3><p>文献检索 · 理论解释</p><span class="feature-state">推进中</span></button>
+      </div>
+      <section class="welcome-card">
+        <div class="welcome-heading"><span class="robot-icon"><svg><use href="/static/icons.svg#robot"></use></svg></span><div><h2>欢迎使用 BIFB 智能分析与优化 Agent</h2><p>用自然语言提出研究任务，让 Agent 组织分析流程。</p></div></div>
+        <div class="home-suggestions">
+          <button data-home-prompt="分析这个实验文件夹里的气泡图片，统计数量和尺寸分布。"><svg><use href="/static/icons.svg#image"></use></svg>分析气泡图像的尺寸分布<span>↗</span></button>
+          <button data-home-prompt="分析这个 CSV，看看不同气速下的气泡直径变化，并比较不同工况。"><svg><use href="/static/icons.svg#chart"></use></svg>探索气速与气泡直径的关系<span>↗</span></button>
+          <button data-coming="运行参数优化"><svg><use href="/static/icons.svg#settings"></use></svg>在约束条件下优化运行参数<span>↗</span></button>
+        </div>
+        <form id="home-form" class="home-composer"><svg class="composer-spark"><use href="/static/icons.svg#spark"></use></svg><textarea id="home-input" rows="1" aria-label="首页科研任务" placeholder="请输入你的问题或任务需求…" maxlength="12000" required></textarea><button id="home-attach" type="button" class="attachment-button" aria-label="添加实验数据" title="添加实验数据"><svg><use href="/static/icons.svg#paperclip"></use></svg></button><button id="home-send" type="submit" class="send-button" aria-label="开始分析"><svg><use href="/static/icons.svg#send"></use></svg></button></form>
+        <div class="welcome-footer"><div><button id="home-folder" class="text-button"><svg><use href="/static/icons.svg#folder"></use></svg>读取本地文件夹</button><span id="home-asset-count">尚未添加数据</span></div><span>分析结论以真实工具结果为依据</span></div>
+      </section>
+      <div class="home-bottom"><span class="home-bottom-icon">✧</span><p>让每一次实验，都有可解释的发现。</p><span>YOLO + CSV + LLM</span></div>
+    </section>
+    <section id="flow-view" class="workbench-view" aria-label="流态监测预警" hidden>
+      <div class="workbench-title"><div><span class="eyebrow">FLOW STATE MONITORING</span><h1>流态监测预警</h1><p>对照正常基线，分析气泡出现量、大气泡变化与运动状态。</p></div><button class="button secondary" data-nav="home">返回首页</button></div>
+      <div class="flow-layout">
+        <form id="flow-form" class="panel flow-config">
+          <fieldset id="flow-fields"><div class="section-heading"><h2>监测任务配置</h2><span class="result-badge">本地直读</span></div>
+            <p class="small muted">选择两个独立的连续图像目录，或粘贴视频文件路径。图片与视频均由本机读取。</p>
+            <label>正常基线来源<div class="flow-source-input"><input name="baseline_path" required placeholder="正常工况图片目录 / 视频路径"><button class="button" type="button" data-flow-pick="baseline_path" aria-label="选择正常基线文件夹"><svg><use href="/static/icons.svg#folder"></use></svg></button></div></label>
+            <label>待测来源<div class="flow-source-input"><input name="input_path" required placeholder="待测图片目录 / 视频路径"><button class="button" type="button" data-flow-pick="input_path" aria-label="选择待测文件夹"><svg><use href="/static/icons.svg#folder"></use></svg></button></div></label>
+            <div class="field-pair"><label>实际采集帧率 (FPS)<input name="fps" required type="number" min="0.000001" max="100000" step="any" placeholder="填写实际采集值"></label><label>标定 (mm / px)<input name="mm_per_pixel" required type="number" min="0.000000001" step="any" placeholder="例如 0.01"></label></div>
+            <div class="field-pair"><label>窗口长度 (s)<input name="window_seconds" required type="number" min="0.000001" max="3600" step="any" value="0.5"></label><label>每窗口最少样本<input name="min_samples" required type="number" min="1" max="100000" value="10"></label></div>
+            <details class="flow-advanced"><summary>高级参数与共同 ROI</summary><div class="field-pair"><label>触发持续窗口<input name="trigger_windows" required type="number" min="1" max="1000" value="2"></label><label>恢复持续窗口<input name="recovery_windows" required type="number" min="1" max="1000" value="2"></label></div><label>偏离阈值（稳健尺度）<input name="threshold" required type="number" min="0.01" max="100" step="any" value="3"></label><div class="field-pair"><label>ROI X (px)<input name="roi_x" required type="number" min="0" value="0"></label><label>ROI Y (px)<input name="roi_y" required type="number" min="0" value="0"></label></div><div class="field-pair"><label>ROI 宽 (px)<input name="roi_width" required type="number" min="0" value="0"></label><label>ROI 高 (px)<input name="roi_height" required type="number" min="0" value="0"></label></div><p class="field-note">宽、高为 0 时延伸至图像边界。基线与待测图像尺寸须一致。</p><div class="field-pair"><label>最小掩膜面积 (px²)<input name="min_area" required type="number" min="1" value="10"></label><label>最大关联距离 (px)<input name="max_distance" required type="number" min="0.01" step="any" value="40"></label></div></details>
+            <label class="flow-check"><input name="normal_baseline_confirmed" type="checkbox" required><span>我确认所选基线属于正常实验工况。</span></label>
+            <label class="flow-check"><input name="acquisition_confirmed" type="checkbox" required><span>我已核对两段数据的真实帧率、等间隔连续性、共同标定及 ROI；抽帧后使用有效帧率。</span></label>
+            <label>分析要求<textarea id="flow-task" name="analysis_request" rows="3" placeholder="例如：总结流动状态，说明持续异常及数据局限。" maxlength="4000"></textarea></label>
+            <p id="flow-config-note" class="field-note">正常基线至少需要三个完整有效窗口。单张图或三帧示例不能用于建立可靠基线。</p>
+            <button id="flow-start" type="submit" class="button primary">开始监测并分析</button>
+          </fieldset>
+        </form>
+        <div class="flow-report">
+          <div class="panel flow-live"><div class="section-heading"><h2>监测状态</h2><button id="flow-stop" class="button secondary" type="button" hidden>停止并保存</button></div><p id="flow-progress" role="status">等待任务配置</p><div class="flow-state-grid"><div id="flow-state-appearance" class="flow-state" data-state="insufficient"><span>气泡出现量</span><strong>待分析</strong><p>面积占比与数量</p></div><div id="flow-state-size" class="flow-state" data-state="insufficient"><span>大气泡变化</span><strong>待分析</strong><p>固定界限比例与 D90</p></div><div id="flow-state-motion" class="flow-state" data-state="insufficient"><span>运动状态</span><strong>待分析</strong><p>有符号速度与下行比例</p></div></div></div>
+          <section class="panel flow-explanation"><div class="section-heading"><h2><svg><use href="/static/icons.svg#robot"></use></svg>LLM 流动状态分析</h2><span class="result-badge">基于真实指标</span></div><div id="flow-explanation" class="message-body"><p>工具计算完成后，模型将简要解释三类指标的变化、预警时段和数据局限。</p></div><p class="field-note">当前只进行指标与事件分析，不调用视觉大模型复核画面。</p></section>
+          <div id="flow-output" class="flow-output" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+    <section id="workbench-view" class="workbench-view" aria-label="实验分析工作台" hidden>
+      <div class="workbench-title"><div><span class="eyebrow">RESEARCH WORKBENCH</span><h1>实验分析工作台</h1><p>添加数据、描述任务，查看 Agent 的每一步行动与证据。</p></div><button class="button secondary" data-nav="home">返回首页</button></div>
+      <div class="workbench-grid">
+        <aside class="source-panel panel">
+          <div class="section-heading"><h2>实验数据</h2><span class="counter" id="asset-count">0</span></div>
+          <p class="muted small">添加图像或 CSV，也可直接读取本地文件夹。</p>
+          <label class="upload-zone" id="drop-zone" tabindex="0" role="button" aria-label="上传实验文件"><input id="file-input" type="file" multiple accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.webp,.csv" hidden><svg><use href="/static/icons.svg#upload"></use></svg><strong>添加图片或 CSV</strong><span>视频请在流态页填写本地路径</span></label>
+          <button id="browse-folder" class="button folder-button" type="button"><svg><use href="/static/icons.svg#folder"></use></svg>选择实验文件夹</button>
+          <details class="path-details"><summary>输入本地文件或文件夹路径</summary><form id="path-form"><input id="local-path" placeholder="E:\experiment\batch_01" aria-label="本地数据路径" required><button class="button secondary" type="submit">读取</button></form></details>
+          <div class="source-list" id="source-list"><div class="source-empty">尚未添加数据源</div></div>
+          <div class="example-box"><span class="eyebrow">QUICK START</span><h3>从示例开始</h3><button class="example-link" data-example="image"><span>01</span> 气泡图像 <b>↗</b></button><button class="example-link" data-example="folder"><span>02</span> 三帧图像批次 <b>↗</b></button><button class="example-link" data-example="csv"><span>03</span> 气速与直径 · 合成 CSV <b>↗</b></button></div>
+          <div class="calibration-note"><span class="tiny-dot"></span><div id="calibration-label">未标定 · 图像尺寸以 px 显示</div></div>
+        </aside>
+        <section class="analysis-panel">
+          <div class="result-topline"><h2>观察与结果 <span id="result-count">0</span></h2><span id="result-state">等待研究任务</span></div>
+          <div id="results" class="results" aria-live="polite"><div id="result-empty" class="result-empty"><span class="empty-icon"><svg><use href="/static/icons.svg#image"></use></svg></span><h3>每一个发现，都从观察开始</h3><p>添加实验数据后，告诉助手你想研究什么。<br>检测图、统计和图表将在这里呈现。</p><div class="capability-tags"><span>实例分割</span><span>尺寸分布</span><span>工况比较</span></div></div></div>
+          <section class="activity-panel panel"><div class="activity-heading"><h2><span class="live-dot" id="activity-dot"></span>Agent Activity</h2><span id="activity-state">行动过程可追溯</span><button id="activity-clear" aria-label="清空行动记录">清空</button></div><div id="activity" class="activity-log" aria-live="polite"><p class="activity-empty">工具选择、执行参数与计算结果将实时显示。</p></div></section>
+        </section>
+        <section class="chat-panel panel">
+          <div class="chat-heading"><span class="assistant-avatar"><svg><use href="/static/icons.svg#robot"></use></svg></span><div><h2>科研助手</h2><p>你的实验分析伙伴</p></div><span class="chat-live"><i></i>AGENT</span></div>
+          <div id="messages" class="messages" aria-live="polite"><div class="welcome" id="welcome"><span class="eyebrow">LET'S EXPLORE</span><h3>今天想研究什么？</h3><p>描述你的研究问题，我会选择工具、读取数据，并解释分析依据。</p><button class="prompt-chip" data-prompt="检测这张气泡图片，统计气泡数量、平均直径和尺寸分布。">检测气泡，了解尺寸分布 <span>↗</span></button><button class="prompt-chip" data-prompt="分析这个 CSV，看看气速和气泡直径有什么关系，并比较不同工况。">探索气速与气泡直径的关系 <span>↗</span></button><button class="prompt-chip" data-prompt="结合刚才的图像检测和 CSV 分析结果，总结实验规律，说明测量依据和局限。">结合多次结果，寻找实验规律 <span>↗</span></button></div></div>
+          <form id="chat-form" class="composer"><div class="composer-input"><textarea id="message-input" rows="3" placeholder="描述你的科研任务…" aria-label="科研任务" maxlength="12000" required></textarea><div class="composer-bottom"><span id="composer-context">支持多轮实验分析</span><button id="send-button" type="submit" class="send-button" aria-label="发送任务"><svg><use href="/static/icons.svg#send"></use></svg></button></div></div><p>Enter 发送 · Shift + Enter 换行 <button id="chat-stop" type="button" class="text-button" hidden>停止分析</button></p></form>
+        </section>
+      </div>
+    </section>
+  </main>
+  <dialog id="settings-dialog"><form id="settings-form"><div class="dialog-heading"><div><span class="eyebrow">LOCAL CONFIGURATION</span><h2>运行设置</h2></div><button id="settings-close" type="button" class="icon-button" aria-label="关闭设置">×</button></div><p class="muted small">配置保存在本机。API Key 不会返回页面，也不进入对话。</p><div class="settings-section"><h3><span>01</span>语言模型</h3><label>API Base URL<input name="llm_base_url" type="url" placeholder="https://example.com/v1" required></label><label>API Key<input name="llm_api_key" type="password" autocomplete="new-password" placeholder="输入 API Key"></label><div class="model-picker"><label>模型名称<input name="llm_model" list="llm-model-options" placeholder="选择或填写支持工具调用的模型"></label><button type="button" id="fetch-models" class="button secondary">获取模型列表</button></div><datalist id="llm-model-options"></datalist><label class="checkbox-label"><input name="clear_api_key" type="checkbox">清除已保存的 API Key</label><p class="field-note">获取列表使用当前地址与 Key，不会自动保存新 Key。本地免鉴权服务可留空。</p></div><div class="settings-section"><h3><span>02</span>YOLO 与测量</h3><label>YOLOTracker 项目路径<input name="yolo_tracker_path" required></label><label>气泡模型路径<input name="yolo_model_path" required></label><div class="field-pair"><label>推理设备<select name="yolo_device"><option value="auto">自动选择</option><option value="cpu">CPU</option><option value="cuda:0">CUDA:0</option></select></label><label>置信度阈值<input name="confidence" type="number" step="0.01" min="0.01" max="1" required></label></div><label>空间标定 · mm / px<input name="mm_per_pixel" type="number" step="any" min="0.000000001" placeholder="留空使用 px；100 px = 1 mm 时填 0.01"></label><p class="field-note">真实标定后才输出 mm；二维等效直径不等同于三维直径。</p></div><div id="settings-feedback" role="status"></div><div class="dialog-actions"><button type="button" id="test-connection" class="button secondary">保存并测试 LLM</button><button type="submit" class="button primary">保存设置</button></div></form></dialog>
+  <dialog id="image-dialog"><button id="image-close" class="icon-button" aria-label="关闭图片">×</button><img id="expanded-image" alt="分析结果大图"></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

@@ -1,0 +1,419 @@
+{
+  "schema": "ppt-master.pptx-delivery-check.v1",
+  "status": "passed-with-advisories",
+  "file": {
+    "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\exports\\AgentArts_BIFB_竞赛汇报_20页.pptx",
+    "bytes": 6024112
+  },
+  "package": {
+    "zip_integrity": "passed",
+    "corrupt_member": null,
+    "duplicate_parts": [],
+    "canonical_part_collisions": [],
+    "parts": {
+      "entries": 168,
+      "unique": 168,
+      "slides": 20,
+      "notes": 20,
+      "masters": 3,
+      "layouts": 26,
+      "media": 6
+    },
+    "relationships": {
+      "problems": []
+    }
+  },
+  "slides": {
+    "count": 20,
+    "hidden_count": 0,
+    "hidden": []
+  },
+  "fonts": {
+    "theme": {
+      "title": {
+        "latin": "等线 Light",
+        "scripts": {
+          "Jpan": "游ゴシック Light",
+          "Hang": "맑은 고딕",
+          "Hans": "等线 Light",
+          "Hant": "新細明體"
+        }
+      },
+      "body": {
+        "latin": "等线",
+        "scripts": {
+          "Jpan": "游ゴシック",
+          "Hang": "맑은 고딕",
+          "Hans": "等线",
+          "Hant": "新細明體"
+        }
+      }
+    },
+    "declared": {
+      "latin": [
+        {
+          "value": "DengXian",
+          "count": 501
+        },
+        {
+          "value": "+mn-lt",
+          "count": 198
+        },
+        {
+          "value": "思源宋体 CN",
+          "count": 38
+        },
+        {
+          "value": "思源黑体 CN Light",
+          "count": 25
+        },
+        {
+          "value": "思源宋体 CN ExtraLight",
+          "count": 22
+        },
+        {
+          "value": "思源黑体 CN Normal",
+          "count": 13
+        },
+        {
+          "value": "Alibaba Sans Medium",
+          "count": 11
+        },
+        {
+          "value": "优设标题黑",
+          "count": 8
+        },
+        {
+          "value": "思源宋体 CN Heavy",
+          "count": 7
+        },
+        {
+          "value": "禹卫书法行书简体",
+          "count": 7
+        },
+        {
+          "value": "Century Gothic",
+          "count": 4
+        },
+        {
+          "value": "等线",
+          "count": 4
+        },
+        {
+          "value": "思源宋体 CN Medium",
+          "count": 3
+        },
+        {
+          "value": "等线 Light",
+          "count": 3
+        },
+        {
+          "value": "+mj-lt",
+          "count": 2
+        },
+        {
+          "value": "Arial Black",
+          "count": 2
+        },
+        {
+          "value": "Road Rage",
+          "count": 2
+        },
+        {
+          "value": "思源黑体 CN Medium",
+          "count": 1
+        },
+        {
+          "value": "思源黑体 CN Regular",
+          "count": 1
+        }
+      ],
+      "ea": [
+        {
+          "value": "DengXian",
+          "count": 501
+        },
+        {
+          "value": "+mn-ea",
+          "count": 200
+        },
+        {
+          "value": "思源宋体 CN",
+          "count": 38
+        },
+        {
+          "value": "思源黑体 CN Light",
+          "count": 25
+        },
+        {
+          "value": "思源宋体 CN ExtraLight",
+          "count": 22
+        },
+        {
+          "value": "思源黑体 CN Normal",
+          "count": 14
+        },
+        {
+          "value": "优设标题黑",
+          "count": 8
+        },
+        {
+          "value": "思源宋体 CN Heavy",
+          "count": 7
+        },
+        {
+          "value": "禹卫书法行书简体",
+          "count": 7
+        },
+        {
+          "value": "思源宋体 CN Medium",
+          "count": 4
+        },
+        {
+          "value": "+mj-ea",
+          "count": 2
+        },
+        {
+          "value": "思源黑体 CN Medium",
+          "count": 1
+        },
+        {
+          "value": "思源黑体 CN Regular",
+          "count": 1
+        },
+        {
+          "value": "等线",
+          "count": 1
+        }
+      ],
+      "cs": [
+        {
+          "value": "DengXian",
+          "count": 501
+        },
+        {
+          "value": "+mn-cs",
+          "count": 224
+        },
+        {
+          "value": "Arial",
+          "count": 12
+        },
+        {
+          "value": "Alibaba Sans Medium",
+          "count": 11
+        },
+        {
+          "value": "+mj-cs",
+          "count": 3
+        }
+      ]
+    },
+    "embedded_parts": [],
+    "portability_advisory_faces": [
+      "Alibaba Sans Medium",
+      "Century Gothic",
+      "Road Rage",
+      "优设标题黑",
+      "思源宋体 CN",
+      "思源宋体 CN ExtraLight",
+      "思源宋体 CN Heavy",
+      "思源宋体 CN Medium",
+      "思源黑体 CN Light",
+      "思源黑体 CN Medium",
+      "思源黑体 CN Normal",
+      "思源黑体 CN Regular",
+      "游ゴシック",
+      "游ゴシック Light",
+      "禹卫书法行书简体"
+    ]
+  },
+  "media": {
+    "embedded_count": 6,
+    "external_count": 0,
+    "embedded": [
+      {
+        "part": "ppt/media/image1.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 1495029,
+        "compressed_bytes": 1495489,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image5.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 1208148,
+        "compressed_bytes": 1208518,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image4.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 1008763,
+        "compressed_bytes": 1009073,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image3.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 666858,
+        "compressed_bytes": 667063,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image6.jpeg",
+        "kind": "image",
+        "content_type": "image/jpeg",
+        "bytes": 185102,
+        "compressed_bytes": 183554,
+        "reference_count": 2,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image2.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 37870,
+        "compressed_bytes": 37839,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      }
+    ],
+    "external": [],
+    "uncompressed_bytes": 4601770,
+    "archive_compressed_bytes": 4601536,
+    "share_of_archive": 0.763853,
+    "share_of_uncompressed_parts": 0.148894,
+    "top_contributors": [
+      {
+        "part": "ppt/media/image1.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 1495029,
+        "compressed_bytes": 1495489,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image5.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 1208148,
+        "compressed_bytes": 1208518,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image4.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 1008763,
+        "compressed_bytes": 1009073,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image3.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 666858,
+        "compressed_bytes": 667063,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image6.jpeg",
+        "kind": "image",
+        "content_type": "image/jpeg",
+        "bytes": 185102,
+        "compressed_bytes": 183554,
+        "reference_count": 2,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      },
+      {
+        "part": "ppt/media/image2.png",
+        "kind": "image",
+        "content_type": "image/png",
+        "bytes": 37870,
+        "compressed_bytes": 37839,
+        "reference_count": 1,
+        "relationship_types": [
+          "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+        ]
+      }
+    ]
+  },
+  "motion": {
+    "transitions": {
+      "carrier_slide_count": 0,
+      "visual_effect_slide_count": 0,
+      "timed_advance_slide_count": 0,
+      "carrier_slides": [],
+      "visual_effect_slides": [],
+      "timed_advance_slides": [],
+      "effects": {}
+    },
+    "object_animations": {
+      "timing_slide_count": 0,
+      "object_animation_slide_count": 0,
+      "audio_timing_slide_count": 0,
+      "timing_slides": [],
+      "object_animation_slides": [],
+      "audio_timing_slides": []
+    }
+  },
+  "errors": [],
+  "advisories": [
+    {
+      "code": "font_portability",
+      "message": "Some fonts declared or referenced by the presentation are outside the common Office/OS portability set; target-system availability was not verified.",
+      "faces": [
+        "Alibaba Sans Medium",
+        "Century Gothic",
+        "Road Rage",
+        "优设标题黑",
+        "思源宋体 CN",
+        "思源宋体 CN ExtraLight",
+        "思源宋体 CN Heavy",
+        "思源宋体 CN Medium",
+        "思源黑体 CN Light",
+        "思源黑体 CN Medium",
+        "思源黑体 CN Normal",
+        "思源黑体 CN Regular",
+        "游ゴシック",
+        "游ゴシック Light",
+        "禹卫书法行书简体"
+      ]
+    }
+  ]
+}

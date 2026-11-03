@@ -1,0 +1,222 @@
+[
+  {
+    "page": "P02",
+    "id": "p02-apparatus",
+    "name": "BIFB实验装置照片",
+    "ratio": "4:3",
+    "width_px": 365,
+    "height_px": 278,
+    "recommended_pixels": "730 × 556",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P03",
+    "id": "p03-scene",
+    "name": "BIFB实验场景图片",
+    "ratio": "4.70:1",
+    "width_px": 385,
+    "height_px": 82,
+    "recommended_pixels": "770 × 164",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P03",
+    "id": "p03-vision",
+    "name": "气泡视觉分析结果图片",
+    "ratio": "3.26:1",
+    "width_px": 385,
+    "height_px": 118,
+    "recommended_pixels": "770 × 236",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P05",
+    "id": "p05-segmentation",
+    "name": "YOLO11-BUBBLE气泡实例分割结果",
+    "ratio": "16:9",
+    "width_px": 365,
+    "height_px": 200,
+    "recommended_pixels": "730 × 400",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P05",
+    "id": "p05-tracking",
+    "name": "气泡追踪结果",
+    "ratio": "16:9",
+    "width_px": 365,
+    "height_px": 200,
+    "recommended_pixels": "730 × 400",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P05",
+    "id": "p05-statistics",
+    "name": "气泡尺寸/速度统计图",
+    "ratio": "16:9",
+    "width_px": 365,
+    "height_px": 200,
+    "recommended_pixels": "730 × 400",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P10",
+    "id": "p10-raw",
+    "name": "原始实验图像",
+    "ratio": "2:1",
+    "width_px": 366,
+    "height_px": 182,
+    "recommended_pixels": "732 × 364",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P10",
+    "id": "p10-seg",
+    "name": "实例分割结果",
+    "ratio": "2:1",
+    "width_px": 366,
+    "height_px": 182,
+    "recommended_pixels": "732 × 364",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P10",
+    "id": "p10-track",
+    "name": "气泡跟踪结果",
+    "ratio": "2:1",
+    "width_px": 366,
+    "height_px": 182,
+    "recommended_pixels": "732 × 364",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P10",
+    "id": "p10-size-dist",
+    "name": "尺寸分布图",
+    "ratio": "2.52:1",
+    "width_px": 366,
+    "height_px": 145,
+    "recommended_pixels": "732 × 290",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P10",
+    "id": "p10-speed-dist",
+    "name": "速度分布图",
+    "ratio": "2.52:1",
+    "width_px": 366,
+    "height_px": 145,
+    "recommended_pixels": "732 × 290",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P11",
+    "id": "p11-condition-comparison",
+    "name": "不同工况气泡特征对比",
+    "ratio": "4:1",
+    "width_px": 484,
+    "height_px": 119,
+    "recommended_pixels": "968 × 238",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P11",
+    "id": "p11-bubble-distribution",
+    "name": "气泡分布图",
+    "ratio": "4:1",
+    "width_px": 484,
+    "height_px": 119,
+    "recommended_pixels": "968 × 238",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P12",
+    "id": "p12-kb-config",
+    "name": "AgentArts知识库配置截图",
+    "ratio": "4.54:1",
+    "width_px": 568,
+    "height_px": 125,
+    "recommended_pixels": "1136 × 250",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P12",
+    "id": "p12-retrieval-result",
+    "name": "知识检索结果截图",
+    "ratio": "4.44:1",
+    "width_px": 568,
+    "height_px": 128,
+    "recommended_pixels": "1136 × 256",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P13",
+    "id": "p13-candidate-comparison",
+    "name": "候选工况对比图",
+    "ratio": "4.42:1",
+    "width_px": 707,
+    "height_px": 160,
+    "recommended_pixels": "1414 × 320",
+    "replacement_note": "待优化计算完成后替换；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P15",
+    "id": "p15-agent",
+    "name": "AgentArts主控Agent配置截图",
+    "ratio": "1.57:1",
+    "width_px": 296,
+    "height_px": 188,
+    "recommended_pixels": "592 × 376",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P15",
+    "id": "p15-workflow",
+    "name": "AgentArtsWorkflow画布截图",
+    "ratio": "1.57:1",
+    "width_px": 296,
+    "height_px": 188,
+    "recommended_pixels": "592 × 376",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P15",
+    "id": "p15-knowledge",
+    "name": "AgentArts知识库截图",
+    "ratio": "1.57:1",
+    "width_px": 296,
+    "height_px": 188,
+    "recommended_pixels": "592 × 376",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P15",
+    "id": "p15-tools",
+    "name": "AgentArts工具配置截图",
+    "ratio": "1.57:1",
+    "width_px": 296,
+    "height_px": 188,
+    "recommended_pixels": "592 × 376",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P16",
+    "id": "p16-runtime",
+    "name": "AgentArts实际Workflow运行截图",
+    "ratio": "4.25:1",
+    "width_px": 760,
+    "height_px": 179,
+    "recommended_pixels": "1520 × 358",
+    "replacement_note": "待替换真实素材；保留宽高比，不将示意图当作实验结果"
+  },
+  {
+    "page": "P17",
+    "id": "p17-demo-screen",
+    "name": "BIFB智能分析Demo界面截图",
+    "ratio": "2.27:1",
+    "width_px": 823,
+    "height_px": 362,
+    "recommended_pixels": "1646 × 724",
+    "replacement_note": "待可运行Demo完成后替换；保留宽高比，不将示意图当作实验结果"
+  }
+]

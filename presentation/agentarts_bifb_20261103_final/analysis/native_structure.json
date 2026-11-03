@@ -1,0 +1,2048 @@
+{
+  "schema": "ppt-master.native-structure.v1",
+  "source": {
+    "name": "template_prepared.pptx",
+    "templateFile": "sources/source.pptx",
+    "sha256": "28395043482a202057c131a4bf5f63bea93f088eb2558c33a3ca9f8d3da61b70"
+  },
+  "slideSize": {
+    "width_emu": 12192000,
+    "height_emu": 6858000,
+    "width_px": 1280.0,
+    "height_px": 720.0
+  },
+  "strategy": {
+    "preservationEligible": true,
+    "reusableStructureDetected": true,
+    "recommendedMode": "preserve",
+    "recommendationScope": "source-structure-assessment",
+    "templateOutputMode": "template",
+    "downstreamTemplateAdherence": "strategist-confirmed-explicit-structure",
+    "hasMultipleMasters": true,
+    "reasonCodes": [
+      "source-master-layout-contract-is-reusable",
+      "source-uses-multiple-masters"
+    ]
+  },
+  "masters": [
+    {
+      "key": "master_01",
+      "name": "slideMaster1",
+      "packagePart": "ppt/slideMasters/slideMaster1.xml",
+      "themePart": null,
+      "theme": {
+        "colors": {},
+        "fonts": {}
+      },
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 0,
+      "placeholders": [],
+      "layoutKeys": [
+        "layout_01",
+        "layout_02",
+        "layout_03",
+        "layout_04",
+        "layout_05",
+        "layout_06",
+        "layout_07",
+        "layout_08",
+        "layout_09",
+        "layout_10",
+        "layout_11",
+        "layout_12",
+        "layout_13",
+        "layout_14",
+        "layout_15",
+        "layout_16",
+        "layout_17",
+        "layout_18",
+        "layout_19",
+        "layout_20",
+        "layout_21",
+        "layout_22",
+        "layout_23",
+        "layout_24"
+      ]
+    },
+    {
+      "key": "master_02",
+      "name": "slideMaster2",
+      "packagePart": "ppt/slideMasters/slideMaster2.xml",
+      "themePart": null,
+      "theme": {
+        "colors": {},
+        "fonts": {}
+      },
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 0,
+      "placeholders": [],
+      "layoutKeys": [
+        "layout_25"
+      ]
+    },
+    {
+      "key": "master_03",
+      "name": "slideMaster3",
+      "packagePart": "ppt/slideMasters/slideMaster3.xml",
+      "themePart": null,
+      "theme": {
+        "colors": {},
+        "fonts": {}
+      },
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 0,
+      "placeholders": [],
+      "layoutKeys": [
+        "layout_26"
+      ]
+    }
+  ],
+  "layouts": [
+    {
+      "key": "layout_01",
+      "name": "封面1",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout1.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 9,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "10",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "21",
+          "shapeName": "文本占位符 9",
+          "geometry": {
+            "x": 57.83338582677166,
+            "y": 159.6264566929134,
+            "width": 739.8809448818898,
+            "height": 162.66666666666666
+          },
+          "textSamples": [
+            "单击此处编辑论文题目",
+            "题目过长则分行"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "11",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "24",
+          "shapeName": "文本占位符 35",
+          "geometry": {
+            "x": 57.83328083989501,
+            "y": 364.2051443569554,
+            "width": 739.8808398950132,
+            "height": 33.93700787401575
+          },
+          "textSamples": [
+            "单击此处编辑解释文字"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "12",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "31",
+          "shapeName": "文本占位符 16",
+          "geometry": {
+            "x": 57.83328083989501,
+            "y": 522.5111811023622,
+            "width": 582.166719160105,
+            "height": 34.666666666666664
+          },
+          "textSamples": [
+            "▶指导老师：",
+            "xxx"
+          ]
+        }
+      ],
+      "usedBySlides": [
+        1
+      ],
+      "svgFile": null
+    },
+    {
+      "key": "layout_02",
+      "name": "封面2",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout2.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 11,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "10",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "10",
+          "shapeName": "文本占位符 9",
+          "geometry": {
+            "x": 194.66666666666666,
+            "y": 278.66666666666663,
+            "width": 890.6666666666667,
+            "height": 162.66666666666666
+          },
+          "textSamples": [
+            "单击此处编辑论文题目",
+            "题目过长则分行"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "11",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "17",
+          "shapeName": "文本占位符 16",
+          "geometry": {
+            "x": 478.66666666666663,
+            "y": 522.6666666666667,
+            "width": 322.6666666666667,
+            "height": 34.666666666666664
+          },
+          "textSamples": [
+            "指导老师：",
+            "xxx"
+          ]
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_03",
+      "name": "封面4",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout3.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 15,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "12",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "5",
+          "shapeName": "文本占位符 4",
+          "geometry": {
+            "x": 527.7777427821522,
+            "y": 258.7145406824147,
+            "width": 669.189186351706,
+            "height": 157.50005249343832
+          },
+          "textSamples": [
+            "单击此处编辑论文题目题目过长则分行"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "11",
+          "shapeName": "文本占位符 10",
+          "geometry": {
+            "x": 527.7777427821522,
+            "y": 439.7833070866142,
+            "width": 322.0,
+            "height": 44.146561679790025
+          },
+          "textSamples": [
+            "指导老师：",
+            "xxx"
+          ]
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_04",
+      "name": "目录2",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout4.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 7,
+      "placeholders": [],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_05",
+      "name": "目录1",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout5.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 24,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "10",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "19",
+          "shapeName": "文本占位符 18",
+          "geometry": {
+            "x": 584.5316535433071,
+            "y": 185.50624671916012,
+            "width": 120.78152230971128,
+            "height": 48.26992125984252
+          },
+          "textSamples": [
+            "目录"
+          ]
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_06",
+      "name": "目录3",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout6.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 14,
+      "placeholders": [],
+      "usedBySlides": [
+        2
+      ],
+      "svgFile": null
+    },
+    {
+      "key": "layout_07",
+      "name": "转场页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout7.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 12,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "10",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "32",
+          "shapeName": "文本占位符 31",
+          "geometry": {
+            "x": 572.3517060367453,
+            "y": 209.79790026246718,
+            "width": 606.1551706036746,
+            "height": 58.11905511811024
+          },
+          "textSamples": [
+            "请在此处添加你的标题"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "12",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "36",
+          "shapeName": "文本占位符 35",
+          "geometry": {
+            "x": 572.3517060367453,
+            "y": 294.1007874015748,
+            "width": 606.1551706036746,
+            "height": 25.259527559055115
+          },
+          "textSamples": [
+            "请在此处添加英文标题"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "80",
+          "shapeName": "文本占位符 79",
+          "geometry": {
+            "x": 640.9591601049868,
+            "y": 385.7085564304462,
+            "width": 498.8891338582677,
+            "height": 26.11937007874016
+          },
+          "textSamples": [
+            "这里可以简单写一下自己的论点"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "81",
+          "shapeName": "文本占位符 79",
+          "geometry": {
+            "x": 640.0,
+            "y": 421.3112860892388,
+            "width": 499.8482939632546,
+            "height": 26.11937007874016
+          },
+          "textSamples": [
+            "这里可以简单写一下自己的论点"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "15",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "82",
+          "shapeName": "文本占位符 79",
+          "geometry": {
+            "x": 640.0,
+            "y": 456.9140157480315,
+            "width": 499.8482939632546,
+            "height": 26.11937007874016
+          },
+          "textSamples": [
+            "这里可以简单写一下自己的论点"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "16",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "83",
+          "shapeName": "文本占位符 79",
+          "geometry": {
+            "x": 640.0,
+            "y": 492.51664041994746,
+            "width": 499.8482939632546,
+            "height": 26.11937007874016
+          },
+          "textSamples": [
+            "这里可以简单写一下自己的论点"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "17",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "96",
+          "shapeName": "文本占位符 95",
+          "geometry": {
+            "x": 165.70383202099737,
+            "y": 304.98624671916014,
+            "width": 245.0523884514436,
+            "height": 158.69238845144355
+          },
+          "textSamples": [
+            "0x"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "19",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "3",
+          "shapeName": "内容占位符 2",
+          "geometry": {
+            "x": 192.0,
+            "y": 256.3217847769029,
+            "width": 194.39999999999998,
+            "height": 47.333333333333336
+          },
+          "textSamples": [
+            "PART"
+          ]
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_08",
+      "name": "一段内容页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout8.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 13,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "40",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "一段内容页"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "49",
+          "shapeName": "文本占位符 48",
+          "geometry": {
+            "x": 87.06393700787402,
+            "y": 195.17805774278213,
+            "width": 1105.8721259842519,
+            "height": 56.08556430446194
+          },
+          "textSamples": []
+        },
+        {
+          "type": "body",
+          "idx": "15",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "51",
+          "shapeName": "文本占位符 50",
+          "geometry": {
+            "x": 87.06393700787402,
+            "y": 268.2024146981627,
+            "width": 1104.0,
+            "height": 312.8139632545932
+          },
+          "textSamples": []
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_09",
+      "name": "二段内容页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout9.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 12,
+      "placeholders": [
+        {
+          "type": null,
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "48",
+          "shapeName": "内容占位符 47",
+          "geometry": {
+            "x": 120.00041994750657,
+            "y": 312.86225721784774,
+            "width": 451.9988451443569,
+            "height": 289.99989501312336
+          },
+          "textSamples": []
+        },
+        {
+          "type": null,
+          "idx": "20",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "97",
+          "shapeName": "内容占位符 47",
+          "geometry": {
+            "x": 708.0008398950131,
+            "y": 312.86236220472443,
+            "width": 451.99874015748037,
+            "height": 290.0
+          },
+          "textSamples": []
+        },
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "103",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "二段内容页"
+          ]
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_10",
+      "name": "二段内容页2",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout10.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 14,
+      "placeholders": [
+        {
+          "type": null,
+          "idx": "21",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "28",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 313.61784776902886,
+            "y": 200.19076115485564,
+            "width": 689.0488188976378,
+            "height": 36.666666666666664
+          },
+          "textSamples": [
+            "输入小标题"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "22",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "62",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 313.61784776902886,
+            "y": 416.790656167979,
+            "width": 689.0488188976378,
+            "height": 36.666666666666664
+          },
+          "textSamples": [
+            "输入小标题"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "23",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "63",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 276.95359580052497,
+            "y": 256.0683464566929,
+            "width": 871.5464566929134,
+            "height": 80.5929658792651
+          },
+          "textSamples": [
+            "输入文字"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "24",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "64",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 276.95359580052497,
+            "y": 466.6178477690289,
+            "width": 871.5464566929134,
+            "height": 80.5929658792651
+          },
+          "textSamples": [
+            "输入文字"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "68",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "二段内容页"
+          ]
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_11",
+      "name": "三段内容页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout11.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 10,
+      "placeholders": [
+        {
+          "type": null,
+          "idx": "21",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "28",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 67.23443569553805,
+            "y": 226.2646719160105,
+            "width": 316.4482939632546,
+            "height": 37.0
+          },
+          "textSamples": [
+            "输入小标题"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "25",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "58",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 481.9042519685039,
+            "y": 196.2646719160105,
+            "width": 316.4482939632546,
+            "height": 37.0
+          },
+          "textSamples": [
+            "输入小标题"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "26",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "59",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 896.8286614173228,
+            "y": 226.2646719160105,
+            "width": 316.4482939632546,
+            "height": 37.0
+          },
+          "textSamples": [
+            "输入小标题"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "30",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "三段内容页"
+          ]
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_12",
+      "name": "四段内容页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout12.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 9,
+      "placeholders": [
+        {
+          "type": null,
+          "idx": "21",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "28",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 184.07748031496064,
+            "y": 439.205564304462,
+            "width": 316.4482939632546,
+            "height": 37.0
+          },
+          "textSamples": [
+            "输入小标题"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "25",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "58",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 184.07748031496064,
+            "y": 185.59202099737533,
+            "width": 316.4482939632546,
+            "height": 37.0
+          },
+          "textSamples": [
+            "输入小标题"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "26",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "59",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 779.4742257217847,
+            "y": 185.59202099737533,
+            "width": 316.4482939632546,
+            "height": 37.0
+          },
+          "textSamples": [
+            "输入小标题"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "27",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "65",
+          "shapeName": "内容占位符 27",
+          "geometry": {
+            "x": 778.4079790026246,
+            "y": 439.205564304462,
+            "width": 316.4482939632546,
+            "height": 37.0
+          },
+          "textSamples": [
+            "输入小标题"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "28",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "34",
+          "shapeName": "内容占位符 33",
+          "geometry": {
+            "x": 67.29469816272966,
+            "y": 228.52367454068244,
+            "width": 433.2054593175853,
+            "height": 101.0
+          },
+          "textSamples": [
+            "输入文字"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "29",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "73",
+          "shapeName": "内容占位符 33",
+          "geometry": {
+            "x": 67.29469816272966,
+            "y": 481.3502362204725,
+            "width": 433.2054593175853,
+            "height": 100.99968503937009
+          },
+          "textSamples": [
+            "输入文字"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "30",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "74",
+          "shapeName": "内容占位符 33",
+          "geometry": {
+            "x": 778.4079790026246,
+            "y": 481.3502362204725,
+            "width": 433.2054593175853,
+            "height": 100.99968503937009
+          },
+          "textSamples": [
+            "输入文字"
+          ]
+        },
+        {
+          "type": null,
+          "idx": "31",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "object",
+          "shapeId": "77",
+          "shapeName": "内容占位符 33",
+          "geometry": {
+            "x": 779.4742257217847,
+            "y": 228.52367454068244,
+            "width": 433.2054593175853,
+            "height": 101.0
+          },
+          "textSamples": [
+            "输入文字"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "78",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "四段内容页"
+          ]
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_13",
+      "name": "一段图文页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout13.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 9,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "一段图文页"
+          ]
+        },
+        {
+          "type": "pic",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "4",
+          "shapeName": "图片占位符 3",
+          "geometry": {
+            "x": 66.50015748031495,
+            "y": 148.83338582677166,
+            "width": 1148.0,
+            "height": 211.16661417322837
+          },
+          "textSamples": []
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_14",
+      "name": "一段图文页2",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout14.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 11,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "一段图文页"
+          ]
+        },
+        {
+          "type": "pic",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "37",
+          "shapeName": "图片占位符 36",
+          "geometry": {
+            "x": 66.62834645669291,
+            "y": 179.51674540682416,
+            "width": 438.89574803149605,
+            "height": 407.1666141732283
+          },
+          "textSamples": []
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_15",
+      "name": "二段图文页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout15.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 9,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "二段图文页"
+          ]
+        },
+        {
+          "type": "pic",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "4",
+          "shapeName": "图片占位符 3",
+          "geometry": {
+            "x": 67.33333333333333,
+            "y": 162.1397375328084,
+            "width": 572.6666666666666,
+            "height": 211.66666666666669
+          },
+          "textSamples": []
+        },
+        {
+          "type": "pic",
+          "idx": "15",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "30",
+          "shapeName": "图片占位符 3",
+          "geometry": {
+            "x": 641.8333858267716,
+            "y": 373.8064041994751,
+            "width": 572.6666666666666,
+            "height": 211.66666666666669
+          },
+          "textSamples": []
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_16",
+      "name": "三段图文页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout16.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 9,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "三段图文页"
+          ]
+        },
+        {
+          "type": "pic",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "4",
+          "shapeName": "图片占位符 3",
+          "geometry": {
+            "x": 67.29469816272966,
+            "y": 154.5862467191601,
+            "width": 344.1338582677165,
+            "height": 199.16073490813648
+          },
+          "textSamples": []
+        },
+        {
+          "type": "pic",
+          "idx": "15",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "31",
+          "shapeName": "图片占位符 3",
+          "geometry": {
+            "x": 460.10897637795273,
+            "y": 148.33333333333331,
+            "width": 365.7430971128609,
+            "height": 211.66666666666669
+          },
+          "textSamples": []
+        },
+        {
+          "type": "pic",
+          "idx": "16",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "32",
+          "shapeName": "图片占位符 3",
+          "geometry": {
+            "x": 874.5323884514437,
+            "y": 154.6898687664042,
+            "width": 338.17291338582675,
+            "height": 198.95349081364827
+          },
+          "textSamples": []
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_17",
+      "name": "四段图文页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout17.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 9,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "四段图文页"
+          ]
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_18",
+      "name": "背景模块",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout18.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 9,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "xxx"
+          ]
+        }
+      ],
+      "usedBySlides": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "svgFile": null
+    },
+    {
+      "key": "layout_19",
+      "name": "多项并列关系页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout19.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 10,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "多项并列关系页"
+          ]
+        },
+        {
+          "type": "pic",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "30",
+          "shapeName": "图片占位符 3",
+          "geometry": {
+            "x": 66.50015748031495,
+            "y": 148.83338582677166,
+            "width": 1148.0,
+            "height": 178.46687664041994
+          },
+          "textSamples": []
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_20",
+      "name": "个人介绍页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout20.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 11,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "单人物介绍页"
+          ]
+        },
+        {
+          "type": "pic",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "41",
+          "shapeName": "图片占位符 40",
+          "geometry": {
+            "x": 136.93385826771652,
+            "y": 177.9992650918635,
+            "width": 355.3340682414698,
+            "height": 355.3340682414698
+          },
+          "textSamples": []
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_21",
+      "name": "三人介绍页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout21.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 13,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "三人团队介绍页"
+          ]
+        },
+        {
+          "type": "pic",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "41",
+          "shapeName": "图片占位符 40",
+          "geometry": {
+            "x": 168.7279790026247,
+            "y": 176.84020997375328,
+            "width": 158.07307086614173,
+            "height": 158.07307086614173
+          },
+          "textSamples": []
+        },
+        {
+          "type": "pic",
+          "idx": "15",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "58",
+          "shapeName": "图片占位符 40",
+          "geometry": {
+            "x": 564.8596325459318,
+            "y": 176.84020997375328,
+            "width": 158.07307086614173,
+            "height": 158.07307086614173
+          },
+          "textSamples": []
+        },
+        {
+          "type": "pic",
+          "idx": "16",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "65",
+          "shapeName": "图片占位符 40",
+          "geometry": {
+            "x": 960.9912860892388,
+            "y": 176.84020997375328,
+            "width": 158.07307086614173,
+            "height": 158.07307086614173
+          },
+          "textSamples": []
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_22",
+      "name": "四人介绍页",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout22.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 14,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "27",
+          "shapeName": "文本占位符 39",
+          "geometry": {
+            "x": 66.4317060367454,
+            "y": 43.773648293963255,
+            "width": 949.5677690288715,
+            "height": 46.41007874015748
+          },
+          "textSamples": [
+            "四人团队介绍页"
+          ]
+        },
+        {
+          "type": "pic",
+          "idx": "14",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "41",
+          "shapeName": "图片占位符 40",
+          "geometry": {
+            "x": 163.53805774278214,
+            "y": 171.65028871391075,
+            "width": 114.72577427821523,
+            "height": 114.72577427821523
+          },
+          "textSamples": []
+        },
+        {
+          "type": "pic",
+          "idx": "15",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "68",
+          "shapeName": "图片占位符 40",
+          "geometry": {
+            "x": 163.53805774278214,
+            "y": 412.2299212598425,
+            "width": 114.72577427821523,
+            "height": 114.72577427821523
+          },
+          "textSamples": []
+        },
+        {
+          "type": "pic",
+          "idx": "16",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "82",
+          "shapeName": "图片占位符 40",
+          "geometry": {
+            "x": 688.2072440944881,
+            "y": 171.65028871391075,
+            "width": 114.72577427821523,
+            "height": 114.72577427821523
+          },
+          "textSamples": []
+        },
+        {
+          "type": "pic",
+          "idx": "17",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "picture",
+          "shapeId": "89",
+          "shapeName": "图片占位符 40",
+          "geometry": {
+            "x": 688.2072440944881,
+            "y": 412.2299212598425,
+            "width": 114.72577427821523,
+            "height": 114.72577427821523
+          },
+          "textSamples": []
+        }
+      ],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_23",
+      "name": "一句话页面",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout23.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 20,
+      "placeholders": [],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_24",
+      "name": "结束页2",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout24.xml",
+      "masterKey": "master_01",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 31,
+      "placeholders": [],
+      "usedBySlides": [
+        14
+      ],
+      "svgFile": null
+    },
+    {
+      "key": "layout_25",
+      "name": "1_自定义版式",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout25.xml",
+      "masterKey": "master_02",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 0,
+      "placeholders": [],
+      "usedBySlides": [],
+      "svgFile": null
+    },
+    {
+      "key": "layout_26",
+      "name": "1_自定义版式",
+      "type": null,
+      "packagePart": "ppt/slideLayouts/slideLayout26.xml",
+      "masterKey": "master_03",
+      "showMasterShapes": true,
+      "backgroundAsset": null,
+      "imageAssets": [],
+      "shapeImageAssets": [],
+      "drawableShapeCount": 0,
+      "placeholders": [],
+      "usedBySlides": [],
+      "svgFile": null
+    }
+  ],
+  "slides": [
+    {
+      "index": 1,
+      "packagePart": "ppt/slides/slide1.xml",
+      "pageType": null,
+      "layoutKey": "layout_01",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "10",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "2",
+          "shapeName": "文本占位符 1",
+          "geometry": null,
+          "textSamples": [
+            "基于视觉感知与多约束决策",
+            "的"
+          ],
+          "textStyle": {
+            "bold": true
+          }
+        },
+        {
+          "type": "body",
+          "idx": "11",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "3",
+          "shapeName": "文本占位符 2",
+          "geometry": null,
+          "textSamples": [
+            "面向",
+            "多相流"
+          ]
+        },
+        {
+          "type": "body",
+          "idx": "12",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "4",
+          "shapeName": "文本占位符 3",
+          "geometry": null,
+          "textSamples": [
+            "▶",
+            "指导老师：罗劭娟丨汇报学生：温盈轩 张定康"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_01.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 2,
+      "packagePart": "ppt/slides/slide2.xml",
+      "pageType": null,
+      "layoutKey": "layout_06",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [],
+      "layeredSvgFile": "slide_02.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 3,
+      "packagePart": "ppt/slides/slide3.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "研究背景"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_03.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 4,
+      "packagePart": "ppt/slides/slide4.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "已有研究基础与视觉感知能力"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_04.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 5,
+      "packagePart": "ppt/slides/slide5.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "已有实验数据与模型基础"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_05.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 6,
+      "packagePart": "ppt/slides/slide6.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "Agent",
+            "总体目标"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_06.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 7,
+      "packagePart": "ppt/slides/slide7.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "Agent",
+            "总体目标"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_07.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 8,
+      "packagePart": "ppt/slides/slide8.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "Agent",
+            "预测功能"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_08.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 9,
+      "packagePart": "ppt/slides/slide9.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "氧传递效率条件约束"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_09.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 10,
+      "packagePart": "ppt/slides/slide10.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "需氧量条件约束"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_10.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 11,
+      "packagePart": "ppt/slides/slide11.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "当前遇到问题"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_11.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 12,
+      "packagePart": "ppt/slides/slide12.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "当前遇到问题"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_12.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 13,
+      "packagePart": "ppt/slides/slide13.xml",
+      "pageType": null,
+      "layoutKey": "layout_18",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [
+        {
+          "type": "body",
+          "idx": "13",
+          "size": "quarter",
+          "orient": null,
+          "semanticRole": "body",
+          "shapeId": "12",
+          "shapeName": "文本占位符 11",
+          "geometry": null,
+          "textSamples": [
+            "工作规划"
+          ]
+        }
+      ],
+      "layeredSvgFile": "slide_13.svg",
+      "flatSvgFile": null
+    },
+    {
+      "index": 14,
+      "packagePart": "ppt/slides/slide14.xml",
+      "pageType": null,
+      "layoutKey": "layout_24",
+      "masterKey": "master_01",
+      "showInheritedShapes": true,
+      "placeholders": [],
+      "layeredSvgFile": "slide_14.svg",
+      "flatSvgFile": null
+    }
+  ]
+}

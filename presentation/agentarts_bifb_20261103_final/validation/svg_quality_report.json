@@ -1,0 +1,632 @@
+{
+  "schema": "ppt-master.svg-quality-report.v1",
+  "stage": "final",
+  "target": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final",
+  "source_fingerprint": {
+    "algorithm": "sha256",
+    "digest": "7f5b659fd74d8b21c7ff37844d529b7f0a6b27ad2b373e424faf2d5435ea0f70",
+    "file_count": 21,
+    "files": [
+      {
+        "file": "authoring-svg-flat/p09_skills.svg",
+        "sha256": "5601691670aa9f4556ba4a837b59295524275d0cfaa1fc8015c8b5cd73837aea"
+      },
+      {
+        "file": "authoring-svg-flat/p10_vision.svg",
+        "sha256": "50273e198f93df7d488cf1718af4b787bc3e8b1bf0921b9d5f52a094cbce790c"
+      },
+      {
+        "file": "authoring-svg-flat/p15_agentarts.svg",
+        "sha256": "313b0a6181b646b2a1fb8db1896efb4dce4b8bc8610ce6083546ec547b9d973b"
+      },
+      {
+        "file": "authoring-svg-flat/p16_workflow.svg",
+        "sha256": "72ad3d5ee0ab6f41fe1bee2a6347977d26e559daa9c12e41a2a94df963a0cf33"
+      },
+      {
+        "file": "authoring-svg-flat/p17_demo.svg",
+        "sha256": "956d52c7ecf9cee8f63b2d718a43714c839c78c8ab5eb9297c61f3683d0ed88f"
+      },
+      {
+        "file": "authoring-svg-flat/p18_evaluation.svg",
+        "sha256": "944ec201a138ac0003da1421fa134c89f83fade269fb9d77ef2804e5ae797b5c"
+      },
+      {
+        "file": "authoring-svg-flat/slide_01.svg",
+        "sha256": "d61145373ec5ff8f9522f5ab3a03aa44b630eab60d9ddeaa597bc171c79ca3db"
+      },
+      {
+        "file": "authoring-svg-flat/slide_02.svg",
+        "sha256": "4637ae9f199bc853749f885288db6111535823dd2c7ad908f07e6e6db885e2f4"
+      },
+      {
+        "file": "authoring-svg-flat/slide_03.svg",
+        "sha256": "be2f0bd57bb6ac3213a372b4bf8f6e4e6c3f7f0ad91643252e978ce8a21533c5"
+      },
+      {
+        "file": "authoring-svg-flat/slide_04.svg",
+        "sha256": "7dc1444dd01fe8f8c821839e50f0903b2deca45e7e0617ae5a58f67144bdddf1"
+      },
+      {
+        "file": "authoring-svg-flat/slide_05.svg",
+        "sha256": "2d5cae8862ccd16bbe71675f41ade86c8cb2d2e3811e34d4c64021291f15248c"
+      },
+      {
+        "file": "authoring-svg-flat/slide_06.svg",
+        "sha256": "4358d7baebcd52d8e1abb6e737a51f2946c4b5e4f65ebfda015647fb1b8c1470"
+      },
+      {
+        "file": "authoring-svg-flat/slide_07.svg",
+        "sha256": "6202e08be71f8bd40a3f086035cdef903156620bbbfb08ea55f9b7a981104465"
+      },
+      {
+        "file": "authoring-svg-flat/slide_08.svg",
+        "sha256": "c1baeca8a777abfc4700bdb826bd1cb01a4410b268af702f2f4e81aca6f1c154"
+      },
+      {
+        "file": "authoring-svg-flat/slide_09.svg",
+        "sha256": "42fcfe4a8a6dfd47c6db1e67c49fec9134611cd37ebb1c19eeb904ac336c4b71"
+      },
+      {
+        "file": "authoring-svg-flat/slide_10.svg",
+        "sha256": "98df17d6c7593a0c92d4843f3d4a1d4b3b145c4420c40ef6b556f3e22a243490"
+      },
+      {
+        "file": "authoring-svg-flat/slide_11.svg",
+        "sha256": "8f5abfb9b468472ad020a8c50e96998e1187d4bc1192f357b7ab4caf3f057092"
+      },
+      {
+        "file": "authoring-svg-flat/slide_12.svg",
+        "sha256": "22c02c087d5eb921f1f3c82e4f0ae694719d86d5cb72cdc8408b3f0611050f7a"
+      },
+      {
+        "file": "authoring-svg-flat/slide_13.svg",
+        "sha256": "f2e81b20f80c567f2f0403033be5e2365c73cdda01e5032d5ab82e513ce76de6"
+      },
+      {
+        "file": "authoring-svg-flat/slide_14.svg",
+        "sha256": "b6725ac98fbf1eeb2da7dfdd1f92d4a438975ed195775628ea59ba4146143d61"
+      },
+      {
+        "file": "page_plan.json",
+        "sha256": "42ed3cc9484a0fbc035d28f33314f4db62ede8edf76e2d39bd7210229b0ad99d"
+      }
+    ]
+  },
+  "summary": {
+    "total": 20,
+    "passed": 20,
+    "warnings": 0,
+    "errors": 0
+  },
+  "issue_types": {},
+  "categories": {
+    "blocking": {
+      "count": 0,
+      "issues": []
+    },
+    "introduced": {
+      "count": 0,
+      "issues": []
+    },
+    "inherited": {
+      "count": 0,
+      "issues": []
+    },
+    "source-import": {
+      "count": 0,
+      "summary": {
+        "warning_count": 0,
+        "by_code": {}
+      }
+    }
+  },
+  "drift": {
+    "colors": {},
+    "fonts": {},
+    "sizes": {}
+  },
+  "carrier_receipt": {
+    "scope": "informational-not-a-quota",
+    "pages": 0,
+    "totals": {
+      "text_elements": 0,
+      "image_placements": 0,
+      "icons": 0,
+      "svg_geometry_elements": 0,
+      "preset_shapes": 0,
+      "page_frame_elements": 0,
+      "marker_uses": 0,
+      "inline_emphasis_runs": 0,
+      "gradient_uses": 0,
+      "filter_uses": 0,
+      "text_effects": 0
+    },
+    "pages_with": {
+      "images": 0,
+      "icons": 0,
+      "presets": 0,
+      "charts": 0,
+      "tables": 0,
+      "formulas": 0,
+      "inline_emphasis_runs": 0,
+      "gradient_uses": 0,
+      "filter_uses": 0,
+      "text_effects": 0
+    },
+    "relationship_pages": null,
+    "geometry_elements": {},
+    "preset_names": {},
+    "native_objects": {},
+    "image_page_max_frame_share_range": []
+  },
+  "project_issues": {
+    "template": [],
+    "animation": [],
+    "illustration": [],
+    "communication_trace": [],
+    "pptx_structure": []
+  },
+  "files": [
+    {
+      "file": "slide_01.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_01.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 1,
+        "source_slide": 1,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 5,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 3,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "d61145373ec5ff8f9522f5ab3a03aa44b630eab60d9ddeaa597bc171c79ca3db"
+    },
+    {
+      "file": "slide_03.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_03.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 2,
+        "source_slide": 3,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 19,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "be2f0bd57bb6ac3213a372b4bf8f6e4e6c3f7f0ad91643252e978ce8a21533c5"
+    },
+    {
+      "file": "slide_02.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_02.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 3,
+        "source_slide": 2,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 17,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 7,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "4637ae9f199bc853749f885288db6111535823dd2c7ad908f07e6e6db885e2f4"
+    },
+    {
+      "file": "slide_05.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_05.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 4,
+        "source_slide": 5,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 26,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "2d5cae8862ccd16bbe71675f41ade86c8cb2d2e3811e34d4c64021291f15248c"
+    },
+    {
+      "file": "slide_04.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_04.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 5,
+        "source_slide": 4,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 29,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "7dc1444dd01fe8f8c821839e50f0903b2deca45e7e0617ae5a58f67144bdddf1"
+    },
+    {
+      "file": "slide_06.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_06.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 6,
+        "source_slide": 6,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 23,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "4358d7baebcd52d8e1abb6e737a51f2946c4b5e4f65ebfda015647fb1b8c1470"
+    },
+    {
+      "file": "slide_07.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_07.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 7,
+        "source_slide": 7,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 16,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "6202e08be71f8bd40a3f086035cdef903156620bbbfb08ea55f9b7a981104465"
+    },
+    {
+      "file": "slide_08.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_08.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 8,
+        "source_slide": 8,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 32,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "c1baeca8a777abfc4700bdb826bd1cb01a4410b268af702f2f4e81aca6f1c154"
+    },
+    {
+      "file": "p09_skills.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\p09_skills.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 9,
+        "source_slide": 5,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 32,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "5601691670aa9f4556ba4a837b59295524275d0cfaa1fc8015c8b5cd73837aea"
+    },
+    {
+      "file": "p10_vision.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\p10_vision.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 10,
+        "source_slide": 4,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 27,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "50273e198f93df7d488cf1718af4b787bc3e8b1bf0921b9d5f52a094cbce790c"
+    },
+    {
+      "file": "slide_11.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_11.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 11,
+        "source_slide": 11,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 24,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "8f5abfb9b468472ad020a8c50e96998e1187d4bc1192f357b7ab4caf3f057092"
+    },
+    {
+      "file": "slide_12.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_12.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 12,
+        "source_slide": 12,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 21,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "22c02c087d5eb921f1f3c82e4f0ae694719d86d5cb72cdc8408b3f0611050f7a"
+    },
+    {
+      "file": "slide_09.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_09.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 13,
+        "source_slide": 9,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 22,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "42fcfe4a8a6dfd47c6db1e67c49fec9134611cd37ebb1c19eeb904ac336c4b71"
+    },
+    {
+      "file": "slide_10.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_10.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 14,
+        "source_slide": 10,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 20,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "98df17d6c7593a0c92d4843f3d4a1d4b3b145c4420c40ef6b556f3e22a243490"
+    },
+    {
+      "file": "p15_agentarts.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\p15_agentarts.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 15,
+        "source_slide": 6,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 28,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "313b0a6181b646b2a1fb8db1896efb4dce4b8bc8610ce6083546ec547b9d973b"
+    },
+    {
+      "file": "p16_workflow.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\p16_workflow.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 16,
+        "source_slide": 8,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 29,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "72ad3d5ee0ab6f41fe1bee2a6347977d26e559daa9c12e41a2a94df963a0cf33"
+    },
+    {
+      "file": "p17_demo.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\p17_demo.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 17,
+        "source_slide": 6,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 17,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "956d52c7ecf9cee8f63b2d718a43714c839c78c8ab5eb9297c61f3683d0ed88f"
+    },
+    {
+      "file": "p18_evaluation.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\p18_evaluation.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 18,
+        "source_slide": 5,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 30,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "944ec201a138ac0003da1421fa134c89f83fade269fb9d77ef2804e5ae797b5c"
+    },
+    {
+      "file": "slide_13.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_13.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 19,
+        "source_slide": 13,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 19,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "f2e81b20f80c567f2f0403033be5e2365c73cdda01e5032d5ab82e513ce76de6"
+    },
+    {
+      "file": "slide_14.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103_final\\authoring-svg-flat\\slide_14.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "output_page": 20,
+        "source_slide": 14,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 3,
+        "fonts": [
+          "DengXian"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0603228547153782,
+          "measured_unchanged": 4,
+          "positive_unchanged": 4
+        }
+      },
+      "passed": true,
+      "source_sha256": "b6725ac98fbf1eeb2da7dfdd1f92d4a438975ed195775628ea59ba4146143d61"
+    }
+  ]
+}

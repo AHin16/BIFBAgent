@@ -1,0 +1,155 @@
+{
+  "status": "passed",
+  "slides": 20,
+  "speaker_notes_pages": 20,
+  "image_placeholder_count": 22,
+  "editable_text_shapes": 444,
+  "native_master_layout_theme_xml_parts_unchanged": 34,
+  "changed_master_layout_theme_parts": [],
+  "missing_master_layout_theme_parts": [],
+  "old_ole_equations_on_active_slides": 0,
+  "source_template_sha256": "6af4a4630faea809b2a267ebfa7ce23d4b3fd6542d80dd14a6ac2a0c9b7e88fe",
+  "output_sha256": "ce4a46e43facb3185df1e5947b0e82a5f46ef8ef51164d3b870ae1e221bb3a62",
+  "per_page": [
+    {
+      "page": 1,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 5,
+      "slide_local_shapes": 7,
+      "speaker_notes_characters": 77
+    },
+    {
+      "page": 2,
+      "placeholder_count": 1,
+      "slide_local_editable_text_shapes": 19,
+      "slide_local_shapes": 45,
+      "speaker_notes_characters": 105
+    },
+    {
+      "page": 3,
+      "placeholder_count": 2,
+      "slide_local_editable_text_shapes": 22,
+      "slide_local_shapes": 64,
+      "speaker_notes_characters": 95
+    },
+    {
+      "page": 4,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 26,
+      "slide_local_shapes": 46,
+      "speaker_notes_characters": 99
+    },
+    {
+      "page": 5,
+      "placeholder_count": 3,
+      "slide_local_editable_text_shapes": 29,
+      "slide_local_shapes": 78,
+      "speaker_notes_characters": 143
+    },
+    {
+      "page": 6,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 23,
+      "slide_local_shapes": 62,
+      "speaker_notes_characters": 102
+    },
+    {
+      "page": 7,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 16,
+      "slide_local_shapes": 44,
+      "speaker_notes_characters": 112
+    },
+    {
+      "page": 8,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 32,
+      "slide_local_shapes": 58,
+      "speaker_notes_characters": 117
+    },
+    {
+      "page": 9,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 32,
+      "slide_local_shapes": 47,
+      "speaker_notes_characters": 144
+    },
+    {
+      "page": 10,
+      "placeholder_count": 5,
+      "slide_local_editable_text_shapes": 27,
+      "slide_local_shapes": 93,
+      "speaker_notes_characters": 113
+    },
+    {
+      "page": 11,
+      "placeholder_count": 2,
+      "slide_local_editable_text_shapes": 24,
+      "slide_local_shapes": 65,
+      "speaker_notes_characters": 107
+    },
+    {
+      "page": 12,
+      "placeholder_count": 2,
+      "slide_local_editable_text_shapes": 21,
+      "slide_local_shapes": 62,
+      "speaker_notes_characters": 110
+    },
+    {
+      "page": 13,
+      "placeholder_count": 1,
+      "slide_local_editable_text_shapes": 22,
+      "slide_local_shapes": 55,
+      "speaker_notes_characters": 117
+    },
+    {
+      "page": 14,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 20,
+      "slide_local_shapes": 37,
+      "speaker_notes_characters": 85
+    },
+    {
+      "page": 15,
+      "placeholder_count": 4,
+      "slide_local_editable_text_shapes": 28,
+      "slide_local_shapes": 78,
+      "speaker_notes_characters": 129
+    },
+    {
+      "page": 16,
+      "placeholder_count": 1,
+      "slide_local_editable_text_shapes": 29,
+      "slide_local_shapes": 68,
+      "speaker_notes_characters": 115
+    },
+    {
+      "page": 17,
+      "placeholder_count": 1,
+      "slide_local_editable_text_shapes": 17,
+      "slide_local_shapes": 32,
+      "speaker_notes_characters": 117
+    },
+    {
+      "page": 18,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 30,
+      "slide_local_shapes": 45,
+      "speaker_notes_characters": 119
+    },
+    {
+      "page": 19,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 19,
+      "slide_local_shapes": 36,
+      "speaker_notes_characters": 117
+    },
+    {
+      "page": 20,
+      "placeholder_count": 0,
+      "slide_local_editable_text_shapes": 3,
+      "slide_local_shapes": 5,
+      "speaker_notes_characters": 93
+    }
+  ]
+}

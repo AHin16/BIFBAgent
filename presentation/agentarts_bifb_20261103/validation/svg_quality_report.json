@@ -1,0 +1,753 @@
+{
+  "schema": "ppt-master.svg-quality-report.v1",
+  "stage": "final",
+  "target": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103",
+  "source_fingerprint": {
+    "algorithm": "sha256",
+    "digest": "c3069455789bf3126edbcdbcc192bcb4c426dfbaf04b076b980675981aac54c3",
+    "file_count": 21,
+    "files": [
+      {
+        "file": "authoring-svg-flat/p09_skills.svg",
+        "sha256": "38481513f42be875168217ab1853341848ce9e94596d7fe3d31f506626caaccd"
+      },
+      {
+        "file": "authoring-svg-flat/p10_vision.svg",
+        "sha256": "3957f1b3dacb00d2441c0472d6481f1789bf3e5334f60846190b5ab44c7779f4"
+      },
+      {
+        "file": "authoring-svg-flat/p15_agentarts.svg",
+        "sha256": "c9329f096ed7e6a51efa96df89fbe5d75e34728ca2ccf32f9328a9721947e7b2"
+      },
+      {
+        "file": "authoring-svg-flat/p16_workflow.svg",
+        "sha256": "47eb8abba086e65e3103ff0be7116c45ed861fce72d4a43f012b43fe8d655fef"
+      },
+      {
+        "file": "authoring-svg-flat/p17_demo.svg",
+        "sha256": "2e7cd451dc237735d8fc21a6988bc5c5c28d8f773ac04e5c9607b7b1891f2bb4"
+      },
+      {
+        "file": "authoring-svg-flat/p18_evaluation.svg",
+        "sha256": "43181df6b3db742d0b0fa812f352ab07468229899389c5e32004ee9accf56b67"
+      },
+      {
+        "file": "authoring-svg-flat/slide_01.svg",
+        "sha256": "b169e6f3bdeff0b42be97da944eeb560985ee6ef346b16dbd91c90d09d6ac6a2"
+      },
+      {
+        "file": "authoring-svg-flat/slide_02.svg",
+        "sha256": "6f9407891ba41fa2db4e71a9d9183465996b43e9b2e02362ea87d9368d5c9571"
+      },
+      {
+        "file": "authoring-svg-flat/slide_03.svg",
+        "sha256": "897f2f5a67734a813a39672c3c78c813dd4efa39ad2988ddc0430df3afca9c25"
+      },
+      {
+        "file": "authoring-svg-flat/slide_04.svg",
+        "sha256": "7baa5098c5686819f56e32942cb2772a0ebb84b7f283f1b72cd6092ad0aa3089"
+      },
+      {
+        "file": "authoring-svg-flat/slide_05.svg",
+        "sha256": "5e0934ee3b504c25950cfdce7eea27bce935a34c4cd5ddd57687d1070fce11b0"
+      },
+      {
+        "file": "authoring-svg-flat/slide_06.svg",
+        "sha256": "73d32999dd2612b5e70f61c1beab7dd34c93150ac09e7705467df13eeb58071b"
+      },
+      {
+        "file": "authoring-svg-flat/slide_07.svg",
+        "sha256": "37669239c9c370ebb37e75f309902119a9814d9d82c061690a13c801528d38aa"
+      },
+      {
+        "file": "authoring-svg-flat/slide_08.svg",
+        "sha256": "0bf45c232f19393a8766386ba27c4aa24d2bb1309fdea95337e6295de57d6241"
+      },
+      {
+        "file": "authoring-svg-flat/slide_09.svg",
+        "sha256": "4cd12492f91953f152f8b57b2ff6329794066632f50fa5f18abe083ed3ebe73c"
+      },
+      {
+        "file": "authoring-svg-flat/slide_10.svg",
+        "sha256": "022192cd6c4d9aeb30e45ed34d9b1ec2be7d93d65560a2d667e855633704b1dc"
+      },
+      {
+        "file": "authoring-svg-flat/slide_11.svg",
+        "sha256": "114e1e46cc2341bf8b16dd9bfa849a87b89f72cd20c7632186e64076edd0d67b"
+      },
+      {
+        "file": "authoring-svg-flat/slide_12.svg",
+        "sha256": "8bd3231962f5da6171985b0795bb4123f6da6666853ed9949e3f6d25aba5a6c1"
+      },
+      {
+        "file": "authoring-svg-flat/slide_13.svg",
+        "sha256": "3eb7049e81e7c4a72d3164d02598235a45b0a93de6da28983be882da4fa0db9b"
+      },
+      {
+        "file": "authoring-svg-flat/slide_14.svg",
+        "sha256": "88f0ff15da9203125ff50e454c70d057d59c06059d85a72cb91e0c7175b0f8f1"
+      },
+      {
+        "file": "page_plan.json",
+        "sha256": "42ed3cc9484a0fbc035d28f33314f4db62ede8edf76e2d39bd7210229b0ad99d"
+      }
+    ]
+  },
+  "summary": {
+    "total": 20,
+    "passed": 0,
+    "warnings": 20,
+    "errors": 0
+  },
+  "issue_types": {},
+  "categories": {
+    "blocking": {
+      "count": 0,
+      "issues": []
+    },
+    "introduced": {
+      "count": 20,
+      "issues": [
+        {
+          "file": "slide_01.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_03.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_02.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_05.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_04.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_06.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_07.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_08.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "p09_skills.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "p10_vision.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_11.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_12.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_09.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_10.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "p15_agentarts.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "p16_workflow.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "p17_demo.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "p18_evaluation.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_13.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        },
+        {
+          "file": "slide_14.svg",
+          "message": "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+        }
+      ]
+    },
+    "inherited": {
+      "count": 0,
+      "issues": []
+    },
+    "source-import": {
+      "count": 0,
+      "summary": {
+        "warning_count": 0,
+        "by_code": {}
+      }
+    }
+  },
+  "drift": {
+    "colors": {},
+    "fonts": {},
+    "sizes": {}
+  },
+  "carrier_receipt": {
+    "scope": "informational-not-a-quota",
+    "pages": 0,
+    "totals": {
+      "text_elements": 0,
+      "image_placements": 0,
+      "icons": 0,
+      "svg_geometry_elements": 0,
+      "preset_shapes": 0,
+      "page_frame_elements": 0,
+      "marker_uses": 0,
+      "inline_emphasis_runs": 0,
+      "gradient_uses": 0,
+      "filter_uses": 0,
+      "text_effects": 0
+    },
+    "pages_with": {
+      "images": 0,
+      "icons": 0,
+      "presets": 0,
+      "charts": 0,
+      "tables": 0,
+      "formulas": 0,
+      "inline_emphasis_runs": 0,
+      "gradient_uses": 0,
+      "filter_uses": 0,
+      "text_effects": 0
+    },
+    "relationship_pages": null,
+    "geometry_elements": {},
+    "preset_names": {},
+    "native_objects": {},
+    "image_page_max_frame_share_range": []
+  },
+  "project_issues": {
+    "template": [],
+    "animation": [],
+    "illustration": [],
+    "communication_trace": [],
+    "pptx_structure": []
+  },
+  "files": [
+    {
+      "file": "slide_01.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_01.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 1,
+        "source_slide": 1,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 5,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 3,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "b169e6f3bdeff0b42be97da944eeb560985ee6ef346b16dbd91c90d09d6ac6a2"
+    },
+    {
+      "file": "slide_03.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_03.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 2,
+        "source_slide": 3,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 19,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "897f2f5a67734a813a39672c3c78c813dd4efa39ad2988ddc0430df3afca9c25"
+    },
+    {
+      "file": "slide_02.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_02.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 3,
+        "source_slide": 2,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 17,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 7,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "6f9407891ba41fa2db4e71a9d9183465996b43e9b2e02362ea87d9368d5c9571"
+    },
+    {
+      "file": "slide_05.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_05.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 4,
+        "source_slide": 5,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 26,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "5e0934ee3b504c25950cfdce7eea27bce935a34c4cd5ddd57687d1070fce11b0"
+    },
+    {
+      "file": "slide_04.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_04.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 5,
+        "source_slide": 4,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 29,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "7baa5098c5686819f56e32942cb2772a0ebb84b7f283f1b72cd6092ad0aa3089"
+    },
+    {
+      "file": "slide_06.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_06.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 6,
+        "source_slide": 6,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 23,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "73d32999dd2612b5e70f61c1beab7dd34c93150ac09e7705467df13eeb58071b"
+    },
+    {
+      "file": "slide_07.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_07.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 7,
+        "source_slide": 7,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 16,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "37669239c9c370ebb37e75f309902119a9814d9d82c061690a13c801528d38aa"
+    },
+    {
+      "file": "slide_08.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_08.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 8,
+        "source_slide": 8,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 32,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "0bf45c232f19393a8766386ba27c4aa24d2bb1309fdea95337e6295de57d6241"
+    },
+    {
+      "file": "p09_skills.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\p09_skills.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 9,
+        "source_slide": 5,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 32,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "38481513f42be875168217ab1853341848ce9e94596d7fe3d31f506626caaccd"
+    },
+    {
+      "file": "p10_vision.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\p10_vision.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 10,
+        "source_slide": 4,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 27,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "3957f1b3dacb00d2441c0472d6481f1789bf3e5334f60846190b5ab44c7779f4"
+    },
+    {
+      "file": "slide_11.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_11.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 11,
+        "source_slide": 11,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 24,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "114e1e46cc2341bf8b16dd9bfa849a87b89f72cd20c7632186e64076edd0d67b"
+    },
+    {
+      "file": "slide_12.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_12.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 12,
+        "source_slide": 12,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 21,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "8bd3231962f5da6171985b0795bb4123f6da6666853ed9949e3f6d25aba5a6c1"
+    },
+    {
+      "file": "slide_09.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_09.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 13,
+        "source_slide": 9,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 20,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "4cd12492f91953f152f8b57b2ff6329794066632f50fa5f18abe083ed3ebe73c"
+    },
+    {
+      "file": "slide_10.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_10.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 14,
+        "source_slide": 10,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 20,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "022192cd6c4d9aeb30e45ed34d9b1ec2be7d93d65560a2d667e855633704b1dc"
+    },
+    {
+      "file": "p15_agentarts.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\p15_agentarts.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 15,
+        "source_slide": 6,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 28,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "c9329f096ed7e6a51efa96df89fbe5d75e34728ca2ccf32f9328a9721947e7b2"
+    },
+    {
+      "file": "p16_workflow.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\p16_workflow.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 16,
+        "source_slide": 8,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 29,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "47eb8abba086e65e3103ff0be7116c45ed861fce72d4a43f012b43fe8d655fef"
+    },
+    {
+      "file": "p17_demo.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\p17_demo.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 17,
+        "source_slide": 6,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 17,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "2e7cd451dc237735d8fc21a6988bc5c5c28d8f773ac04e5c9607b7b1891f2bb4"
+    },
+    {
+      "file": "p18_evaluation.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\p18_evaluation.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 18,
+        "source_slide": 5,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 30,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "43181df6b3db742d0b0fa812f352ab07468229899389c5e32004ee9accf56b67"
+    },
+    {
+      "file": "slide_13.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_13.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 19,
+        "source_slide": 13,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 19,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0,
+          "measured_unchanged": 2,
+          "positive_unchanged": 0
+        }
+      },
+      "passed": true,
+      "source_sha256": "3eb7049e81e7c4a72d3164d02598235a45b0a93de6da28983be882da4fa0db9b"
+    },
+    {
+      "file": "slide_14.svg",
+      "path": "E:\\BIFBAgent\\presentation\\agentarts_bifb_20261103\\authoring-svg-flat\\slide_14.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Font stack exports non-PPT-safe typeface(s) to PPTX (latin=等线): 等线"
+      ],
+      "info": {
+        "output_page": 20,
+        "source_slide": 14,
+        "viewbox": "0 0 1280 720",
+        "edited_text_elements": 3,
+        "fonts": [
+          "等线"
+        ],
+        "roundtrip_text_calibration": {
+          "factor": 0.0603228547153782,
+          "measured_unchanged": 4,
+          "positive_unchanged": 4
+        }
+      },
+      "passed": true,
+      "source_sha256": "88f0ff15da9203125ff50e454c70d057d59c06059d85a72cb91e0c7175b0f8f1"
+    }
+  ]
+}

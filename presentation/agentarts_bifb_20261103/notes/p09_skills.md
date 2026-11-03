@@ -1,0 +1,1 @@
+四类Skill把专业能力封装成明确的输入、处理与输出契约。Bubble Vision提供测量结果，Hydrodynamics处理流化特征与预测，Knowledge提供理论依据，Optimization比较约束下的候选参数。它们是按业务划分的专业能力模块，并不表示已经实现多Agent系统。
