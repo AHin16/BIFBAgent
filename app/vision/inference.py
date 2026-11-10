@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+def create_predictor(settings):
+    """Create the shared YOLO predictor from workflow-compatible settings."""
+    from .predictor import PredictorYolo11
+
+    return PredictorYolo11(
+        model_path=settings.model_path,
+        input_size=settings.input_size,
+        high_quality_segmentation=getattr(settings, "high_quality_segmentation", False),
+        conf_threshold=getattr(settings, "predict_conf", 0.1),
+        iou_threshold=getattr(settings, "predict_iou", 0.45),
+        device=getattr(settings, "device", "auto"),
+    )

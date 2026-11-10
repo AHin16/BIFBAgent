@@ -1,4 +1,4 @@
-"""Local-only smoke check: real YOLOTracker workflow, real weights, no LLM API.
+"""Local-only smoke check: built-in flow workflow, real weights, no LLM API.
 
 Uses repeated copies of a shipped image to check integration, not experimental validity.
 """
@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app.config import DATA, load_settings, local_path
+from app.config import DATA, load_settings
 from app.flow_warning import FlowSettings, register_flow_tools, save_flow_config
 from app.registry import ToolRegistry
 from app.storage import Session, ToolContext
@@ -20,7 +20,7 @@ from app.storage import Session, ToolContext
 
 def main():
     settings = load_settings()
-    source = local_path(settings.yolo_tracker_path) / "data/dataset/test_images/0228.tif"
+    source = ROOT / "examples/images/0228.tif"
     identifier = "flow_smoke_" + uuid.uuid4().hex[:12]
     fixture = DATA / "validation" / identifier
     baseline = fixture / "baseline"

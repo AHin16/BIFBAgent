@@ -1,11 +1,8 @@
-"""Adapter for YOLOTracker's independent, offline flow-warning workflow."""
+"""Adapter for the built-in offline flow-warning workflow."""
 
 import csv
-import hashlib
-import importlib
 import json
 import logging
-import sys
 import threading
 import time
 import uuid
@@ -16,8 +13,9 @@ import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.analysis import save_plot
-from app.config import DATA, IMAGE_EXTENSIONS, VIDEO_EXTENSIONS, local_path
+from app.config import IMAGE_EXTENSIONS, VIDEO_EXTENSIONS, local_path
 from app.storage import ToolError
+from app.vision import source_hash
 from app.yolo_adapter import adapter as yolo
 
 
@@ -83,7 +81,7 @@ def save_flow_config(session, request, settings):
             raise ToolError(f"正常基线至少需要 {frames_per_window * 3} 帧（三个完整窗口），当前只有 {count} 帧。")
     config = request.model_dump()
     config.update(config_id=uuid.uuid4().hex[:12], baseline_path=str(baseline), input_path=str(source),
-                  model_path=str(local_path(settings.yolo_model_path)), tracker_path=str(local_path(settings.yolo_tracker_path)),
+                  model_path=str(local_path(settings.yolo_model_path)),
                   confidence=settings.confidence, device=settings.yolo_device, frames_per_window=frames_per_window)
     session.flow_configs[config["config_id"]] = config
     return config
@@ -96,39 +94,18 @@ class FlowWarningAdapter:
         self.modules = None
         self.source_hash = None
 
-    def load(self, tracker_path):
-        root = local_path(tracker_path)
-        files = ["flow_warning/__init__.py", "flow_warning/workflow.py", "flow_warning/measurements.py", "flow_warning/rules.py",
-                 "bubble_analyzer/__init__.py", "bubble_analyzer/gas_holdup.py", "bubble_analyzer/image_io.py", "bubble_analyzer/inference.py"]
-        try:
-            contents = {name: (root / name).read_bytes() for name in files}
-        except OSError as error:
-            raise ToolError("未找到 YOLOTracker 的 flow_warning 模块，请确认原项目已更新。") from error
-        digest = hashlib.sha256(b"".join(contents.values())).hexdigest()[:16]
+    def load(self):
         with self.load_lock:
-            if self.modules is not None and self.source_hash == digest:
-                return self.modules
-            runtime = DATA / "backend" / ("flow_" + digest)
-            for name, content in contents.items():
-                target = runtime / name
-                target.parent.mkdir(parents=True, exist_ok=True)
-                if not target.exists():
-                    target.write_bytes(content)
-            for name in list(sys.modules):
-                if name in {"flow_warning", "bubble_analyzer"} or name.startswith(("flow_warning.", "bubble_analyzer.")):
-                    del sys.modules[name]
-            sys.path.insert(0, str(runtime))
-            try:
-                workflow = importlib.import_module("flow_warning.workflow")
-                rules = importlib.import_module("flow_warning.rules")
+            if self.modules is None:
+                from app.vision.flow_warning import workflow, rules
+
                 self.modules = (workflow, rules)
-                self.source_hash = digest
-            finally:
-                sys.path.remove(str(runtime))
+                self.source_hash = source_hash("flow_warning/workflow.py", "flow_warning/measurements.py",
+                    "flow_warning/rules.py", "gas_holdup.py", "image_io.py", "inference.py", "predictor.py")
             return self.modules
 
     def run(self, context, config):
-        workflow, rules = self.load(config["tracker_path"])
+        workflow, rules = self.load()
         resolve_source(context.session, config["baseline_path"])
         resolve_source(context.session, config["input_path"])
         upstream_settings = rules.WarningSettings(fps=config["fps"], pixel_scale=config["mm_per_pixel"],
@@ -164,8 +141,8 @@ class FlowWarningAdapter:
             if self.predictor_factory:
                 summary = workflow.run_flow_warning(upstream_config, progress, context.stop_event, self.predictor_factory)
             else:
-                runtime_settings = context.settings.model_copy(update={"yolo_tracker_path": config["tracker_path"],
-                    "yolo_model_path": config["model_path"], "confidence": config["confidence"], "yolo_device": config["device"]})
+                runtime_settings = context.settings.model_copy(update={"yolo_model_path": config["model_path"],
+                    "confidence": config["confidence"], "yolo_device": config["device"]})
                 with yolo.lock:
                     yolo.load(runtime_settings)
                     summary = workflow.run_flow_warning(upstream_config, progress, context.stop_event, lambda _: yolo.predictor)

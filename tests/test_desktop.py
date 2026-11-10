@@ -5,12 +5,28 @@ import unittest
 import urllib.request
 from unittest.mock import patch
 
-from app.folder_picker import select_folder
+from app.folder_picker import select_folder, select_model
 from app.storage import ToolError
 from desktop import LocalBackend
 
 
 class FolderPickerTest(unittest.TestCase):
+    def test_model_picker_returns_unicode_weight_path_and_handles_cancel(self):
+        for result in ({"path": "E:/模型/气泡.pt", "cancelled": False}, {"path": "", "cancelled": True}):
+            completed = subprocess.CompletedProcess([], 0, json.dumps(result, ensure_ascii=False), "")
+            with patch("app.folder_picker.subprocess.run", return_value=completed) as launch:
+                self.assertEqual(select_model(), result)
+                self.assertEqual(launch.call_args.args[0][-2:], ["--kind", "model"])
+
+    def test_model_dialog_api_returns_selection(self):
+        from fastapi.testclient import TestClient
+        from app.main import app
+        selected = {"path": "E:/模型/气泡.pt", "cancelled": False}
+        with patch("app.main.select_model", return_value=selected), TestClient(app) as client:
+            response = client.get("/api/dialog/model")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), selected)
+
     def test_unicode_path_and_cancel_are_distinct_from_failure(self):
         for result in ({"path": "E:/实验/气泡批次", "cancelled": False}, {"path": "", "cancelled": True}):
             completed = subprocess.CompletedProcess([], 0, json.dumps(result, ensure_ascii=False), "")

@@ -1,9 +1,5 @@
-import hashlib
-import importlib.util
 import math
 import os
-import shutil
-import sys
 import threading
 
 import cv2
@@ -13,6 +9,7 @@ import pandas as pd
 from app.analysis import describe, distribution
 from app.config import DATA, IMAGE_EXTENSIONS, local_path
 from app.storage import ToolError
+from app.vision import image_io, source_hash
 
 
 class YoloAdapter:
@@ -21,42 +18,25 @@ class YoloAdapter:
         self.predictor = None
         self.key = None
         self.source_hash = None
-        self.image_io = None
-
-    def load_module(self, name, source, destination):
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(source, destination)
-        spec = importlib.util.spec_from_file_location(name, destination)
-        module = importlib.util.module_from_spec(spec)
-        sys.modules[name] = module
-        spec.loader.exec_module(module)
-        return module
+        self.image_io = image_io
 
     def load(self, settings):
-        root = local_path(settings.yolo_tracker_path)
         weights = local_path(settings.yolo_model_path)
-        predictor_source = root / "detector_head/yolo11/predictor_yolo11.py"
-        image_source = root / "bubble_analyzer/image_io.py"
-        if not predictor_source.is_file() or not image_source.is_file():
-            raise ToolError("未找到 YOLOTracker 推理模块，请在设置中填写原项目目录。")
         if not weights.is_file():
-            raise ToolError("YOLO 权重不存在，请在设置中选择气泡模型，例如 YOLOTracker/3900.pt。")
-        source_hash = hashlib.sha256(predictor_source.read_bytes() + image_source.read_bytes()).hexdigest()[:16]
-        key = (str(root), str(weights), weights.stat().st_mtime_ns, source_hash,
+            raise ToolError("YOLO 权重不存在，请在运行设置中选择气泡模型权重文件。")
+        backend_hash = source_hash("predictor.py", "image_io.py")
+        key = (str(weights), weights.stat().st_mtime_ns, backend_hash,
                settings.yolo_device, settings.confidence)
         if key == self.key:
             return
-        runtime = DATA / "backend" / source_hash
         os.environ["YOLO_CONFIG_DIR"] = str(DATA / "ultralytics")
-        predictor_module = self.load_module("bifb_predictor_" + source_hash, predictor_source,
-                                            runtime / "detector_head/yolo11/predictor_yolo11.py")
-        self.image_io = self.load_module("bifb_image_io_" + source_hash, image_source,
-                                        runtime / "bubble_analyzer/image_io.py")
-        self.predictor = predictor_module.PredictorYolo11(
+        from app.vision.predictor import PredictorYolo11
+
+        self.predictor = PredictorYolo11(
             model_path=str(weights), input_size=(640, 640), conf_threshold=settings.confidence,
             iou_threshold=0.45, device=settings.yolo_device, high_quality_segmentation=True)
         self.key = key
-        self.source_hash = source_hash
+        self.source_hash = backend_hash
 
     def detect(self, context, path, group="default"):
         with self.lock:
@@ -111,7 +91,7 @@ class YoloAdapter:
                 "statistics": describe([row["diameter"] for row in measurements]),
                 "measurement_method": sorted(methods), "measurements": measurements,
                 "model": str(local_path(context.settings.yolo_model_path)), "model_classes": names,
-                "backend": "YOLOTracker.PredictorYolo11", "backend_source_hash": backend_hash,
+                "backend": "app.vision.PredictorYolo11", "backend_source_hash": backend_hash,
                 "confidence_threshold": context.settings.confidence, "mm_per_pixel": scale,
                 "artifacts": [context.artifact(preview_path, path.name + " · 原图", "image"),
                               context.artifact(output_path, path.name + " · 检测结果", "image")],
@@ -137,7 +117,7 @@ def export_measurements(context, result):
 
 
 def register_vision_tools(registry):
-    @registry.register("对已添加的单张气泡图像调用真实 YOLOTracker 模型，输出分割检测图、数量、置信度、等效直径、分布图和 CSV。物理尺寸仅使用设置中的用户标定；未标定用 px。")
+    @registry.register("对已添加的单张气泡图像调用内置 YOLO 推理和用户选择的模型权重，输出分割检测图、数量、置信度、等效直径、分布图和 CSV。物理尺寸仅使用设置中的用户标定；未标定用 px。")
     def detect_bubbles(context, image_path: str):
         path = context.session.resolve(image_path)
         if path.suffix.lower() not in IMAGE_EXTENSIONS:

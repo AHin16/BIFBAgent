@@ -100,6 +100,11 @@ def main():
             path = QFileDialog.getExistingDirectory(window, "选择实验图片文件夹", "", QFileDialog.ShowDirsOnly)
             return json.dumps({"path": path, "cancelled": not bool(path)}, ensure_ascii=False)
 
+        @Slot(result=str)
+        def chooseModel(self):
+            path, _ = QFileDialog.getOpenFileName(window, "选择气泡模型权重", "", "YOLO 模型权重 (*.pt);;所有文件 (*)")
+            return json.dumps({"path": path, "cancelled": not bool(path)}, ensure_ascii=False)
+
     class ResearchWindow(QMainWindow):
         def closeEvent(self, event):
             from app.main import runs

@@ -19,8 +19,7 @@ class Settings(BaseModel):
     llm_base_url: str = "https://api.openai.com/v1"
     llm_api_key: str = ""
     llm_model: str = ""
-    yolo_tracker_path: str = str(ROOT.parent / "YOLOTracker")
-    yolo_model_path: str = str(ROOT.parent / "YOLOTracker" / "3900.pt")
+    yolo_model_path: str = str(ROOT / "models" / "3900.pt")
     yolo_device: str = "auto"
     confidence: float = Field(default=0.25, ge=0.01, le=1)
     mm_per_pixel: float | None = Field(default=None, gt=0)
@@ -44,7 +43,6 @@ class Settings(BaseModel):
         result["has_api_key"] = bool(self.llm_api_key)
         result["llm_ready"] = self.llm_ready
         result["model_exists"] = local_path(self.yolo_model_path).is_file()
-        result["tracker_exists"] = (local_path(self.yolo_tracker_path) / "bubble_analyzer/inference.py").is_file()
         return result
 
 

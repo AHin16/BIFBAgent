@@ -19,7 +19,7 @@ sys.path.insert(0, str(ROOT))
 
 from app.agent import Run, run_agent
 from app.analysis import register_data_tools
-from app.config import DATA, load_settings, local_path
+from app.config import DATA, load_settings
 from app.registry import ToolRegistry
 from app.storage import Session, compact
 from app.yolo_adapter import register_vision_tools
@@ -67,7 +67,7 @@ async def main(live=False):
     register_vision_tools(registry)
     register_data_tools(registry)
     session = Session()
-    session.grant(local_path(settings.yolo_tracker_path) / "data/dataset/test_images/0228.tif")
+    session.grant(ROOT / "examples/images/0228.tif")
     steps = [
         ("检测刚添加的气泡图片，统计数量、平均等效直径和置信度。必须调用检测工具，只使用本次工具结果。", {"detect_bubbles"}),
         ("分析刚添加的合成 CSV，先检查列名，再分析气速与气泡直径的关系，并按 condition 分组。说明它是合成教学数据。", {"inspect_csv", "analyze_csv"}),

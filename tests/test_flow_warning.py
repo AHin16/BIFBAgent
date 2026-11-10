@@ -44,7 +44,9 @@ class FlowIntegrationTest(unittest.TestCase):
             cv2.imwrite(str(self.baseline / f"frame{index:03d}.png"), image)
             image[0, 0, 1] = 1
             cv2.imwrite(str(self.source / f"frame{index:03d}.png"), image)
-        self.settings = Settings()
+        weights = self.root / "test.pt"
+        weights.touch()
+        self.settings = Settings(yolo_model_path=str(weights))
         self.session = Session()
         self.session.grant(self.baseline)
         self.session.grant(self.source)

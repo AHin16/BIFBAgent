@@ -6,3 +6,4 @@ data/
 *.log
 .pytest_cache/
 tmp/
+models/*.pt

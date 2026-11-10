@@ -43,9 +43,9 @@ function showView(view) {
   byId("workbench-view").hidden = home || flow || knowledge;
   byId("flow-view").hidden = !flow;
   byId("knowledge-view").hidden = !knowledge;
-  byId("view-title").textContent = home ? "首页" : flow ? "流态监测预警" : knowledge ? "专业知识问答" : view === "csv" ? "实验数据分析" : "实验分析工作台";
+  byId("view-title").textContent = home ? "首页" : flow ? "流态监测预警" : knowledge ? "专业知识问答" : "实验分析";
   document.querySelectorAll(".nav-item[data-nav]").forEach((button) => {
-    const active = button.dataset.nav === (home ? "home" : flow ? "flow" : knowledge ? "knowledge" : view === "csv" ? "csv" : "workbench");
+    const active = button.dataset.nav === (home ? "home" : flow ? "flow" : knowledge ? "knowledge" : "workbench");
     button.classList.toggle("active", active);
     if (active) button.setAttribute("aria-current", "page"); else button.removeAttribute("aria-current");
   });
@@ -325,10 +325,33 @@ async function openSettings() {
     for (const [key, value] of Object.entries(settings)) if (form.elements.namedItem(key)) form.elements.namedItem(key).value = value ?? "";
     form.elements.llm_api_key.value = ""; form.elements.clear_api_key.checked = false;
     form.elements.llm_api_key.placeholder = settings.has_api_key ? "已保存，留空保持不变" : "输入 API Key";
-    byId("settings-feedback").textContent = settings.model_exists && settings.tracker_exists ? "已找到 YOLOTracker 与模型权重。" : "请检查 YOLOTracker 与气泡模型路径。";
+    byId("settings-feedback").textContent = settings.model_exists ? "YOLO 推理已内置，已找到模型权重。" : "YOLO 推理已内置，请选择有效的气泡模型权重。";
     byId("settings-dialog").showModal();
   } catch (error) { toast(error.message); }
 }
+
+async function chooseModel() {
+  const button = byId("browse-model");
+  button.disabled = true;
+  try {
+    let selected;
+    if (window.bifbDesktopReady) {
+      const desktop = await window.bifbDesktopReady;
+      selected = JSON.parse(await new Promise((resolve) => desktop.chooseModel(resolve)));
+    } else {
+      selected = await api("/api/dialog/model");
+    }
+    if (selected.cancelled || !selected.path) return;
+    byId("settings-form").elements.yolo_model_path.value = selected.path;
+    byId("settings-feedback").textContent = "已选择模型权重，保存设置后生效。";
+  } catch (error) {
+    byId("settings-feedback").textContent = error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+byId("browse-model").addEventListener("click", chooseModel);
 
 async function saveSettings(test = false) {
   const form = byId("settings-form");
@@ -485,7 +508,7 @@ byId("drop-zone").addEventListener("drop", (event) => { event.preventDefault(); 
 byId("path-form").addEventListener("submit", async (event) => { event.preventDefault(); if (state.busy) return toast("请等待当前分析结束。"); try { const asset = await post(`/api/sessions/${state.sessionId}/paths`, {path: byId("local-path").value.trim()}); addAssets([asset]); byId("local-path").value = ""; toast(asset.kind === "folder" ? "已添加本地文件夹，分析时会直接读取图片。" : "已添加本地数据源。"); } catch (error) { toast(error.message); } });
 byId("browse-folder").addEventListener("click", chooseFolder);
 byId("home-folder").addEventListener("click", chooseFolder);
-document.querySelectorAll("[data-example]").forEach((button) => button.addEventListener("click", async () => { if (state.busy) return toast("请等待当前分析结束。"); try { const kind = button.dataset.example; addAssets([await post(`/api/sessions/${state.sessionId}/examples/${kind}`, {})]); byId("message-input").value = examplePrompts[kind]; byId("message-input").focus(); toast(kind === "csv" ? "已添加合成教学 CSV，不代表真实实验。" : "已添加 YOLOTracker 真实示例图片。"); } catch (error) { toast(error.message); } }));
+document.querySelectorAll("[data-example]").forEach((button) => button.addEventListener("click", async () => { if (state.busy) return toast("请等待当前分析结束。"); try { const kind = button.dataset.example; addAssets([await post(`/api/sessions/${state.sessionId}/examples/${kind}`, {})]); byId("message-input").value = examplePrompts[kind]; byId("message-input").focus(); toast(kind === "csv" ? "已添加合成教学 CSV，不代表真实实验。" : "已添加内置真实气泡示例图片。"); } catch (error) { toast(error.message); } }));
 document.querySelectorAll("[data-prompt]").forEach((button) => button.addEventListener("click", () => { byId("message-input").value = button.dataset.prompt; byId("message-input").focus(); }));
 byId("settings-open").addEventListener("click", openSettings);
 byId("settings-close").addEventListener("click", () => byId("settings-dialog").close());

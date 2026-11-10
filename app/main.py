@@ -19,7 +19,7 @@ from app.agent import Run, run_agent
 from app.analysis import register_data_tools
 from app.config import DATA, INPUT_EXTENSIONS, ROOT, Settings, load_settings, local_path, save_settings
 from app.llm import LLMClient
-from app.folder_picker import select_folder
+from app.folder_picker import select_folder, select_model
 from app.flow_warning import FlowSettings, register_flow_tools, save_flow_config
 from app.knowledge import knowledge_store, register_knowledge_tools
 from app.registry import ToolRegistry
@@ -103,7 +103,6 @@ class SettingsUpdate(BaseModel):
     llm_model: str
     llm_api_key: str | None = None
     clear_api_key: bool = False
-    yolo_tracker_path: str
     yolo_model_path: str
     yolo_device: str = "auto"
     confidence: float
@@ -351,6 +350,11 @@ def preview_asset(session_id: str, asset_id: str):
         raise ToolError("无法预览图片，请检查格式或文件完整性。") from error
 
 
+@app.get("/api/dialog/model")
+def choose_model():
+    return select_model()
+
+
 @app.post("/api/sessions/{session_id}/examples/{kind}")
 def add_example(session_id: str, kind: str):
     session = get_session(session_id)
@@ -358,7 +362,7 @@ def add_example(session_id: str, kind: str):
     if kind == "csv":
         path = ROOT / "examples/bubble_experiment.csv"
     elif kind in {"image", "folder"}:
-        path = local_path(settings.yolo_tracker_path) / "data/dataset/test_images"
+        path = ROOT / "examples/images"
         if kind == "image":
             path = path / "0228.tif"
     else:
