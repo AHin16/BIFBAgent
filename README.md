@@ -20,7 +20,7 @@ conda run --no-capture-output -n BIFBAgent python -m pip install -r requirements
 
 使用 GPU 时需安装适合本机驱动的 CUDA 版 PyTorch；也可在运行设置中选择 CPU。安装依赖时使用正式发布的 Ultralytics 包，无需链接本地 YOLOTracker 或其他 YOLO 源码项目。
 
-首页使用红白配色的科研 Dashboard：左侧导航、五个研究模块和自然语言任务输入。实验分析（图像与 CSV）、流态监测预警、专业知识问答已开放；气含率、参数优化点击后显示“功能正在推进中”。
+首页提供实验分析、气含率估算、流态监测预警和专业知识问答。运行参数优化仍在开发中。
 
 第一次打开软件，点右上角「运行设置」：
 
@@ -38,14 +38,20 @@ conda run --no-capture-output -n BIFBAgent python -m pip install -r requirements
 - `分析这个 CSV，看看气速和气泡直径有什么关系，并比较不同工况。`
 - `结合刚才的图像检测和 CSV 分析结果，总结实验规律，说明测量依据和局限。`
 
-支持 JPG、PNG、TIFF、BMP、WEBP、CSV。单张图片和 CSV 可以上传；文件夹请使用「选择实验文件夹」或本地路径，系统只登记 Windows 路径，YOLO 分析时直接递归读取原文件夹，不上传图片。文件夹分析最多 500 张图片，单文件最多 50 MB，单次上传最多 250 MB。
+支持 JPG、PNG、TIFF、BMP、WEBP、CSV。图片和 CSV 可以上传，文件夹和视频可通过本地路径直接读取。普通批量检测最多 500 张图片，单文件上传最多 50 MB，单次上传最多 250 MB。
 
 桌面版文件夹选择通过 Qt WebChannel 交给窗口主线程；网页模式通过独立的 Qt 进程打开选择器。两种模式都正常区分取消和失败，不再从 FastAPI 工作线程调用 Tkinter。
+
+## 体积气含率与气泡追踪
+
+- 添加单张气泡图或图片文件夹，点击「气含率估算」或直接提问，填写实际视野深度（mm）和空间标定（mm/px）。例如「视野深度 10 mm，标定 0.01 mm/px，估算这个目录的体积气含率」。工具以 ROI 中的掩膜面积计算每个气泡的等效球体积，用气泡总体积除以 ROI 面积与视野深度的乘积。结果分别列出体积气含率与二维掩膜面积占比，附逐帧 CSV 和覆盖图。坏帧与缺失掩膜的帧会标明原因。
+- 通过实验工作台添加固定相机连续图像文件夹或 MP4/AVI/MOV/MKV 本地视频，再请求追踪。图像序列需提供实际采集帧率，视频可读取文件帧率或由用户明确覆盖。工具导出标注 MP4、逐帧轨迹 CSV 和筛选后的运动 CSV。无空间标定时速度以 px/s 输出。
+- 追踪与预警共用气泡运动和形状关联。有效空帧推进时间，短时漏检可恢复原 ID，低分观测仅用于续接。轨迹 ID 数是关联结果，定量解释需结合有效样本数和采集条件。
 
 ## 流态监测预警与 LLM 分析
 
 1. 点击首页「流态监测预警」，选择正常基线和待测图片目录，或直接填写 MP4/AVI/MOV/MKV 的本地路径。
-2. 填写两段数据共同的实际采集帧率、空间标定和窗口长度。需要时在高级设置中调整共同 ROI、最少样本数、触发/恢复持续窗口数。模型、置信度和设备使用本次保存配置时的运行设置。
+2. 填写两段数据共同的实际采集帧率、空间标定和窗口长度。可设置共同 ROI、触发/恢复持续窗口数和追踪参数。模型和设备取本次运行设置，检测置信度使用预警的低分续接阈值（默认 0.1）。
 3. 明确确认基线属于正常工况，且两段序列等间隔连续、时间口径与标定一致。Agent 无权替你确认这些实验事实。基线与待测来源不能相同或相互包含。
 4. 点击「开始监测并分析」。Agent 自动调用 `analyze_flow_warning(config_id)`，执行内置的 `run_flow_warning`，再根据结构化结果生成简单流动状态解释。
 5. 页面显示气泡出现量、大气泡变化、运动状态，窗口趋势、事件时间/触发原因、证据帧及 CSV/JSON 导出。后续可在聊天中询问“解释刚才第一个预警事件”，Agent 可以查询已有结果，无需重跑。
@@ -81,7 +87,7 @@ conda run --no-capture-output -n BIFBAgent python scripts/verify_knowledge.py
 
 `verify_yolo.py` 使用真实权重验证中文路径单图、按目录分组批处理、损坏图片容错及 CSV/图表导出，禁止读取旧 YOLOTracker 源码目录，不调用 LLM。通过 `--ultralytics-path <包所在目录>` 可以指定隔离安装的官方 Ultralytics；通过 `--block-path <目录>` 可以额外禁止读取其他源码目录。报告保存包版本、实际模块路径及被禁止的读取尝试。2026-11-10 已用官方 8.3.63 验证：同时禁止访问 `E:\YOLOTracker` 和 `E:\yolov12`，单图检测 24 个、两张重复图合计 48 次检测，损坏图片单独报错。重复图只验证集成，不代表不同实验工况。
 
-`verify_flow.py` 使用真实权重、原始流态算法和重复示例图检查集成，不调用 LLM API；重复图仅为接口检查，不代表真实连续实验或预警精度。流态测试覆盖正常/异常、缺少掩膜、末尾不足窗口、停止保留结果、配置确认及 LLM 取得 Observation 后解释。
+`verify_flow.py` 使用真实权重和重复示例图检查新版流态工作流，验证模型推理和输出链路。流态测试覆盖正常/异常、缺少掩膜、末尾不足窗口、停止保留结果、配置确认及 LLM 取得 Observation 后解释。
 
 `verify_knowledge.py` 默认本地固定模型响应，验证提供的 BIFB 论文中装置/气泡尺寸/流化状态/测速方法的页码命中和引用闭环。`--live` 会将测试问题、文档信息和检索片段发送到已配置的 LLM，仅在明确同意发送这些内容时使用。远程自动验收脚本被自动审批拦截，未重试；当前桌面会话已有一轮真实问答记录，装置 0.33 m、3.0 m 和 0–20 mm/s 已与第 2 页原文核对，这不代表其他专业问题均已验证。
 
@@ -93,8 +99,8 @@ conda run --no-capture-output -n BIFBAgent python scripts/verify_knowledge.py
 - `app/agent.py`：透明的单 Agent Loop（LLM → Tool Call → Tool Result → Observation）。
 - `app/registry.py`：统一 Tool Registry、Pydantic 参数校验和错误处理。
 - `app/yolo_adapter.py`：使用内置预测器和所选权重，统一输出检测、测量与统计结果。
-- `app/vision/`：从 YOLOTracker 迁入的推理、BiFPN 权重兼容、图片读取及流态工作流；保留原有检测与预警算法，来源及原始文件哈希见该目录 README。
-- `app/flow_warning.py`：确认后的流态任务配置、原始工作流适配、窗口/事件摘要及工具注册。
+- `app/vision/`：内置 YOLO 推理、BiFPN 权重兼容、等效球气含率、运动追踪和流态预警。迁入来源见该目录 README。
+- `app/sequence_analysis.py` 与 `app/flow_warning.py`：视觉分析的 Agent 工具注册、参数校验及结果导出。
 - `app/knowledge.py`：文档解析、SQLite 持久化、本地检索、引用核验及知识工具。
 - `app/static/knowledge.js`：资料选择、问答、本地检索及可点击原文证据。
 - `app/analysis.py`：CSV 读取、描述统计、分组、Pearson 相关、线性趋势、IQR 异常候选、图表。

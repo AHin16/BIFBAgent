@@ -1,11 +1,12 @@
 # Built-in vision backend
 
-These modules are vendored from the local YOLOTracker project on 2026-11-10.
-Inference, custom BiFPN weight compatibility, image I/O and offline flow-warning algorithms are preserved.
-Imports use this package, Ultralytics configuration writes to `data/ultralytics`, and the predictor's standalone example is omitted. No YOLOTracker source directory is read at runtime.
+The inference, image I/O and original alert rules were imported from the local YOLOTracker project on 2026-11-10.
+The equivalent-sphere algorithm, association, motion analysis, overlays and updated alert measurements come from YOLOBubbleTracker-Remastered (revision `deb98b2`).
+The tracking package uses relative imports and the BoT-SORT track state, matching and Kalman primitives in `tracking/`. The copied BoT-SORT license is in `tracking/LICENSE`.
+The application loads these modules from its own package and writes Ultralytics configuration to `data/ultralytics`.
 Model weights are selected separately in the application settings.
 
-The SHA-256 values below identify the original source files before these integration changes.
+The SHA-256 values below identify the source files for the 2026-11-10 import.
 
 | Built-in file | Original YOLOTracker file | Original SHA-256 |
 | --- | --- | --- |

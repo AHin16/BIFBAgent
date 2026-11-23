@@ -23,6 +23,7 @@ from app.folder_picker import select_folder, select_model
 from app.flow_warning import FlowSettings, register_flow_tools, save_flow_config
 from app.knowledge import knowledge_store, register_knowledge_tools
 from app.registry import ToolRegistry
+from app.sequence_analysis import register_sequence_tools
 from app.storage import Session, ToolError, dump_json
 from app.yolo_adapter import register_vision_tools
 
@@ -46,6 +47,7 @@ sessions = {}
 runs = {}
 registry = ToolRegistry()
 register_vision_tools(registry)
+register_sequence_tools(registry)
 register_data_tools(registry)
 register_flow_tools(registry)
 register_knowledge_tools(registry)

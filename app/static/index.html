@@ -18,7 +18,7 @@
       <button class="nav-item active" data-nav="home" aria-current="page"><svg><use href="/static/icons.svg#home"></use></svg>首页</button>
       <button class="nav-item" data-nav="workbench"><svg><use href="/static/icons.svg#image"></use></svg>实验分析</button>
       <button class="nav-item" data-nav="flow"><svg><use href="/static/icons.svg#layers"></use></svg>流态监测预警</button>
-      <button class="nav-item" data-coming="气含率估算"><svg><use href="/static/icons.svg#flow"></use></svg>气含率估算</button>
+      <button class="nav-item" data-sequence="holdup"><svg><use href="/static/icons.svg#flow"></use></svg>气含率估算</button>
       <button class="nav-item" data-coming="运行参数优化"><svg><use href="/static/icons.svg#settings"></use></svg>运行参数优化</button>
       <button class="nav-item" data-nav="knowledge"><svg><use href="/static/icons.svg#book"></use></svg>专业知识问答</button>
     </nav>
@@ -42,9 +42,9 @@
       </div>
       <div class="module-heading"><h2>从实验观察到科研洞见</h2><span>选择研究方向，或直接描述你的问题</span></div>
       <div class="feature-grid">
-        <button class="feature-card" data-nav="workbench"><span class="feature-icon"><svg><use href="/static/icons.svg#image"></use></svg></span><h3>实验分析</h3><p>图像检测 · CSV 统计与比较</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
+        <button class="feature-card" data-nav="workbench"><span class="feature-icon"><svg><use href="/static/icons.svg#image"></use></svg></span><h3>实验分析</h3><p>图像检测与追踪 · CSV 统计与比较</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-nav="flow"><span class="feature-icon"><svg><use href="/static/icons.svg#layers"></use></svg></span><h3>流态监测预警</h3><p>基线对比 · 持续异常分析</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
-        <button class="feature-card" data-coming="气含率估算"><span class="feature-icon"><svg><use href="/static/icons.svg#chart"></use></svg></span><h3>气含率估算</h3><p>图像特征 · 几何估算</p><span class="feature-state">推进中</span></button>
+        <button class="feature-card" data-sequence="holdup"><span class="feature-icon"><svg><use href="/static/icons.svg#chart"></use></svg></span><h3>气含率估算</h3><p>等效球体积 · 二维面积占比</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-coming="运行参数优化"><span class="feature-icon"><svg><use href="/static/icons.svg#settings"></use></svg></span><h3>运行参数优化</h3><p>参数搜索 · 约束检查</p><span class="feature-state">推进中</span></button>
         <button class="feature-card" data-nav="knowledge"><span class="feature-icon"><svg><use href="/static/icons.svg#book"></use></svg></span><h3>专业知识问答</h3><p>原文检索 · 有据可查</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
       </div>
@@ -87,6 +87,11 @@
             <div class="field-pair"><label>实际采集帧率 (FPS)<input name="fps" required type="number" min="0.000001" max="100000" step="any" placeholder="填写实际采集值"></label><label>标定 (mm / px)<input name="mm_per_pixel" required type="number" min="0.000000001" step="any" placeholder="例如 0.01"></label></div>
             <div class="field-pair"><label>窗口长度 (s)<input name="window_seconds" required type="number" min="0.000001" max="3600" step="any" value="0.5"></label><label>每窗口最少样本<input name="min_samples" required type="number" min="1" max="100000" value="10"></label></div>
             <details class="flow-advanced"><summary>高级参数与共同 ROI</summary><div class="field-pair"><label>触发持续窗口<input name="trigger_windows" required type="number" min="1" max="1000" value="2"></label><label>恢复持续窗口<input name="recovery_windows" required type="number" min="1" max="1000" value="2"></label></div><label>偏离阈值（稳健尺度）<input name="threshold" required type="number" min="0.01" max="100" step="any" value="3"></label><div class="field-pair"><label>ROI X (px)<input name="roi_x" required type="number" min="0" value="0"></label><label>ROI Y (px)<input name="roi_y" required type="number" min="0" value="0"></label></div><div class="field-pair"><label>ROI 宽 (px)<input name="roi_width" required type="number" min="0" value="0"></label><label>ROI 高 (px)<input name="roi_height" required type="number" min="0" value="0"></label></div><p class="field-note">宽、高为 0 时延伸至图像边界。基线与待测图像尺寸须一致。</p><div class="field-pair"><label>最小掩膜面积 (px²)<input name="min_area" required type="number" min="1" value="10"></label><label>最大关联距离 (px)<input name="max_distance" required type="number" min="0.01" step="any" value="40"></label></div></details>
+            <details class="flow-advanced"><summary>气泡追踪参数</summary>
+              <div class="field-pair"><label>低分续接阈值<input name="track_low_thresh" required type="number" min="0.01" max="0.99" step="any" value="0.1"></label><label>高分阈值<input name="track_high_thresh" required type="number" min="0.01" max="1" step="any" value="0.6"></label></div>
+              <div class="field-pair"><label>新建轨迹阈值<input name="new_track_thresh" required type="number" min="0.01" max="1" step="any" value="0.7"></label><label>关联代价上限<input name="match_thresh" required type="number" min="0.01" max="1" step="any" value="0.8"></label></div>
+              <label>最大重连间隔 (帧)<input name="bubble_max_lost_frames" required type="number" min="0" value="3"></label>
+            </details>
             <label class="flow-check"><input name="normal_baseline_confirmed" type="checkbox" required><span>我确认所选基线属于正常实验工况。</span></label>
             <label class="flow-check"><input name="acquisition_confirmed" type="checkbox" required><span>我已核对两段数据的真实帧率、等间隔连续性、共同标定及 ROI；抽帧后使用有效帧率。</span></label>
             <label>分析要求<textarea id="flow-task" name="analysis_request" rows="3" placeholder="例如：总结流动状态，说明持续异常及数据局限。" maxlength="4000"></textarea></label>
@@ -107,9 +112,10 @@
         <aside class="source-panel panel">
           <div class="section-heading"><h2>实验数据</h2><span class="counter" id="asset-count">0</span></div>
           <p class="muted small">添加图像或 CSV，也可直接读取本地文件夹。</p>
-          <label class="upload-zone" id="drop-zone" tabindex="0" role="button" aria-label="上传实验文件"><input id="file-input" type="file" multiple accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.webp,.csv" hidden><svg><use href="/static/icons.svg#upload"></use></svg><strong>添加图片或 CSV</strong><span>视频请在流态页填写本地路径</span></label>
+          <label class="upload-zone" id="drop-zone" tabindex="0" role="button" aria-label="上传实验文件"><input id="file-input" type="file" multiple accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.webp,.csv" hidden><svg><use href="/static/icons.svg#upload"></use></svg><strong>添加图片或 CSV</strong><span>视频可通过下方本地路径添加</span></label>
           <button id="browse-folder" class="button folder-button" type="button"><svg><use href="/static/icons.svg#folder"></use></svg>选择实验文件夹</button>
           <details class="path-details"><summary>输入本地文件或文件夹路径</summary><form id="path-form"><input id="local-path" placeholder="E:\experiment\batch_01" aria-label="本地数据路径" required><button class="button secondary" type="submit">读取</button></form></details>
+          <button class="button folder-button" type="button" data-sequence="tracking">追踪气泡并测量速度</button>
           <div class="source-list" id="source-list"><div class="source-empty">尚未添加数据源</div></div>
           <div class="example-box"><span class="eyebrow">QUICK START</span><h3>从示例开始</h3><button class="example-link" data-example="image"><span>01</span> 气泡图像 <b>↗</b></button><button class="example-link" data-example="folder"><span>02</span> 三帧图像批次 <b>↗</b></button><button class="example-link" data-example="csv"><span>03</span> 气速与直径 · 合成 CSV <b>↗</b></button></div>
           <div class="calibration-note"><span class="tiny-dot"></span><div id="calibration-label">未标定 · 图像尺寸以 px 显示</div></div>

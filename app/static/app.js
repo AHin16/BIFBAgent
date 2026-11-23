@@ -5,6 +5,7 @@ const flowStateLabels = {normal: "正常", attention: "关注", warning: "预警
 const flowEndLabels = {recovered: "指标已恢复", data_gap: "数据中断", stopped: "用户停止", end_of_sequence: "序列结束"};
 const examplePrompts = {image: "检测这张气泡图片，统计气泡数量、平均直径和尺寸分布。", folder: "分析这个文件夹里的全部气泡图片，统计尺寸分布并导出 CSV。", csv: "分析这个合成示例 CSV，看看气速和气泡直径的关系，并比较不同工况。"};
 Object.assign(toolNames, {search_knowledge: "知识库 · 检索原文", read_knowledge_excerpt: "知识库 · 核对原文", get_experiment_context: "实验 · 获取已确认背景"});
+Object.assign(toolNames, {estimate_gas_holdup: "气含率 · 等效球体积估算", track_bubbles: "气泡追踪 · 轨迹与运动测量"});
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -194,6 +195,8 @@ function addResult(result, tool) {
   card.append(header);
   let metrics = [];
   if (result.kind === "flow_warning") metrics = [[result.processed_frames, "待测帧数"], [result.window_count, "时间窗口数"], [result.event_count, "预警事件数"]];
+  else if (result.kind === "gas_holdup") metrics = [[result.gas_holdup_percent?.mean, "平均体积气含率 / %"], [result.bubble_area_ratio_percent?.mean, "平均二维面积占比 / %"], [result.valid_frames, "有效帧数"]];
+  else if (result.kind === "bubble_tracking") metrics = [[result.track_id_count, "追踪 ID 数"], [result.motion_samples, "有效运动样本"], [result.mean_speed, `平均速度 / ${result.speed_unit}`]];
   else if ("bubble_count" in result) metrics = [[result.bubble_count, result.image_count ? "累计气泡检测次数" : "气泡数量"], [result.statistics?.mean, `平均等效直径 / ${result.unit}`], [result.mean_confidence === null ? null : result.mean_confidence * 100, "平均置信度 / %"]];
   else if (result.row_count !== undefined) metrics = [[result.row_count, "数据行数"], [result.columns?.length, "数据列数"], [result.correlation?.pearson_r, "Pearson 相关系数 r"]];
   else if (result.source_result_id) metrics = [[result.statistics?.count, "测量样本数"], [result.statistics?.mean, `平均直径 / ${result.unit}`], [result.statistics?.std, "样本标准差"]];
@@ -300,7 +303,7 @@ function addAssets(assets) {
 async function upload(files, folder = false) {
   if (state.busy) return toast("请等待当前分析结束后添加文件。");
   if (!state.sessionId) return toast("正在连接本地服务，请稍候。");
-  if ([...files].some((file) => /\.(mp4|avi|mov|mkv)$/i.test(file.name))) return toast("视频请在流态监测页面填写本地文件路径，无需上传。");
+  if ([...files].some((file) => /\.(mp4|avi|mov|mkv)$/i.test(file.name))) return toast("请通过「输入本地文件或文件夹路径」添加视频。");
   if ([...files].some((file) => /\.(pdf|docx?|txt|md)$/i.test(file.name))) return toast("文献知识库功能正在推进中。");
   const supported = [...files].filter((file) => /\.(jpe?g|png|tiff?|bmp|webp|csv)$/i.test(file.name));
   if (!supported.length) return toast("请选择图片或 CSV 文件。");
@@ -520,6 +523,18 @@ byId("activity-clear").addEventListener("click", () => byId("activity").replaceC
 byId("new-session").addEventListener("click", () => { if (!state.busy) { sessionStorage.removeItem("bifb-session"); sessionStorage.removeItem("bifb-run"); window.location.reload(); } });
 document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", (event) => { event.preventDefault(); showView(button.dataset.nav); }));
 document.querySelectorAll("[data-coming]").forEach((button) => button.addEventListener("click", () => toast(`${button.dataset.coming}功能正在推进中，敬请期待。`)));
+document.querySelectorAll("[data-sequence]").forEach((button) => button.addEventListener("click", () => {
+  showView("workbench");
+  if (state.busy) return;
+  const input = byId("message-input");
+  if (!input.value.trim()) {
+    input.value = button.dataset.sequence === "holdup"
+      ? "请估算已添加图片的等效球体积气含率，并报告二维面积占比。实际视野深度（mm）为 "
+      : "请追踪已添加的连续图像序列或视频，导出轨迹、速度和标注视频。";
+  }
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+}));
 document.querySelectorAll("[data-home-prompt]").forEach((button) => button.addEventListener("click", () => { byId("home-input").value = button.dataset.homePrompt; byId("home-input").focus(); }));
 byId("home-attach").addEventListener("click", () => { showView("workbench"); byId("file-input").click(); });
 byId("home-form").addEventListener("submit", (event) => { event.preventDefault(); if (state.busy) return toast("Agent 正在分析，请稍候。"); byId("message-input").value = byId("home-input").value; byId("chat-form").requestSubmit(); });

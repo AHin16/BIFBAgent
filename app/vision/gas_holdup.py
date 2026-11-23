@@ -49,6 +49,8 @@ class GasHoldupResult:
     average_diameter: float
     accepted_masks: Tuple[np.ndarray, ...]
     roi_bounds: Tuple[int, int, int, int]
+    bubble_volume: float
+    roi_volume: float
 
 
 def _normalize_frame_shape(frame_shape: Sequence[int]) -> Tuple[int, int]:
@@ -76,7 +78,21 @@ def analyze_masks(
     min_bubble_area: int = 10,
     roi: Optional[ROI] = None,
     edge_policy: EdgeBubblePolicy = EdgeBubblePolicy.INCLUDE,
+    *,
+    real_units_per_pixel: float,
+    view_depth: float,
 ) -> GasHoldupResult:
+    """Estimate holdup from individual equivalent spheres in a calibrated ROI volume.
+
+    Diameters remain in pixels; volumes use the calibration's actual length unit cubed.
+    View depth must use that same length unit. ROI-clipped instance areas supply size.
+    """
+    scale = float(real_units_per_pixel)
+    depth = float(view_depth)
+    if not math.isfinite(scale) or scale <= 0:
+        raise ValueError("Real Units Per Pixel must be greater than 0.")
+    if not math.isfinite(depth) or depth <= 0:
+        raise ValueError("Field-of-view Depth must be greater than 0.")
     frame_height, frame_width = _normalize_frame_shape(frame_shape)
     resolved_roi = (roi or ROI()).resolve((frame_height, frame_width))
     x1, y1, x2, y2 = resolved_roi
@@ -114,14 +130,19 @@ def analyze_masks(
     ratio_percent = 100.0 * bubble_area / roi_area
     diameters = [2.0 * math.sqrt(area / math.pi) for area in instance_areas]
     average_diameter = float(np.mean(diameters)) if diameters else 0.0
+    # Projected overlaps remain separate bubble instances for the volume estimate.
+    bubble_volume = sum(math.pi * (diameter * scale) ** 3 / 6.0 for diameter in diameters)
+    roi_volume = roi_area * scale ** 2 * depth
 
     return GasHoldupResult(
         bubble_count=len(accepted_masks),
         bubble_area=bubble_area,
         roi_area=roi_area,
         bubble_area_ratio=ratio_percent,
-        gas_holdup=ratio_percent,
+        gas_holdup=100.0 * bubble_volume / roi_volume,
         average_diameter=average_diameter,
         accepted_masks=tuple(accepted_masks),
         roi_bounds=resolved_roi,
+        bubble_volume=bubble_volume,
+        roi_volume=roi_volume,
     )

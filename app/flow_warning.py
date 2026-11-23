@@ -16,6 +16,7 @@ from app.analysis import save_plot
 from app.config import IMAGE_EXTENSIONS, VIDEO_EXTENSIONS, local_path
 from app.storage import ToolError
 from app.vision import source_hash
+from app.vision.tracking import SEQUENCE_CONFIDENCE, TRACKER_SOURCES
 from app.yolo_adapter import adapter as yolo
 
 
@@ -43,6 +44,11 @@ class FlowSettings(BaseModel):
     roi_height: int = Field(default=0, ge=0)
     min_area: int = Field(default=10, ge=1)
     max_distance: float = Field(default=40, gt=0)
+    track_low_thresh: float = Field(default=SEQUENCE_CONFIDENCE, ge=0.01, lt=1)
+    track_high_thresh: float = Field(default=0.6, gt=0, le=1)
+    new_track_thresh: float = Field(default=0.7, gt=0, le=1)
+    match_thresh: float = Field(default=0.8, gt=0, le=1)
+    bubble_max_lost_frames: int = Field(default=3, ge=0)
     acquisition_confirmed: bool = False
     normal_baseline_confirmed: bool = False
 
@@ -52,6 +58,8 @@ class FlowSettings(BaseModel):
             raise ValueError("请确认基线属于正常工况，且两段数据使用相同的真实采集帧率、连续时间口径、标定和 ROI。")
         if self.fps * self.window_seconds < 2:
             raise ValueError("每个时间窗口至少需要两帧。")
+        if not self.track_low_thresh < self.track_high_thresh <= self.new_track_thresh:
+            raise ValueError("追踪置信度须满足低分 < 高分 ≤ 新生阈值。")
         return self
 
 
@@ -82,7 +90,8 @@ def save_flow_config(session, request, settings):
     config = request.model_dump()
     config.update(config_id=uuid.uuid4().hex[:12], baseline_path=str(baseline), input_path=str(source),
                   model_path=str(local_path(settings.yolo_model_path)),
-                  confidence=settings.confidence, device=settings.yolo_device, frames_per_window=frames_per_window)
+                  confidence=request.track_low_thresh, device=settings.yolo_device,
+                  frames_per_window=frames_per_window)
     session.flow_configs[config["config_id"]] = config
     return config
 
@@ -101,7 +110,8 @@ class FlowWarningAdapter:
 
                 self.modules = (workflow, rules)
                 self.source_hash = source_hash("flow_warning/workflow.py", "flow_warning/measurements.py",
-                    "flow_warning/rules.py", "gas_holdup.py", "image_io.py", "inference.py", "predictor.py")
+                    "flow_warning/rules.py", "gas_holdup.py", "frames.py", "image_io.py", "inference.py", "predictor.py",
+                    *TRACKER_SOURCES)
             return self.modules
 
     def run(self, context, config):
@@ -115,7 +125,9 @@ class FlowWarningAdapter:
             output_dir=str(context.output_dir / "flow_warning"), settings=upstream_settings,
             roi=workflow.ROI(*(config[key] for key in ("roi_x", "roi_y", "roi_width", "roi_height"))),
             min_area=config["min_area"], max_distance=config["max_distance"], predict_conf=config["confidence"],
-            device=config["device"], distance_unit="mm")
+            device=config["device"], distance_unit="mm",
+            **{name: config[name] for name in ("track_low_thresh", "track_high_thresh", "new_track_thresh",
+                                               "match_thresh", "bubble_max_lost_frames") if name in config})
         windows = []
         last_progress = 0
 
@@ -219,6 +231,7 @@ class FlowWarningAdapter:
                 "median": float(np.median(values)) if values else None, "baseline": limits.get(metric)}
         return {"status": "partial" if summary["stopped"] else "success", "kind": "flow_warning",
             "config_id": config["config_id"], "config": config, "backend_source_hash": self.source_hash,
+            "tracking_method": "BubbleBoTSORT",
             "baseline_frames": summary["baseline_frames"], "processed_frames": summary["processed_frames"],
             "stopped": summary["stopped"], "event_count": len(events), "events": events,
             "latest_state": latest["state"] if latest else "insufficient", "groups": group_summaries,

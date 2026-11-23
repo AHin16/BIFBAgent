@@ -10,8 +10,9 @@ import tempfile
 import cv2
 import numpy as np
 
+from ..frames import FrameSource, read_segmentation
 from ..gas_holdup import ROI
-from ..image_io import get_image_list, read_image, write_image
+from ..image_io import write_image
 from ..inference import create_predictor
 from .measurements import FrameMeasurer
 from .rules import GROUPS, WarningEngine, WarningSettings, aggregate_window, fit_baseline
@@ -33,6 +34,11 @@ class FlowWarningConfig:
     high_quality_segmentation: bool = True
     device: str = "auto"
     distance_unit: str = "mm"
+    track_high_thresh: float = 0.6
+    track_low_thresh: float = 0.1
+    new_track_thresh: float = 0.7
+    match_thresh: float = 0.8
+    bubble_max_lost_frames: int = 3
 
     def validate(self):
         self.settings.validate()
@@ -52,59 +58,15 @@ class FlowWarningConfig:
             raise ValueError("关联距离和最小面积必须为正数。")
         if not 0 <= self.predict_conf <= 1 or not 0 <= self.predict_iou <= 1:
             raise ValueError("分割置信度和 IoU 必须在 0 到 1 之间。")
+        thresholds = (self.track_low_thresh, self.track_high_thresh, self.new_track_thresh, self.match_thresh)
+        if (not all(math.isfinite(value) for value in thresholds)
+                or not 0 <= self.track_low_thresh < self.track_high_thresh <= self.new_track_thresh <= 1
+                or not 0 < self.match_thresh <= 1):
+            raise ValueError("追踪置信度须满足低分 < 高分 ≤ 新生阈值，关联阈值须在 (0, 1] 内。")
+        if not isinstance(self.bubble_max_lost_frames, int) or self.bubble_max_lost_frames < 0:
+            raise ValueError("最大重连间隔须为非负整数帧。")
         if not re.fullmatch(r"[A-Za-zµμ]{1,12}", self.distance_unit):
             raise ValueError("长度单位应为 mm、cm 等字母标签。")
-
-
-class FrameSource:
-    def __init__(self, path):
-        self.path = Path(path)
-        self.images = get_image_list(str(path)) if self.path.is_dir() else None
-        self.total = len(self.images) if self.images is not None else 0
-        if self.images is not None and not self.images:
-            raise ValueError(f"没有找到图像：{path}")
-
-    def __iter__(self):
-        if self.images is not None:
-            for frame_id, path in enumerate(self.images, 1):
-                try:
-                    frame = read_image(path)
-                except (OSError, ValueError, cv2.error):
-                    frame = None
-                yield frame_id, str(path), frame
-            return
-        capture = cv2.VideoCapture(str(self.path))
-        if not capture.isOpened():
-            capture.release()
-            raise ValueError(f"无法打开视频：{self.path}")
-        self.total = max(0, int(capture.get(cv2.CAP_PROP_FRAME_COUNT)))
-        try:
-            frame_id = 1
-            while True:
-                ok, frame = capture.read()
-                if not ok:
-                    if self.total and frame_id <= self.total:
-                        raise ValueError(f"视频在第 {frame_id} 帧提前解码失败，请检查输入文件。")
-                    break
-                yield frame_id, f"{self.path}#{frame_id}", frame
-                frame_id += 1
-        finally:
-            capture.release()
-
-
-def extract_masks(info, shape):
-    masks = info.get("mask_arrays", [])
-    if masks:
-        return [np.asarray(mask, dtype=np.uint8) for mask in masks]
-    masks = []
-    for polygon in info.get("mask_polygons", []):
-        if polygon is None or len(polygon) < 3:
-            continue
-        mask = np.zeros(shape[:2], dtype=np.uint8)
-        points = np.rint(polygon).astype(np.int32).reshape((-1, 1, 2))
-        cv2.fillPoly(mask, [points], 1)
-        masks.append(mask)
-    return masks
 
 
 def render_overlay(frame, masks, measurement, roi, status):
@@ -192,7 +154,8 @@ def run_flow_warning(config, progress_callback=None, stop_event=None, predictor_
         for writer in (frame_writer, track_writer, window_writer):
             writer.writeheader()
         for phase, source in sources.items():
-            measurer = FrameMeasurer(config.roi, settings.pixel_scale, config.min_area, config.max_distance)
+            measurer = FrameMeasurer(config.roi, settings.pixel_scale, config.min_area, config.max_distance,
+                                     tracker_settings=config)
             pending = []
             iterator = iter(source)
             try:
@@ -207,15 +170,13 @@ def run_flow_warning(config, progress_callback=None, stop_event=None, predictor_
                     if frame is not None and frame.shape[:2] != expected_shape:
                         error = "frame_shape_changed"
                     masks = []
+                    detections = None
                     if not error:
                         detections, info = predictor.predict(frame)
-                        masks = extract_masks(info, frame.shape)
-                        boxes = info.get("mask_boxes", [])
-                        detection_count = len(boxes) if len(boxes) else (len(detections) if detections is not None else 0)
-                        if detection_count > len(masks):
-                            error = "missing_segmentation_masks"
+                        masks, error = read_segmentation(detections, info, frame.shape)
                     shape = expected_shape or (2, 2)
-                    measured = measurer.measure(masks, shape, frame_id, (frame_id - 1) / settings.fps, error=error)
+                    measured = measurer.measure(masks, shape, frame_id, (frame_id - 1) / settings.fps,
+                                                error=error, detections=detections)
                     measured.source = path
                     frame_writer.writerow({
                         "phase": phase, "frame": frame_id, "time": measured.timestamp, "source": path,

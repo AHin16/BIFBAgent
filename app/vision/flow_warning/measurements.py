@@ -2,7 +2,8 @@ from dataclasses import dataclass, field
 import math
 
 import numpy as np
-from scipy.optimize import linear_sum_assignment
+
+from ..tracking.bubble_matching import BubbleBoTSORT, detection_rows
 
 
 @dataclass
@@ -21,26 +22,42 @@ class FrameMeasurement:
 
 
 class FrameMeasurer:
-    def __init__(self, roi, scale=0.01, min_area=10, max_distance=40):
+    def __init__(self, roi, scale=0.01, min_area=10, max_distance=40, tracker_settings=None):
         self.roi = roi
         self.scale = scale
         self.min_area = min_area
         self.max_distance = max_distance
-        self.previous = []
+        config = tracker_settings
+        self.tracker = BubbleBoTSORT(
+            high=config.track_high_thresh if config else 0.6,
+            low=config.track_low_thresh if config else 0.1,
+            new=config.new_track_thresh if config else 0.7,
+            match=config.match_thresh if config else 0.8,
+            max_lost_frames=config.bubble_max_lost_frames if config else 3,
+            ambiguity_margin=0.05,
+        )
+        self.observations = {}
         self.previous_frame = None
-        self.next_id = 1
+        self.previous_timestamp = None
 
-    def measure(self, masks, shape, frame_id, timestamp, error=""):
+    def measure(self, masks, shape, frame_id, timestamp, error="", detections=None):
         result = FrameMeasurement(frame_id, timestamp, valid=not bool(error), reason=error)
         if error:
-            self.previous = []
+            self._reset_association()
             self.previous_frame = frame_id
+            self.previous_timestamp = None
             return result
+        if detections is not None:
+            detections = detection_rows(detections)
+            if (detections.ndim != 2 or detections.shape[0] != len(masks)
+                    or detections.shape[1] not in (6, 7) or not np.isfinite(detections).all()
+                    or np.any(detections[:, 2:4] <= detections[:, :2])):
+                return self.measure([], shape, frame_id, timestamp, error="invalid_detections")
         height, width = shape[:2]
         x1, y1, x2, y2 = self.roi.resolve(shape)
         union = np.zeros((y2 - y1, x2 - x1), dtype=bool)
-        complete = []
-        for source_mask in masks:
+        tracking_detections = []
+        for source_index, source_mask in enumerate(masks):
             mask = np.asarray(source_mask, dtype=bool)
             if mask.ndim != 2 or mask.shape != (height, width):
                 return self.measure([], shape, frame_id, timestamp, error="invalid_mask_shape")
@@ -62,36 +79,71 @@ class FrameMeasurer:
                 "turn_angle": None, "reason": "roi_or_image_edge" if touches_edge else "",
             }
             result.samples.append(sample)
+            if detections is None:
+                full_y, full_x = np.nonzero(mask)
+                tracking_detections.append([full_x.min(), full_y.min(), full_x.max()+1, full_y.max()+1, 1, 0])
+            else:
+                tracking_detections.append(detections[source_index])
             if not touches_edge:
                 sample["diameter"] = 2 * math.sqrt(area / math.pi) * self.scale
                 result.diameters.append(sample["diameter"])
-                complete.append(sample)
         result.bubble_count = len(result.samples)
         result.area_ratio = float(union.sum()) / union.size * 100
-        result.complete_count = len(complete)
+        result.complete_count = len(result.diameters)
+        self._measure_motion(result, tracking_detections, shape, frame_id, timestamp)
+        return result
+
+    def _reset_association(self):
+        self.tracker.reset()
+        self.observations.clear()
+
+    def _measure_motion(self, result, detections, shape, frame_id, timestamp):
         has_time = timestamp is not None and math.isfinite(timestamp)
         gap = self.previous_frame is not None and frame_id != self.previous_frame + 1
-        matches = self._associate(complete) if has_time and not gap else {}
-        for sample_index, sample in enumerate(complete):
-            match = matches.get(sample_index)
-            if not has_time:
-                sample["reason"] = "missing_time"
-            elif gap:
+        invalid_time = (has_time and self.previous_timestamp is not None
+                        and timestamp <= self.previous_timestamp)
+        if not has_time or gap or invalid_time:
+            self._reset_association()
+        self.previous_frame = frame_id
+        self.previous_timestamp = timestamp if has_time else None
+        if not has_time or invalid_time:
+            for sample in result.samples:
+                if not sample["reason"]:
+                    sample["reason"] = "missing_time" if not has_time else "invalid_time"
+            return
+        self.tracker.frame_id = frame_id - 1
+        frame = np.broadcast_to(np.uint8(0), (*shape[:2], 3))
+        values = np.asarray(detections, dtype=np.float32) if detections else np.empty((0, 6), np.float32)
+        tracks = {track.bubble_detection_index: track for track in self.tracker.update(values, frame)}
+        for sample_index, sample in enumerate(result.samples):
+            track = tracks.get(sample_index)
+            if track is None:
+                if not sample["reason"]:
+                    sample["reason"] = "unmatched_or_confidence"
+                continue
+            track_id = int(track.track_id)
+            sample["track_id"] = track_id
+            if sample["reason"]:
+                self.observations.pop(track_id, None)
+                continue
+            prior = self.observations.get(track_id)
+            if gap:
                 sample["reason"] = "frame_gap"
-            elif isinstance(match, str):
-                sample["reason"] = match
-            elif match is None:
-                sample["reason"] = "new_track" if not self.previous else "unmatched_or_distance"
+            elif track.bubble_ambiguous_match:
+                sample["reason"] = "ambiguous_match"
+            elif prior is None:
+                sample["reason"] = "new_track"
             else:
-                elapsed = timestamp - match["time"]
-                if elapsed <= 0:
-                    sample["reason"] = "invalid_time"
+                elapsed = timestamp - prior["time"]
+                delta = np.array([sample["x"] - prior["x"], sample["y"] - prior["y"]])
+                frame_gap = frame_id - prior["frame"]
+                if (np.linalg.norm(delta) > self.max_distance * frame_gap
+                        or not 0.5 <= sample["area_px"] / prior["area_px"] <= 2):
+                    sample["reason"] = "unmatched_or_distance"
                 else:
-                    sample["track_id"] = match["track_id"]
-                    delta = np.array([sample["x"] - match["x"], sample["y"] - match["y"]])
                     sample["vx"] = float(delta[0] * self.scale / elapsed)
                     sample["rise_velocity"] = float(-delta[1] * self.scale / elapsed)
-                    previous_delta = match.get("delta")
+                    previous_delta = prior.get("delta")
                     if previous_delta is not None:
                         denominator = np.linalg.norm(previous_delta) * np.linalg.norm(delta)
                         if denominator > 1e-8:
@@ -99,36 +151,7 @@ class FrameMeasurer:
                             sample["turn_angle"] = float(np.degrees(np.arccos(cosine)))
                     sample["delta"] = delta
                     result.velocities.append(sample["rise_velocity"])
-            if sample["track_id"] is None:
-                sample["track_id"] = self.next_id
-                self.next_id += 1
-        self.previous = complete if has_time else []
-        self.previous_frame = frame_id
-        return result
-
-    def _associate(self, current):
-        if not current or not self.previous:
-            return {}
-        distances = np.array([
-            [math.hypot(item["x"] - prior["x"], item["y"] - prior["y"]) for prior in self.previous]
-            for item in current
-        ])
-        plausible = np.array([
-            [0.5 <= item["area_px"] / prior["area_px"] <= 2 for prior in self.previous]
-            for item in current
-        ]) & (distances <= self.max_distance)
-        costs = np.where(plausible, distances, 1e9)
-        rows, columns = linear_sum_assignment(costs)
-        matches = {}
-        for row, column in zip(rows, columns):
-            if not plausible[row, column]:
-                continue
-            distance = distances[row, column]
-            row_alternatives = np.delete(costs[row], column)
-            column_alternatives = np.delete(costs[:, column], row)
-            margin = max(1.0, distance * 0.25)
-            if np.any(row_alternatives <= distance + margin) or np.any(column_alternatives <= distance + margin):
-                matches[int(row)] = "ambiguous_match"
-            else:
-                matches[int(row)] = self.previous[int(column)]
-        return matches
+            self.observations[track_id] = dict(sample)
+        max_gap = self.tracker.max_time_lost
+        self.observations = {key: sample for key, sample in self.observations.items()
+                             if frame_id - sample["frame"] <= max_gap}

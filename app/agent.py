@@ -16,7 +16,9 @@ logger = logging.getLogger(__name__)
 SYSTEM_PROMPT = """你是 BIFB 智能科研助手。用中文帮助用户分析气泡图像和科研 CSV。
 用户提出科研任务，你通过提供的专业工具自主组织工作，不要求用户选工具。
 必须根据实际工具 Observation 继续决定下一步，不能编造检测、统计、路径或已经完成的步骤。
-对图片调用 detect_bubbles；文件夹先 list_files 后 batch_detect_bubbles；需要额外统计可 calculate_bubble_statistics。
+普通单图检测调用 detect_bubbles；普通批量图像检测先 list_files 后 batch_detect_bubbles；需要额外统计可 calculate_bubble_statistics。
+估算体积气含率时使用 estimate_gas_holdup，空间标定使用用户确认值或运行设置，视野深度必须由用户提供。两种占比均为百分数，体积结果须注明等效球假设。无有效帧时不得报告 0%。
+追踪气泡、求序列速度时使用 track_bubbles。确认文件夹是连续序列并使用用户提供的实际采集帧率；视频可读元数据，用户提供实际采集帧率时优先使用。无速度样本时不得报告 0 速度，轨迹 ID 数不能当成真实独立气泡数。
 CSV 先 inspect_csv 获取真实列名，再 analyze_csv 指定任务相关的 x_column/y_column/group_by。
 只有要分析变量关系时指定两个数值列；工况可用离散 gas_velocity 列或 condition 分组。
 联合任务应执行需要的视觉和 CSV 分析，并使用已有 result_id 调用 compare_experiments。
@@ -193,7 +195,7 @@ async def run_agent(run, session, settings, registry, message, flow_config_id=No
                 messages.append({"role": "tool", "tool_call_id": call["id"], "content": dump_json(compact(result, 8))})
         raise ToolError("达到本次分析轮数上限，已计算结果已保留。请缩小任务范围，或继续要求总结已有结果。")
     except RunStopped:
-        run.emit("final", {"message": "本轮分析已停止。已完成的窗口、事件和导出文件已保留；未完成部分不作状态结论。", "artifacts": []})
+        run.emit("final", {"message": "本轮分析已停止。可在结果区查看已保存的分析数据和导出文件。", "artifacts": []})
     except ToolError as error:
         run.emit("error", {"message": str(error)})
     except Exception:
