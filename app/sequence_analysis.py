@@ -104,11 +104,23 @@ def register_sequence_tools(registry):
             "backend_source_hash": backend_source_hash, "method": "equivalent_sphere_volume",
             "gas_holdup_percent": describe([row["gas_holdup_percent"] for row in samples]),
             "bubble_area_ratio_percent": describe([row["bubble_area_ratio_percent"] for row in samples]),
-            "frames": samples[:12], "artifacts": artifacts,
+            "frames": samples[:12], "raw_rows": samples + errors, "artifacts": artifacts,
             "limitations": ["体积基于等效球假设，视野深度、标定、遮挡和截断都会影响估算。",
                             "二维面积按 ROI 掩膜并集计算，体积对每个有效实例求和。汇总均值按有效帧等权。",
                             "weighted 与 include 均按 ROI 内可见面积计算。缺失掩膜或无效帧从统计中排除。"],
         }
+
+    @registry.register("查看已有气含率结果中指定编号的原始帧数据，包括体积、二维占比、气泡数量、直径和无效原因。无需重跑 YOLO。")
+    def inspect_gas_holdup_frame(context, result_id: str, frame: Annotated[int, Field(ge=1)]):
+        result = context.result(result_id)
+        if result.get("kind") != "gas_holdup":
+            raise ToolError("请选择气含率估算结果。")
+        rows = result.get("raw_rows", result["frames"] + result["invalid_examples"])
+        row = next((item for item in rows if item["frame"] == frame), None)
+        if row is None:
+            raise ToolError(f"气含率结果中没有第 {frame} 帧的数据。")
+        return {"source_result_id": result_id, "frame_metrics": row, "series_summary": result["gas_holdup_percent"],
+                "limitations": result["limitations"][:2]}
 
     @registry.register("对会话中已添加的连续图像文件夹或本地视频进行气泡追踪，导出轨迹、运动 CSV、标注 MP4 和预览。图像目录必须提供用户给出的实际采集帧率 fps；视频优先使用用户给出的帧率，否则读取文件帧率。未标定时报告 px/s。")
     def track_bubbles(context, source_path: str, fps: AcquisitionFps | None = None,

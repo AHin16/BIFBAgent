@@ -15,7 +15,7 @@ from PIL import Image, UnidentifiedImageError
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from app.agent import Run, run_agent
+from app.agent import Run, run_agent, run_holdup
 from app.analysis import register_data_tools
 from app.config import DATA, IMAGE_EXTENSIONS, INPUT_EXTENSIONS, ROOT, Settings, load_settings, local_path, save_settings
 from app.llm import LLMClient
@@ -25,7 +25,7 @@ from app.h3_demo_tool import register_h3_demo_tool
 from app.knowledge import knowledge_store, register_knowledge_tools
 from app.registry import ToolRegistry
 from app.sequence_analysis import register_sequence_tools
-from app.storage import Session, ToolError, dump_json
+from app.storage import Session, ToolError, compact, dump_json
 from app.yolo_adapter import register_vision_tools
 from app.ug_bubble_predictor import available_prediction_heights, register_ug_prediction_tool
 from app.condition_vision import available_conditions, register_condition_vision
@@ -60,6 +60,7 @@ register_flow_tools(registry)
 register_knowledge_tools(registry)
 register_ug_prediction_tool(registry)
 register_h3_demo_tool(registry)
+HoldupRequest = registry.tools["estimate_gas_holdup"].schema
 
 
 @app.middleware("http")
@@ -287,8 +288,11 @@ def knowledge_file(document_id: str):
 @app.get("/api/sessions/{session_id}")
 def session_state(session_id: str):
     session = get_session(session_id)
+    holdup = next((value for value in reversed(list(session.results.values()))
+                   if value.get("kind") == "gas_holdup"), None)
     return {"session_id": session.id, "assets": session.assets, "history": session.history, "busy": session.busy,
             "flow_config": list(session.flow_configs.values())[-1] if session.flow_configs else None,
+            "holdup_result": compact(holdup) if holdup is not None else None,
             "knowledge_citations": list(session.knowledge_citations.values())}
 
 
@@ -309,6 +313,7 @@ def configure_flow(session_id: str, payload: FlowSettings):
 
 class LocalInput(BaseModel):
     path: str = Field(min_length=1, max_length=4096)
+    image_only: bool = False
 
 
 @app.get('/api/optimization/conditions')
@@ -320,6 +325,10 @@ def optimization_conditions():
 def add_path(session_id: str, payload: LocalInput):
     session = get_session(session_id)
     ensure_idle(session)
+    if payload.image_only:
+        path = local_path(payload.path)
+        if path.is_file() and path.suffix.lower() not in IMAGE_EXTENSIONS:
+            raise ToolError("气含率估算需要图片文件或图片文件夹。")
     return session.grant(payload.path)
 
 
@@ -454,6 +463,7 @@ class ChatInput(BaseModel):
     knowledge_mode: bool = False
     knowledge_document_ids: list[str] | None = None
     optimization: OptimizationInput | None = None
+    holdup_result_id: str | None = None
 
 
 @app.post("/api/sessions/{session_id}/chat")
@@ -516,6 +526,8 @@ async def chat(session_id: str, payload: ChatInput):
         if config.prediction_mm_per_pixel is not None:
             optimization['prediction_mm_per_pixel'] = config.prediction_mm_per_pixel
             optimization['calibration_confirmed'] = True
+    if payload.holdup_result_id and session.results.get(payload.holdup_result_id, {}).get("kind") != "gas_holdup":
+        raise ToolError("找不到本会话的气含率结果，请重新估算。")
     available_ids = {document["id"] for document in knowledge_store.documents()}
     if payload.knowledge_mode and not available_ids:
         raise ToolError("请先导入至少一篇知识文档。")
@@ -525,7 +537,19 @@ async def chat(session_id: str, payload: ChatInput):
     run = Run(session.id)
     runs[run.id] = run
     run.task = asyncio.create_task(run_agent(run, session, settings.model_copy(), registry, payload.message.strip(), payload.flow_config_id,
-                                           payload.knowledge_mode, payload.knowledge_document_ids, optimization))
+                                           payload.knowledge_mode, payload.knowledge_document_ids, optimization,
+                                           holdup_result_id=payload.holdup_result_id))
+    return {"run_id": run.id}
+
+
+@app.post("/api/sessions/{session_id}/holdup")
+async def estimate_holdup(session_id: str, payload: HoldupRequest):
+    session = get_session(session_id)
+    ensure_idle(session)
+    session.busy = True
+    run = Run(session.id)
+    runs[run.id] = run
+    run.task = asyncio.create_task(run_holdup(run, session, settings.model_copy(), registry, payload.model_dump()))
     return {"run_id": run.id}
 
 

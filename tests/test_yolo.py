@@ -115,6 +115,51 @@ class BuiltinYoloTest(unittest.TestCase):
             finally:
                 sessions.pop(session_id, None)
 
+    def test_holdup_page_runs_without_llm_and_can_query_later_frames(self):
+        from app.main import app, registry, runs, sessions
+
+        folder = self.root / "batch"
+        folder.mkdir()
+        image = np.zeros((32, 32, 3), dtype=np.uint8)
+        for index in range(1, 14):
+            image_io.write_image(str(folder / f"{index:02}.png"), image)
+        mask = np.zeros(image.shape[:2], dtype=np.uint8)
+        mask[10:16, 10:16] = 1
+        predictor = Mock(task="segment")
+        predictor.predict.return_value = (np.array([[10, 10, 16, 16, 0.9, 0]]), {"mask_arrays": [mask]})
+        self.assertFalse(self.settings.llm_ready)
+
+        with patch("app.main.settings", self.settings), patch("app.sequence_analysis.yolo") as backend, TestClient(app) as client:
+            backend.predictor = predictor
+            session_id = client.post("/api/sessions").json()["session_id"]
+            path = f"/api/sessions/{session_id}"
+            run_id = None
+            try:
+                self.assertEqual(client.post(f"{path}/paths", json={"path": str(folder), "image_only": True}).status_code, 200)
+                payload = {"source_path": str(folder), "view_depth_mm": 10}
+                invalid = client.post(f"{path}/holdup", json={**payload, "view_depth_mm": 0})
+                self.assertEqual(invalid.status_code, 422)
+                response = client.post(f"{path}/holdup", json=payload)
+                self.assertEqual(response.status_code, 200, response.text)
+                run_id = response.json()["run_id"]
+                stream = client.get(f"/api/runs/{run_id}/events")
+                events = [json.loads(line[6:]) for line in stream.text.splitlines() if line.startswith("data: ")]
+                self.assertTrue(events[-1]["success"], events)
+                self.assertTrue(any(event["type"] == "progress" for event in events))
+                result = client.get(path).json()["holdup_result"]
+                self.assertEqual(result["valid_frames"], 13)
+                self.assertNotIn("raw_rows", result)
+                self.assertFalse(any(row["frame"] == 13 for row in result["frames"]))
+
+                context = ToolContext(sessions[session_id], self.settings, run_id)
+                evidence = registry.execute("inspect_gas_holdup_frame", {"result_id": result["result_id"], "frame": 13}, context)
+                self.assertEqual(evidence["frame_metrics"]["frame"], 13)
+                self.assertGreater(evidence["frame_metrics"]["gas_holdup_percent"], 0)
+            finally:
+                sessions.pop(session_id, None)
+                if run_id:
+                    runs.pop(run_id, None)
+
 
 if __name__ == "__main__":
     unittest.main()
