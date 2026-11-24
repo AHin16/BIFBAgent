@@ -18,6 +18,18 @@ plt.rcParams.update({"font.sans-serif": ["Microsoft YaHei", "SimHei", "DejaVu Sa
                      "axes.spines.top": False, "axes.spines.right": False})
 
 
+def chart_column_label(name):
+    """Translate known experimental fields without changing user-provided data."""
+    labels={
+        'Q_m3_h':'气体流量 Q (m³/h)', 'Ug_m_s':'表观气速 Ug (m/s)', 'Ug_mm_s':'表观气速 Ug (mm/s)',
+        'salinity_wt_pct':'盐度 (wt%)', 'PL_fraction':'颗粒装载量 PL（体积分数）',
+        'height_m':'拍摄高度 (m)', 'height_id':'拍摄高度', 'diameter_px':'气泡直径 (px)',
+        'd50_px':'中位气泡直径 (px)', 'd10_px':'气泡直径 P10 (px)', 'd90_px':'气泡直径 P90 (px)',
+        'bubble_count':'气泡数量', 'confidence':'识别置信度', 'area_px2':'气泡面积 (px²)',
+    }
+    return labels.get(name,name)
+
+
 def read_csv(path):
     if path.suffix.lower() != ".csv":
         raise ToolError("请选择 CSV 文件。")
@@ -131,9 +143,9 @@ def register_data_tools(registry):
         if target and numeric[target].notna().any():
             def histogram(axes):
                 axes.hist(numeric[target].dropna(), bins="auto", color="#167d72", edgecolor="white")
-                axes.set_xlabel(target)
+                axes.set_xlabel(chart_column_label(target))
                 axes.set_ylabel("样本数")
-            artifacts.append(save_plot(context, f"{target} · 分布", histogram))
+            artifacts.append(save_plot(context, f"{chart_column_label(target)} · 分布", histogram))
         pair = None
         if x_column and y_column:
             paired = numeric[[x_column, y_column]].dropna()
@@ -153,8 +165,8 @@ def register_data_tools(registry):
                     limits = np.array([paired[x_column].min(), paired[x_column].max()])
                     axes.plot(limits, slope * limits + intercept, color="#ce8b46", label="线性拟合")
                     axes.legend()
-                axes.set_xlabel(x_column)
-                axes.set_ylabel(y_column)
+                axes.set_xlabel(chart_column_label(x_column))
+                axes.set_ylabel(chart_column_label(y_column))
             artifacts.append(save_plot(context, "变量关系 · 观测与线性趋势", scatter))
         groups = []
         if group_by:
@@ -170,8 +182,8 @@ def register_data_tools(registry):
                     means = [item["statistics"][target]["mean"] for item in groups]
                     axes.bar(labels, [value if value is not None else np.nan for value in means], color="#167d72")
                     axes.tick_params(axis="x", labelrotation=35)
-                    axes.set_xlabel(group_by)
-                    axes.set_ylabel(f"{target} 均值")
+                    axes.set_xlabel(chart_column_label(group_by))
+                    axes.set_ylabel(f"{chart_column_label(target)} 均值")
                 artifacts.append(save_plot(context, "不同工况 · 均值比较", grouped_plot))
         summary_path = context.output("statistics.csv")
         pd.DataFrame(statistics).T.rename_axis("column").to_csv(summary_path, encoding="utf-8-sig")

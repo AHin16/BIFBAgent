@@ -89,6 +89,7 @@ class YoloAdapter:
         return {"source": str(path), "bubble_count": len(measurements), "unit": unit,
                 "mean_confidence": float(np.mean([row["confidence"] for row in measurements])) if measurements else None,
                 "statistics": describe([row["diameter"] for row in measurements]),
+                "statistics_px": describe([row["diameter_px"] for row in measurements]),
                 "measurement_method": sorted(methods), "measurements": measurements,
                 "model": str(local_path(context.settings.yolo_model_path)), "model_classes": names,
                 "backend": "app.vision.PredictorYolo11", "backend_source_hash": backend_hash,

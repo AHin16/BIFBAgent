@@ -19,7 +19,7 @@
       <button class="nav-item" data-nav="workbench"><svg><use href="/static/icons.svg#image"></use></svg>实验分析</button>
       <button class="nav-item" data-nav="flow"><svg><use href="/static/icons.svg#layers"></use></svg>流态监测预警</button>
       <button class="nav-item" data-sequence="holdup"><svg><use href="/static/icons.svg#flow"></use></svg>气含率估算</button>
-      <button class="nav-item" data-coming="运行参数优化"><svg><use href="/static/icons.svg#settings"></use></svg>运行参数优化</button>
+      <button class="nav-item" data-nav="optimization"><svg><use href="/static/icons.svg#settings"></use></svg>运行参数优化</button>
       <button class="nav-item" data-nav="knowledge"><svg><use href="/static/icons.svg#book"></use></svg>专业知识问答</button>
     </nav>
     <div class="sidebar-bottom">
@@ -45,7 +45,7 @@
         <button class="feature-card" data-nav="workbench"><span class="feature-icon"><svg><use href="/static/icons.svg#image"></use></svg></span><h3>实验分析</h3><p>图像检测与追踪 · CSV 统计与比较</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-nav="flow"><span class="feature-icon"><svg><use href="/static/icons.svg#layers"></use></svg></span><h3>流态监测预警</h3><p>基线对比 · 持续异常分析</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-sequence="holdup"><span class="feature-icon"><svg><use href="/static/icons.svg#chart"></use></svg></span><h3>气含率估算</h3><p>等效球体积 · 二维面积占比</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
-        <button class="feature-card" data-coming="运行参数优化"><span class="feature-icon"><svg><use href="/static/icons.svg#settings"></use></svg></span><h3>运行参数优化</h3><p>参数搜索 · 约束检查</p><span class="feature-state">推进中</span></button>
+        <button class="feature-card" data-nav="optimization"><span class="feature-icon"><svg><use href="/static/icons.svg#settings"></use></svg></span><h3>运行参数优化</h3><p>当前气泡检测 · 目标气速预测</p><span class="feature-state available">探索性预测 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-nav="knowledge"><span class="feature-icon"><svg><use href="/static/icons.svg#book"></use></svg></span><h3>专业知识问答</h3><p>原文检索 · 有据可查</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
       </div>
       <section class="welcome-card">
@@ -53,7 +53,7 @@
         <div class="home-suggestions">
           <button data-home-prompt="分析这个实验文件夹里的气泡图片，统计数量和尺寸分布。"><svg><use href="/static/icons.svg#image"></use></svg>分析气泡图像的尺寸分布<span>↗</span></button>
           <button data-home-prompt="分析这个 CSV，看看不同气速下的气泡直径变化，并比较不同工况。"><svg><use href="/static/icons.svg#chart"></use></svg>探索气速与气泡直径的关系<span>↗</span></button>
-          <button data-coming="运行参数优化"><svg><use href="/static/icons.svg#settings"></use></svg>在约束条件下优化运行参数<span>↗</span></button>
+          <button data-home-prompt="当前气体流量为1.5 m³/h，目标为2.0 m³/h，盐度1 wt%，颗粒装载量10%，高度H1。预测气泡尺寸变化，并说明模型局限。"><svg><use href="/static/icons.svg#settings"></use></svg>探索气速变化下的气泡尺寸<span>↗</span></button>
         </div>
         <form id="home-form" class="home-composer"><svg class="composer-spark"><use href="/static/icons.svg#spark"></use></svg><textarea id="home-input" rows="1" aria-label="首页科研任务" placeholder="请输入你的问题或任务需求…" maxlength="12000" required></textarea><button id="home-attach" type="button" class="attachment-button" aria-label="添加实验数据" title="添加实验数据"><svg><use href="/static/icons.svg#paperclip"></use></svg></button><button id="home-send" type="submit" class="send-button" aria-label="开始分析"><svg><use href="/static/icons.svg#send"></use></svg></button></form>
         <div class="welcome-footer"><div><button id="home-folder" class="text-button"><svg><use href="/static/icons.svg#folder"></use></svg>读取本地文件夹</button><span id="home-asset-count">尚未添加数据</span></div><span>分析结论以真实工具结果为依据</span></div>
@@ -103,6 +103,42 @@
           <div class="panel flow-live"><div class="section-heading"><h2>监测状态</h2><button id="flow-stop" class="button secondary" type="button" hidden>停止并保存</button></div><p id="flow-progress" role="status">等待任务配置</p><div class="flow-state-grid"><div id="flow-state-appearance" class="flow-state" data-state="insufficient"><span>气泡出现量</span><strong>待分析</strong><p>面积占比与数量</p></div><div id="flow-state-size" class="flow-state" data-state="insufficient"><span>大气泡变化</span><strong>待分析</strong><p>固定界限比例与 D90</p></div><div id="flow-state-motion" class="flow-state" data-state="insufficient"><span>运动状态</span><strong>待分析</strong><p>有符号速度与下行比例</p></div></div></div>
           <section class="panel flow-explanation"><div class="section-heading"><h2><svg><use href="/static/icons.svg#robot"></use></svg>LLM 流动状态分析</h2><span class="result-badge">基于真实指标</span></div><div id="flow-explanation" class="message-body"><p>工具计算完成后，模型将简要解释三类指标的变化、预警时段和数据局限。</p></div><p class="field-note">当前只进行指标与事件分析，不调用视觉大模型复核画面。</p></section>
           <div id="flow-output" class="flow-output" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+    <section id="optimization-view" class="workbench-view" aria-label="运行参数优化" hidden>
+      <div class="workbench-title"><div><span class="eyebrow">GAS VELOCITY · BUBBLE SIZE</span><h1>运行参数优化</h1><p>根据当前工况的实验照片统计，预测调整进气量后的气泡尺寸。</p></div><button class="button secondary" data-nav="home">返回首页</button></div>
+      <div class="optimization-modes" role="group" aria-label="气泡预测模式">
+        <button id="optimization-general-mode" class="button" type="button" aria-pressed="true" aria-controls="optimization-general">多工况预测</button>
+        <button id="optimization-h3-mode" class="button" type="button" aria-pressed="false" aria-controls="optimization-h3">H3 · 0.5 wt% 专项预测</button>
+      </div>
+      <div id="optimization-h3" hidden>
+        <iframe id="optimization-h3-frame" title="H3 · 0.5 wt% 盐度的气泡尺寸专项预测" data-src="/optimization/h3-demo"></iframe>
+      </div>
+      <div id="optimization-general" class="optimization-layout">
+        <form id="optimization-form" class="panel flow-config optimization-config">
+          <fieldset id="optimization-fields"><div class="section-heading"><h2>当前实验状态</h2><span class="result-badge">探索性模型</span></div>
+            <label class="upload-zone" id="optimization-drop" tabindex="0" role="button" aria-label="选择当前气泡图片"><input id="optimization-file" type="file" accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.webp" hidden><svg><use href="/static/icons.svg#upload"></use></svg><strong>选择或拖入一张图片识别当前工况</strong><span>图片用于识别工况，气泡大小来自历史同工况多张图片统计</span></label>
+            <div id="optimization-preview" class="optimization-preview" hidden><img id="optimization-image" alt="当前工况图片"><span id="optimization-filename"></span></div>
+            <p id="optimization-metadata-status" class="field-note" role="status">选择原路径图片后可自动识别工况；识别结果可手动修改。</p>
+            <details class="path-details"><summary>通过本地路径选择图片</summary><div class="flow-source-input"><input id="optimization-path" type="text" placeholder="粘贴原始图片完整路径" aria-label="原始图片完整路径"><button id="optimization-path-add" class="button secondary" type="button">读取</button></div></details>
+            <label>或选择已有的当前实验工况<select id="optimization-condition" name="condition_index"><option value="">选择已有工况（可选）</option></select></label><p class="field-note">当前气泡大小使用历史同工况图片统计，不是装置实时测量。</p>
+            <label>当前气体流量 Q（m³/h）<input name="current_q" type="number" step="any" min="1.5" max="2.3" placeholder="输入当前 Q，范围 1.5–2.3" required></label>
+            <p id="optimization-velocity-hint" class="field-note">当前和目标 Q 均支持 1.5–2.3 m³/h，可与范围内的其他参数组合。</p>
+            <div class="field-pair"><label>当前拍摄高度 H（m）<input name="height_m" type="number" step="any" min="0.2" max="1.8" placeholder="范围 0.2–1.8 m" required></label><label>盐度（wt%）<input name="salinity_wt_pct" type="number" step="any" min="0.5" max="2.5" placeholder="范围 0.5–2.5" required></label></div>
+            <label class="flow-check"><input name="use_target_height" type="checkbox"><span>预测其他高度的气泡尺寸</span></label><div id="optimization-target-height-fields" hidden><label>目标拍摄高度 H（m）<input name="target_height_m" type="number" step="any" min="0.2" max="1.8" placeholder="范围 0.2–1.8 m"></label><p class="field-note">不勾选时，目标高度等于当前高度。高度与 Q 同时改变时，预测差异包含两者影响。</p></div>
+            <label>颗粒装载量 PL（%）<input name="pl_percent" type="number" step="any" min="5" max="15" placeholder="范围 5–15%" required></label><p class="field-note">各参数在范围内可自由组合；组合超出已有数据覆盖时仍可预测，但准确性尚未验证。</p>
+            <label>目标气体流量 Q（m³/h）<input name="target_q" type="number" step="any" min="1.5" max="2.3" placeholder="输入目标 Q，范围 1.5–2.3" required></label><p id="optimization-target-hint" class="field-note">无对应实验组合时，结果将标记数据覆盖情况。</p>
+            <details class="path-details"><summary>空间标定（可选，用于显示毫米）</summary><label>每像素对应毫米数（mm/px）<input name="prediction_mm_per_pixel" type="number" step="any" min="0.000000001" placeholder="例如 0.01"></label><label class="flow-check"><input name="calibration_confirmed" type="checkbox"><span>我已核实此比例尺适用于当前照片及模型使用的各工况照片。</span></label><p class="field-note">没有可靠标定时留空；模型仍以像素预测，不会自行推算毫米。</p></details>
+            <p id="optimization-supported" class="field-note">正在检查模型支持的拍摄高度…</p>
+            <button id="optimization-start" class="button primary" type="submit">分析当前图片并预测</button>
+          </fieldset>
+        </form>
+        <div class="optimization-report">
+          <section class="panel optimization-intro"><div class="section-heading"><h2>分析结果</h2><span class="result-badge">实验统计 + 探索性预测</span></div><p id="optimization-progress">识别或选择当前工况后，Agent 将查询实验统计并预测目标工况。</p><div class="optimization-warning">当前工况统计来自以往实验图片，并非实时测量；目标预测不由单张上传图片推算。不同工况的视野和裁剪差异可能影响预测，不能作为可靠优化依据。</div></section>
+          <div id="optimization-output" class="flow-output" aria-live="polite"></div>
+          <section class="panel flow-explanation"><div class="section-heading"><h2>Agent 分析</h2><button id="optimization-stop" class="button secondary" type="button" hidden>停止分析</button></div><div id="optimization-explanation" class="message-body"><p>分析过程和结论将在这里显示。</p></div></section>
+          <section class="activity-panel panel"><div class="activity-heading"><h2>Agent Activity</h2></div><div id="optimization-activity" class="activity-log" aria-live="polite"><p class="activity-empty">等待开始</p></div></section>
         </div>
       </div>
     </section>
