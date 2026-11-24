@@ -18,7 +18,7 @@
       <button class="nav-item active" data-nav="home" aria-current="page"><svg><use href="/static/icons.svg#home"></use></svg>首页</button>
       <button class="nav-item" data-nav="workbench"><svg><use href="/static/icons.svg#image"></use></svg>实验分析</button>
       <button class="nav-item" data-nav="flow"><svg><use href="/static/icons.svg#layers"></use></svg>流态监测预警</button>
-      <button class="nav-item" data-sequence="holdup"><svg><use href="/static/icons.svg#flow"></use></svg>气含率估算</button>
+      <button class="nav-item" data-nav="holdup"><svg><use href="/static/icons.svg#flow"></use></svg>气含率估算</button>
       <button class="nav-item" data-coming="运行参数优化"><svg><use href="/static/icons.svg#settings"></use></svg>运行参数优化</button>
       <button class="nav-item" data-nav="knowledge"><svg><use href="/static/icons.svg#book"></use></svg>专业知识问答</button>
     </nav>
@@ -44,7 +44,7 @@
       <div class="feature-grid">
         <button class="feature-card" data-nav="workbench"><span class="feature-icon"><svg><use href="/static/icons.svg#image"></use></svg></span><h3>实验分析</h3><p>图像检测与追踪 · CSV 统计与比较</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-nav="flow"><span class="feature-icon"><svg><use href="/static/icons.svg#layers"></use></svg></span><h3>流态监测预警</h3><p>基线对比 · 持续异常分析</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
-        <button class="feature-card" data-sequence="holdup"><span class="feature-icon"><svg><use href="/static/icons.svg#chart"></use></svg></span><h3>气含率估算</h3><p>等效球体积 · 二维面积占比</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
+        <button class="feature-card" data-nav="holdup"><span class="feature-icon"><svg><use href="/static/icons.svg#chart"></use></svg></span><h3>气含率估算</h3><p>等效球体积 · 二维面积占比</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-coming="运行参数优化"><span class="feature-icon"><svg><use href="/static/icons.svg#settings"></use></svg></span><h3>运行参数优化</h3><p>参数搜索 · 约束检查</p><span class="feature-state">推进中</span></button>
         <button class="feature-card" data-nav="knowledge"><span class="feature-icon"><svg><use href="/static/icons.svg#book"></use></svg></span><h3>专业知识问答</h3><p>原文检索 · 有据可查</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
       </div>
@@ -103,6 +103,72 @@
           <div class="panel flow-live"><div class="section-heading"><h2>监测状态</h2><button id="flow-stop" class="button secondary" type="button" hidden>停止并保存</button></div><p id="flow-progress" role="status">等待任务配置</p><div class="flow-state-grid"><div id="flow-state-appearance" class="flow-state" data-state="insufficient"><span>气泡出现量</span><strong>待分析</strong><p>面积占比与数量</p></div><div id="flow-state-size" class="flow-state" data-state="insufficient"><span>大气泡变化</span><strong>待分析</strong><p>固定界限比例与 D90</p></div><div id="flow-state-motion" class="flow-state" data-state="insufficient"><span>运动状态</span><strong>待分析</strong><p>有符号速度与下行比例</p></div></div></div>
           <section class="panel flow-explanation"><div class="section-heading"><h2><svg><use href="/static/icons.svg#robot"></use></svg>LLM 流动状态分析</h2><span class="result-badge">基于真实指标</span></div><div id="flow-explanation" class="message-body"><p>工具计算完成后，模型将简要解释三类指标的变化、预警时段和数据局限。</p></div><p class="field-note">当前只进行指标与事件分析，不调用视觉大模型复核画面。</p></section>
           <div id="flow-output" class="flow-output" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+    <section id="holdup-view" class="workbench-view" aria-labelledby="holdup-title" hidden>
+      <div class="workbench-title">
+        <div><h1 id="holdup-title">气含率估算</h1><p>根据气泡分割掩膜、空间标定和实际视野深度，估算等效球体积气含率。</p></div>
+        <button class="button secondary" data-nav="home">返回首页</button>
+      </div>
+      <div class="flow-layout">
+        <form id="holdup-form" class="panel flow-config">
+          <fieldset id="holdup-fields">
+            <div class="section-heading"><h2>估算参数</h2></div>
+            <label>图像数据源<select id="holdup-source" name="source_path" required><option value="">选择已添加的图片或文件夹</option></select></label>
+            <div class="holdup-source-buttons">
+              <button class="button secondary" id="holdup-upload" type="button">上传图像</button>
+              <input type="file" id="holdup-file" accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.webp" hidden>
+              <button class="button secondary" id="holdup-folder" type="button">选择文件夹</button>
+            </div>
+            <details class="path-details holdup-path">
+              <summary>使用本地路径</summary>
+              <div class="flow-source-input">
+                <input id="holdup-local-path" aria-label="图像或文件夹的本地路径" placeholder="E:\experiment\batch_01">
+                <button class="button secondary" id="holdup-add-path" type="button">添加</button>
+              </div>
+            </details>
+            <div class="field-pair">
+              <label>视野深度 (mm)<input name="view_depth_mm" type="number" step="any" required></label>
+              <label>空间标定 (mm/px)<input name="mm_per_pixel" type="number" step="any" required></label>
+            </div>
+            <p class="field-note">填写实际视野深度和标定，两个值都须大于 0。</p>
+            <details class="flow-advanced">
+              <summary>ROI 与掩膜筛选</summary>
+              <div class="field-pair">
+                <label>ROI X (px)<input name="roi_x" type="number" min="0" value="0" required></label>
+                <label>ROI Y (px)<input name="roi_y" type="number" min="0" value="0" required></label>
+              </div>
+              <div class="field-pair">
+                <label>ROI 宽 (px)<input name="roi_width" type="number" min="0" value="0" required></label>
+                <label>ROI 高 (px)<input name="roi_height" type="number" min="0" value="0" required></label>
+              </div>
+              <p class="field-note">宽、高为 0 时延伸至对应的图像边界。</p>
+              <label>触及图像边缘的气泡
+                <select name="edge_policy"><option value="include">保留可见部分</option><option value="exclude">排除</option></select>
+              </label>
+              <label>最小掩膜面积 (px²)<input name="min_area" type="number" min="0" value="10" required></label>
+            </details>
+            <button id="holdup-start" type="submit" class="button primary">开始估算</button>
+          </fieldset>
+        </form>
+        <div class="flow-report">
+          <section class="panel flow-live holdup-status" aria-labelledby="holdup-status-title">
+            <div class="section-heading"><h2 id="holdup-status-title">估算进度</h2><button id="holdup-stop" class="button secondary" type="button" hidden>停止并保存</button></div>
+            <p id="holdup-progress" role="status">添加图像并填写参数后即可开始。</p>
+            <progress id="holdup-progress-bar" aria-label="已处理帧数" hidden></progress>
+          </section>
+          <div id="holdup-output" class="flow-output" aria-live="polite"></div>
+          <section id="holdup-followup" class="panel flow-explanation" hidden>
+            <div class="section-heading"><h2>追问本次结果</h2></div>
+            <form id="holdup-question-form">
+              <label class="holdup-question-label">向科研助手提问
+                <textarea id="holdup-question" rows="2" maxlength="12000" placeholder="例如：为什么第 12 帧的气含率偏高？" required></textarea>
+              </label>
+              <button id="holdup-ask" class="button secondary" type="submit">发送问题</button>
+            </form>
+            <div id="holdup-answer" class="message-body" aria-live="polite"></div>
+          </section>
         </div>
       </div>
     </section>

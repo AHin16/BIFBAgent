@@ -1,11 +1,11 @@
 const byId = (id) => document.getElementById(id);
-const state = {sessionId: null, assets: [], busy: false, results: 0, source: null, pending: null, view: "home", folderPicking: false, flowConfig: null, flowRun: false, runId: null, knowledgeRun: false, citations: new Map()};
+const state = {sessionId: null, assets: [], busy: false, results: 0, source: null, pending: null, view: "home", folderPicking: false, flowConfig: null, flowRun: false, runId: null, knowledgeRun: false, holdupRun: null, holdupResultId: null, holdupAdding: false, citations: new Map()};
 const toolNames = {detect_bubbles: "YOLO · 单图气泡检测", batch_detect_bubbles: "YOLO · 实验批次分析", inspect_csv: "CSV · 数据结构检查", analyze_csv: "CSV · 科研数据分析", calculate_bubble_statistics: "气泡尺寸 · 统计分析", compare_experiments: "实验结果 · 交叉比较", calculate_bubble_velocity: "气泡运动 · 速度计算", list_files: "实验目录 · 文件检查", analyze_flow_warning: "流态监测 · 基线与持续异常分析", inspect_flow_event: "流态监测 · 事件依据查询"};
 const flowStateLabels = {normal: "正常", attention: "关注", warning: "预警", insufficient: "数据不足"};
 const flowEndLabels = {recovered: "指标已恢复", data_gap: "数据中断", stopped: "用户停止", end_of_sequence: "序列结束"};
 const examplePrompts = {image: "检测这张气泡图片，统计气泡数量、平均直径和尺寸分布。", folder: "分析这个文件夹里的全部气泡图片，统计尺寸分布并导出 CSV。", csv: "分析这个合成示例 CSV，看看气速和气泡直径的关系，并比较不同工况。"};
 Object.assign(toolNames, {search_knowledge: "知识库 · 检索原文", read_knowledge_excerpt: "知识库 · 核对原文", get_experiment_context: "实验 · 获取已确认背景"});
-Object.assign(toolNames, {estimate_gas_holdup: "气含率 · 等效球体积估算", track_bubbles: "气泡追踪 · 轨迹与运动测量"});
+Object.assign(toolNames, {estimate_gas_holdup: "气含率 · 等效球体积估算", inspect_gas_holdup_frame: "气含率 · 逐帧数据查询", track_bubbles: "气泡追踪 · 轨迹与运动测量"});
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -36,22 +36,18 @@ function toast(message) {
 }
 
 function showView(view) {
-  const home = view === "home";
-  const flow = view === "flow";
-  const knowledge = view === "knowledge";
-  state.view = home ? "home" : flow ? "flow" : knowledge ? "knowledge" : "workbench";
-  byId("home-view").hidden = !home;
-  byId("workbench-view").hidden = home || flow || knowledge;
-  byId("flow-view").hidden = !flow;
-  byId("knowledge-view").hidden = !knowledge;
-  byId("view-title").textContent = home ? "首页" : flow ? "流态监测预警" : knowledge ? "专业知识问答" : "实验分析";
+  const titles = {home: "首页", workbench: "实验分析", flow: "流态监测预警", holdup: "气含率估算", knowledge: "专业知识问答"};
+  state.view = view;
+  sessionStorage.setItem("bifb-view", view);
+  for (const name of Object.keys(titles)) byId(`${name}-view`).hidden = name !== view;
+  byId("view-title").textContent = titles[view];
   document.querySelectorAll(".nav-item[data-nav]").forEach((button) => {
-    const active = button.dataset.nav === (home ? "home" : flow ? "flow" : knowledge ? "knowledge" : "workbench");
+    const active = button.dataset.nav === view;
     button.classList.toggle("active", active);
     if (active) button.setAttribute("aria-current", "page"); else button.removeAttribute("aria-current");
   });
-  if (!home && !flow && !knowledge) byId("message-input").focus({preventScroll: true});
-  if (knowledge) window.KnowledgeUI?.refresh();
+  if (view === "workbench") byId("message-input").focus({preventScroll: true});
+  if (view === "knowledge") window.KnowledgeUI?.refresh();
   window.scrollTo({top: 0, behavior: "instant"});
 }
 
@@ -94,6 +90,10 @@ function setBusy(busy) {
   byId("settings-open").disabled = busy;
   byId("file-input").disabled = busy;
   byId("flow-fields").disabled = busy;
+  byId("holdup-fields").disabled = busy || state.holdupAdding;
+  byId("holdup-ask").disabled = busy;
+  byId("holdup-stop").hidden = !busy || !state.holdupRun;
+  byId("holdup-stop").disabled = false;
   byId("flow-stop").hidden = !busy;
   byId("chat-stop").hidden = !busy;
   byId("flow-stop").disabled = false;
@@ -185,21 +185,18 @@ function appendArtifacts(target, artifacts = []) {
 
 function formatNumber(value, decimals = 2) { return value === null || value === undefined ? "—" : Number(value).toLocaleString("zh-CN", {maximumFractionDigits: decimals}); }
 
-function addResult(result, tool) {
-  if (result.status === "error") return;
-  if (result.kind === "flow_warning") renderFlowResult(result);
-  byId("result-empty")?.remove();
+function resultCard(result, tool) {
   const card = element("article", "result-card");
   const header = element("div", "result-card-header");
   header.append(element("div", "result-badge", result.status === "partial" ? "部分完成" : "已计算"), element("h3", "", toolNames[tool] || tool), element("span", "", "#" + (result.result_id || "")));
   card.append(header);
   let metrics = [];
   if (result.kind === "flow_warning") metrics = [[result.processed_frames, "待测帧数"], [result.window_count, "时间窗口数"], [result.event_count, "预警事件数"]];
-  else if (result.kind === "gas_holdup") metrics = [[result.gas_holdup_percent?.mean, "平均体积气含率 / %"], [result.bubble_area_ratio_percent?.mean, "平均二维面积占比 / %"], [result.valid_frames, "有效帧数"]];
+  else if (result.kind === "gas_holdup") metrics = [[result.gas_holdup_percent?.mean, "平均体积气含率 / %"], [result.bubble_area_ratio_percent?.mean, "平均二维面积占比 / %"], [result.valid_frames, `有效帧数 / 共 ${result.total_frames} 帧`]];
   else if (result.kind === "bubble_tracking") metrics = [[result.track_id_count, "追踪 ID 数"], [result.motion_samples, "有效运动样本"], [result.mean_speed, `平均速度 / ${result.speed_unit}`]];
   else if ("bubble_count" in result) metrics = [[result.bubble_count, result.image_count ? "累计气泡检测次数" : "气泡数量"], [result.statistics?.mean, `平均等效直径 / ${result.unit}`], [result.mean_confidence === null ? null : result.mean_confidence * 100, "平均置信度 / %"]];
   else if (result.row_count !== undefined) metrics = [[result.row_count, "数据行数"], [result.columns?.length, "数据列数"], [result.correlation?.pearson_r, "Pearson 相关系数 r"]];
-  else if (result.source_result_id) metrics = [[result.statistics?.count, "测量样本数"], [result.statistics?.mean, `平均直径 / ${result.unit}`], [result.statistics?.std, "样本标准差"]];
+  else if (result.source_result_id && result.statistics) metrics = [[result.statistics.count, "测量样本数"], [result.statistics.mean, `平均直径 / ${result.unit}`], [result.statistics.std, "样本标准差"]];
   else if (tool === "compare_experiments") metrics = [[result.left?.mean, `左侧均值 / ${result.left?.unit}`], [result.right?.mean, `右侧均值 / ${result.right?.unit}`], [result.mean_difference_right_minus_left, "均值差 / 右 − 左"]];
   else if (tool === "calculate_bubble_velocity") metrics = [[result.speed, `速度 / ${result.unit}`], [result.vx, "水平方向"], [result.vy, "竖直方向"]];
   if (metrics.length) {
@@ -211,7 +208,16 @@ function addResult(result, tool) {
   if (result.limitations?.length) card.append(element("div", "result-limitation", result.limitations.join(" ")));
   const details = element("details", "result-details");
   details.append(element("summary", "", "查看结构化结果与计算依据"), element("pre", "", JSON.stringify(result, null, 2)));
-  card.append(details); byId("results").prepend(card);
+  card.append(details);
+  return card;
+}
+
+function addResult(result, tool) {
+  if (result.status === "error") return;
+  if (result.kind === "flow_warning") renderFlowResult(result);
+  if (result.kind === "gas_holdup") renderHoldupResult(result);
+  byId("result-empty")?.remove();
+  byId("results").prepend(resultCard(result, tool));
   state.results += 1; byId("result-count").textContent = state.results;
   byId("result-state").textContent = "结果已保存 · 可下载与复核";
 }
@@ -233,6 +239,11 @@ function connectEvents(runId) {
   sessionStorage.setItem("bifb-run", runId);
   if (state.flowRun) sessionStorage.setItem("bifb-flow-run", runId);
   if (state.knowledgeRun) sessionStorage.setItem("bifb-knowledge-run", runId);
+  if (state.holdupRun) {
+    sessionStorage.setItem("bifb-holdup-run", runId);
+    sessionStorage.setItem("bifb-holdup-mode", state.holdupRun);
+    byId("holdup-stop").hidden = false;
+  }
   state.source?.close();
   state.source = new EventSource(`/api/runs/${runId}/events`);
   const seen = new Set();
@@ -246,9 +257,10 @@ function connectEvents(runId) {
     if (state.flowRun && ["status", "thinking", "progress"].includes(event.type)) byId("flow-progress").textContent = event.message;
     if (event.type !== "final" && event.type !== "done") activity(event);
     if (event.type === "tool_result") addResult(event.result, event.tool);
+    if (state.holdupRun) handleHoldupEvent(event);
     if (event.type === "final") { state.pending?.remove(); state.pending = null; const message = addMessage("assistant", event.message); appendArtifacts(message, event.artifacts); if (state.flowRun) { byId("flow-explanation").replaceChildren(); renderMarkdown(byId("flow-explanation"), event.message); appendArtifacts(byId("flow-explanation"), event.artifacts); } }
     if (event.type === "error") { state.pending?.remove(); state.pending = null; addMessage("assistant", event.message, "error"); if (state.flowRun) { byId("flow-explanation").textContent = event.message + " 已生成的工具结果可在下方查看。"; byId("flow-progress").textContent = "本轮分析未全部完成"; } }
-    if (event.type === "done") { state.source.close(); state.source = null; sessionStorage.removeItem("bifb-run"); sessionStorage.removeItem("bifb-flow-run"); sessionStorage.removeItem("bifb-knowledge-run"); state.pending?.remove(); setBusy(false); if (state.flowRun && event.success) byId("flow-progress").textContent = "本轮监测与状态解释已完成"; state.runId = null; state.knowledgeRun = false; }
+    if (event.type === "done") { state.source.close(); state.source = null; sessionStorage.removeItem("bifb-run"); sessionStorage.removeItem("bifb-flow-run"); sessionStorage.removeItem("bifb-knowledge-run"); sessionStorage.removeItem("bifb-holdup-run"); sessionStorage.removeItem("bifb-holdup-mode"); state.pending?.remove(); state.holdupRun = null; setBusy(false); if (state.flowRun && event.success) byId("flow-progress").textContent = "本轮监测与状态解释已完成"; state.runId = null; state.knowledgeRun = false; }
   };
   state.source.onerror = () => {
     toast("连接暂时中断，正在尝试恢复行动记录。");
@@ -274,6 +286,7 @@ async function submitTask(event) {
 }
 
 function renderAssets() {
+  renderHoldupSources();
   byId("source-list").replaceChildren();
   byId("asset-count").textContent = state.assets.length;
   byId("home-asset-count").textContent = state.assets.length ? `已添加 ${state.assets.length} 个数据源` : "尚未添加数据";
@@ -310,7 +323,7 @@ async function upload(files, folder = false) {
   if (supported.some((file) => file.size > 50 * 1024 * 1024)) return toast("单个文件不能超过 50 MB，大文件请用本地路径。");
   const body = new FormData();
   for (const file of supported) body.append("files", file, folder ? file.webkitRelativePath || file.name : file.name);
-  try { toast("正在上传实验数据…"); const data = await api(`/api/sessions/${state.sessionId}/uploads?folder=${folder}`, {method: "POST", body}); addAssets(data.assets); toast(`已添加 ${supported.length} 个文件，可以开始提问。`); } catch (error) { toast(error.message); }
+  try { toast("正在上传实验数据…"); const data = await api(`/api/sessions/${state.sessionId}/uploads?folder=${folder}`, {method: "POST", body}); addAssets(data.assets); toast(`已添加 ${supported.length} 个文件。`); return data.assets; } catch (error) { toast(error.message); }
 }
 
 async function refreshSettings() {
@@ -318,6 +331,8 @@ async function refreshSettings() {
   const badge = byId("system-status"); badge.replaceChildren(element("i"), document.createTextNode(settings.llm_ready ? "本地服务已就绪" : "待配置 LLM")); badge.classList.toggle("ready", settings.llm_ready);
   byId("calibration-label").textContent = settings.mm_per_pixel ? `空间标定 · ${settings.mm_per_pixel} mm / px` : "未标定 · 图像尺寸以 px 显示";
   if (!state.flowConfig && !byId("flow-form").elements.mm_per_pixel.value && settings.mm_per_pixel) byId("flow-form").elements.mm_per_pixel.value = settings.mm_per_pixel;
+  const scale = byId("holdup-form").elements.mm_per_pixel;
+  if (!scale.value && settings.mm_per_pixel) scale.value = settings.mm_per_pixel;
   return settings;
 }
 
@@ -411,8 +426,174 @@ async function initialize() {
     }
   }
   for (const message of session.history || []) addMessage(message.role, message.content);
+  if (session.holdup_result) {
+    const result = session.holdup_result;
+    const fields = byId("holdup-form").elements;
+    if (state.assets.some((asset) => asset.path === result.source)) fields.source_path.value = result.source;
+    for (const key of ["view_depth_mm", "mm_per_pixel"]) {
+      if (result[key] != null) fields[key].value = result[key];
+    }
+    fields.edge_policy.value = result.edge_policy === "exclude" ? "exclude" : "include";
+    for (const [key, value] of Object.entries(result.roi || {})) fields[`roi_${key}`].value = value;
+    if (result.min_mask_area_px2 != null) fields.min_area.value = result.min_mask_area_px2;
+    renderHoldupResult(result);
+  }
+  if (sessionStorage.getItem("bifb-view") === "holdup") showView("holdup");
   const activeRun = sessionStorage.getItem("bifb-run");
-  if (activeRun) { state.flowRun = sessionStorage.getItem("bifb-flow-run") === activeRun; state.knowledgeRun = sessionStorage.getItem("bifb-knowledge-run") === activeRun; if (state.flowRun) showView("flow"); if (state.knowledgeRun) showView("knowledge"); setBusy(true); connectEvents(activeRun); }
+  if (activeRun) {
+    state.flowRun = sessionStorage.getItem("bifb-flow-run") === activeRun;
+    state.knowledgeRun = sessionStorage.getItem("bifb-knowledge-run") === activeRun;
+    if (sessionStorage.getItem("bifb-holdup-run") === activeRun) state.holdupRun = sessionStorage.getItem("bifb-holdup-mode");
+    if (state.flowRun) showView("flow");
+    if (state.knowledgeRun) showView("knowledge");
+    if (state.holdupRun) showView("holdup");
+    setBusy(true);
+    connectEvents(activeRun);
+  }
+}
+
+function renderHoldupSources() {
+  const select = byId("holdup-source");
+  const current = select.value;
+  const sources = state.assets.filter((asset) => ["image", "folder"].includes(asset.kind));
+  const placeholder = element("option", "", sources.length ? "选择已添加的图片或文件夹" : "请先添加图像数据");
+  placeholder.value = "";
+  select.replaceChildren(placeholder);
+  for (const asset of sources) {
+    const option = element("option", "", asset.kind === "folder" ? `${asset.name}（文件夹）` : asset.name);
+    option.value = asset.path;
+    option.title = asset.path;
+    select.append(option);
+  }
+  if (sources.some((asset) => asset.path === current)) select.value = current;
+  else if (sources.length === 1) select.value = sources[0].path;
+}
+
+async function addHoldupSource(loadSource) {
+  if (state.busy || state.holdupAdding) return;
+  if (!state.sessionId) return toast("正在连接本地服务，请稍候。");
+  state.holdupAdding = true;
+  byId("holdup-fields").disabled = true;
+  try {
+    const asset = await loadSource();
+    if (asset) byId("holdup-source").value = asset.path;
+  } catch (error) {
+    toast(error.message);
+  } finally {
+    state.holdupAdding = false;
+    byId("holdup-fields").disabled = state.busy;
+  }
+}
+
+async function grantHoldupSource(path) {
+  const asset = await post(`/api/sessions/${state.sessionId}/paths`, {path, image_only: true});
+  addAssets([asset]);
+  return asset;
+}
+
+function renderHoldupResult(result) {
+  if (state.holdupResultId !== result.result_id) {
+    byId("holdup-answer").replaceChildren();
+    byId("holdup-question").value = "";
+  }
+  state.holdupResultId = result.result_id;
+  const card = resultCard(result, "estimate_gas_holdup");
+  const info = element("div", "holdup-result-info");
+  const source = result.source.split(/[\\/]/).pop();
+  const details = [
+    source,
+    `深度 ${formatNumber(result.view_depth_mm, 8)} mm`,
+    `标定 ${formatNumber(result.mm_per_pixel, 10)} mm/px`,
+  ];
+  if (result.invalid_frames) details.push(`${result.invalid_frames} 帧无效`);
+  info.textContent = details.join(" · ");
+  info.title = result.source;
+  card.querySelector(".result-metrics").after(info);
+  byId("holdup-output").replaceChildren(card);
+  byId("holdup-followup").hidden = false;
+  byId("holdup-progress").textContent = result.stopped ? "估算已停止，已处理数据已保存。"
+    : !result.valid_frames ? "估算结束，未获得有效帧。"
+      : result.invalid_frames ? "估算结束，已保存有效帧和无效原因。" : "估算完成，可以下载结果或追问。";
+}
+
+function handleHoldupEvent(event) {
+  if (state.holdupRun === "question") {
+    const answer = byId("holdup-answer");
+    if (event.type === "final") {
+      answer.replaceChildren();
+      renderMarkdown(answer, event.message);
+      appendArtifacts(answer, event.artifacts);
+    } else if (event.type === "error") {
+      answer.textContent = event.message;
+    }
+    return;
+  }
+  const progress = byId("holdup-progress-bar");
+  if (event.type === "status" || event.type === "progress" || event.type === "error") {
+    byId("holdup-progress").textContent = event.message;
+  }
+  if (event.type === "progress" && event.total > 0) {
+    progress.hidden = false;
+    progress.max = event.total;
+    progress.value = event.processed;
+  }
+  if (event.type === "done") progress.hidden = true;
+}
+
+async function startHoldup(event) {
+  event.preventDefault();
+  if (state.busy || state.holdupAdding) return;
+  if (!state.sessionId) return toast("正在连接本地服务，请稍候。");
+  const form = event.currentTarget;
+  const raw = Object.fromEntries(new FormData(form));
+  const payload = {};
+  for (const [key, value] of Object.entries(raw)) {
+    payload[key] = ["source_path", "edge_policy"].includes(key) ? value : Number(value);
+  }
+  for (const name of ["view_depth_mm", "mm_per_pixel"]) {
+    if (payload[name] > 0) continue;
+    form.elements[name].focus();
+    return toast(name === "view_depth_mm" ? "请填写大于 0 的实际视野深度。" : "请填写大于 0 的空间标定。");
+  }
+  state.flowRun = false;
+  state.knowledgeRun = false;
+  state.holdupRun = "estimate";
+  setBusy(true);
+  const progress = byId("holdup-progress-bar");
+  progress.removeAttribute("value");
+  progress.hidden = false;
+  byId("holdup-progress").textContent = "正在提交估算任务…";
+  try {
+    const run = await post(`/api/sessions/${state.sessionId}/holdup`, payload);
+    connectEvents(run.run_id);
+  } catch (error) {
+    state.holdupRun = null;
+    setBusy(false);
+    progress.hidden = true;
+    byId("holdup-progress").textContent = error.message;
+  }
+}
+
+async function askHoldup(event) {
+  event.preventDefault();
+  const question = byId("holdup-question");
+  const message = question.value.trim();
+  if (state.busy || !message || !state.holdupResultId) return;
+  state.flowRun = false;
+  state.knowledgeRun = false;
+  state.holdupRun = "question";
+  setBusy(true);
+  const answer = byId("holdup-answer");
+  answer.textContent = "正在根据本次结果查找依据…";
+  try {
+    const run = await post(`/api/sessions/${state.sessionId}/chat`, {message, holdup_result_id: state.holdupResultId});
+    addMessage("user", message);
+    connectEvents(run.run_id);
+  } catch (error) {
+    state.holdupRun = null;
+    setBusy(false);
+    answer.textContent = error.message;
+  }
 }
 
 function renderFlowWindow(window) {
@@ -496,9 +677,9 @@ async function startFlow(event) {
 
 async function stopAnalysis() {
   if (!state.runId || !state.busy) return;
-  byId("flow-stop").disabled = true; byId("chat-stop").disabled = true;
+  byId("flow-stop").disabled = true; byId("chat-stop").disabled = true; byId("holdup-stop").disabled = true;
   try { await post(`/api/sessions/${state.sessionId}/runs/${state.runId}/stop`, {}); toast("正在停止并保存已经完成的结果。"); }
-  catch (error) { toast(error.message); byId("flow-stop").disabled = false; byId("chat-stop").disabled = false; }
+  catch (error) { toast(error.message); byId("flow-stop").disabled = false; byId("chat-stop").disabled = false; byId("holdup-stop").disabled = false; }
 }
 
 byId("chat-form").addEventListener("submit", submitTask);
@@ -528,9 +709,7 @@ document.querySelectorAll("[data-sequence]").forEach((button) => button.addEvent
   if (state.busy) return;
   const input = byId("message-input");
   if (!input.value.trim()) {
-    input.value = button.dataset.sequence === "holdup"
-      ? "请估算已添加图片的等效球体积气含率，并报告二维面积占比。实际视野深度（mm）为 "
-      : "请追踪已添加的连续图像序列或视频，导出轨迹、速度和标注视频。";
+    input.value = "请追踪已添加的连续图像序列或视频，导出轨迹、速度和标注视频。";
   }
   input.focus();
   input.setSelectionRange(input.value.length, input.value.length);
@@ -540,6 +719,33 @@ byId("home-attach").addEventListener("click", () => { showView("workbench"); byI
 byId("home-form").addEventListener("submit", (event) => { event.preventDefault(); if (state.busy) return toast("Agent 正在分析，请稍候。"); byId("message-input").value = byId("home-input").value; byId("chat-form").requestSubmit(); });
 byId("home-input").addEventListener("keydown", (event) => { if (event.key === "Enter" && !event.shiftKey && !event.isComposing) { event.preventDefault(); byId("home-form").requestSubmit(); } });
 byId("flow-form").addEventListener("submit", startFlow);
+byId("holdup-form").addEventListener("submit", startHoldup);
+byId("holdup-question-form").addEventListener("submit", askHoldup);
+byId("holdup-stop").addEventListener("click", stopAnalysis);
+byId("holdup-upload").addEventListener("click", () => byId("holdup-file").click());
+byId("holdup-file").addEventListener("change", (event) => {
+  const files = [...event.target.files];
+  event.target.value = "";
+  if (files.length) addHoldupSource(async () => (await upload(files))?.[0]);
+});
+byId("holdup-folder").addEventListener("click", () => addHoldupSource(async () => {
+  const selected = await pickFolderSelection();
+  if (!selected.cancelled && selected.path) return grantHoldupSource(selected.path);
+}));
+byId("holdup-add-path").addEventListener("click", () => addHoldupSource(async () => {
+  const input = byId("holdup-local-path");
+  const path = input.value.trim();
+  if (!path) return toast("请填写图片或文件夹的本地路径。");
+  const asset = await grantHoldupSource(path);
+  input.value = "";
+  return asset;
+}));
+byId("holdup-local-path").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    byId("holdup-add-path").click();
+  }
+});
 byId("flow-stop").addEventListener("click", stopAnalysis);
 byId("chat-stop").addEventListener("click", stopAnalysis);
 document.querySelectorAll("[data-flow-pick]").forEach((button) => button.addEventListener("click", async () => {

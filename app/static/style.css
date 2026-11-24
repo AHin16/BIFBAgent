@@ -28,3 +28,60 @@ dialog{width:min(625px,calc(100vw - 35px));max-height:90vh;border:1px solid #e7d
 @media(min-width:1750px){.knowledge-layout{grid-template-columns:300px minmax(400px,1fr) 400px}}
 @media(max-width:1350px){.knowledge-layout{grid-template-columns:230px minmax(280px,1fr);gap:15px}.knowledge-evidence{grid-column:1/-1;position:static;max-height:none}#knowledge-evidence-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.knowledge-chat{min-height:600px}}
 @media(max-width:900px){.knowledge-layout{grid-template-columns:1fr}.knowledge-library{max-height:420px;overflow:auto}.knowledge-chat{height:650px}.knowledge-evidence{grid-column:auto}.knowledge-source-grid{grid-template-columns:1fr}.knowledge-source-grid pre{max-height:220px}}
+#holdup-form select {
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #e2dee6;
+  border-radius: 8px;
+  color: #453644;
+  background: white;
+}
+.holdup-source-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.holdup-path {
+  margin-top: 10px;
+}
+#holdup-start {
+  width: 100%;
+  margin-top: 20px;
+}
+.holdup-status p {
+  margin-bottom: 0;
+}
+#holdup-progress-bar {
+  width: 100%;
+  height: 8px;
+  margin-top: 12px;
+  accent-color: var(--red);
+}
+.holdup-result-info {
+  padding: 12px 15px 6px;
+  font-size: 12px;
+  color: #745b6b;
+  overflow-wrap: anywhere;
+}
+#holdup-output .artifact-image:only-child {
+  grid-column: 1 / -1;
+}
+.holdup-question-label {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 9px;
+  font-size: 12px;
+  color: #745b6b;
+}
+.holdup-question-label textarea {
+  width: 100%;
+  padding: 9px 11px;
+  resize: vertical;
+  border: 1px solid #e2dee6;
+  border-radius: 8px;
+  color: #453644;
+}
+#holdup-answer:empty {
+  display: none;
+}
