@@ -23,6 +23,7 @@ class Settings(BaseModel):
     yolo_device: str = "auto"
     confidence: float = Field(default=0.25, ge=0.01, le=1)
     mm_per_pixel: float | None = Field(default=None, gt=0)
+    prediction_calibration_confirmed: bool = False
     max_tool_rounds: int = Field(default=12, ge=2, le=24)
 
     @field_validator("llm_base_url")

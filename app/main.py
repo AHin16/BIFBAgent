@@ -9,7 +9,7 @@ from urllib.parse import urlsplit
 
 import httpx
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, UnidentifiedImageError
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
@@ -21,11 +21,17 @@ from app.config import DATA, IMAGE_EXTENSIONS, INPUT_EXTENSIONS, ROOT, Settings,
 from app.llm import LLMClient
 from app.folder_picker import select_folder, select_model
 from app.flow_warning import FlowSettings, register_flow_tools, save_flow_config
+from app.h3_demo_tool import register_h3_demo_tool
 from app.knowledge import knowledge_store, register_knowledge_tools
 from app.registry import ToolRegistry
 from app.sequence_analysis import register_sequence_tools
 from app.storage import Session, ToolError, compact, dump_json
 from app.yolo_adapter import register_vision_tools
+from app.ug_bubble_predictor import available_prediction_heights, register_ug_prediction_tool
+from app.condition_vision import available_conditions, register_condition_vision
+from optimization_data.h3_bubble_demo.build_demo import render_demo_html
+from optimization_data.h3_bubble_demo.model import validate_flow
+from optimization_data.h3_bubble_demo.transport import TransportModel
 
 
 DATA.mkdir(exist_ok=True)
@@ -48,9 +54,12 @@ runs = {}
 registry = ToolRegistry()
 register_vision_tools(registry)
 register_sequence_tools(registry)
+register_condition_vision(registry)
 register_data_tools(registry)
 register_flow_tools(registry)
 register_knowledge_tools(registry)
+register_ug_prediction_tool(registry)
+register_h3_demo_tool(registry)
 HoldupRequest = registry.tools["estimate_gas_holdup"].schema
 
 
@@ -90,9 +99,38 @@ def index():
     return FileResponse(ROOT / "app/static/index.html")
 
 
+@app.get("/optimization/h3-demo", response_class=HTMLResponse)
+def h3_bubble_demo():
+    try:
+        return render_demo_html(with_transport=True)
+    except (OSError, ValueError, KeyError):
+        logger.exception("Unable to load H3 bubble demo")
+        return HTMLResponse(
+            '<!doctype html><html lang="zh-CN"><meta charset="utf-8">'
+            '<p role="alert">H3 专项预测暂不可用，请检查本地四档照片统计。'
+            '<a href="/optimization/h3-demo">重新加载</a></p></html>',
+            status_code=503,
+        )
+
+
+@app.get("/api/optimization/h3-transport")
+def h3_transport(current_q: float, target_q: float):
+    try:
+        validate_flow(current_q, "当前")
+        validate_flow(target_q, "目标")
+    except ValueError as error:
+        raise HTTPException(422, str(error)) from error
+    try:
+        return TransportModel.load().predict(current_q, target_q)
+    except (OSError, ValueError, KeyError) as error:
+        logger.warning("H3 transport measurements unavailable: %s", error)
+        raise HTTPException(503, "上升速度与传氧数据暂不可用。") from error
+
+
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "settings": settings.public(), "tools": [item["function"]["name"] for item in registry.definitions()]}
+    return {"status": "ok", "settings": settings.public(), "tools": [item["function"]["name"] for item in registry.definitions()],
+            "prediction_heights": available_prediction_heights()}
 
 
 @app.get("/api/settings")
@@ -125,6 +163,8 @@ def update_settings(payload: SettingsUpdate):
         raise HTTPException(409, "分析进行中，请在结束后修改运行设置。")
     values = settings.model_dump()
     values.update(payload.model_dump(exclude={"llm_api_key", "clear_api_key"}))
+    if payload.mm_per_pixel != settings.mm_per_pixel:
+        values['prediction_calibration_confirmed'] = False
     if payload.clear_api_key:
         values["llm_api_key"] = ""
     elif payload.llm_api_key:
@@ -276,6 +316,11 @@ class LocalInput(BaseModel):
     image_only: bool = False
 
 
+@app.get('/api/optimization/conditions')
+def optimization_conditions():
+    return {'conditions':available_conditions()}
+
+
 @app.post("/api/sessions/{session_id}/paths")
 def add_path(session_id: str, payload: LocalInput):
     session = get_session(session_id)
@@ -285,6 +330,19 @@ def add_path(session_id: str, payload: LocalInput):
         if path.is_file() and path.suffix.lower() not in IMAGE_EXTENSIONS:
             raise ToolError("气含率估算需要图片文件或图片文件夹。")
     return session.grant(payload.path)
+
+
+@app.post("/api/sessions/{session_id}/optimization-image")
+def add_optimization_image(session_id: str, payload: LocalInput):
+    from app.optimization_metadata import metadata_from_path
+    session = get_session(session_id)
+    ensure_idle(session)
+    path = local_path(payload.path)
+    if not path.is_file() or path.suffix.lower() not in IMAGE_EXTENSIONS:
+        raise ToolError('请选择存在的图片文件。')
+    asset = session.grant(str(path))
+    asset['optimization_metadata'] = metadata_from_path(path)
+    return asset
 
 
 @app.get("/api/dialog/folder")
@@ -381,11 +439,30 @@ def add_example(session_id: str, kind: str):
     return session.grant(path)
 
 
+class OptimizationInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    asset_id: str = ''
+    current_q: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    current_ug_m_s: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    target_q: float = Field(allow_inf_nan=False)
+    salinity_wt_pct: float = Field(allow_inf_nan=False)
+    height_id: str = ''
+    height_m: float | None = Field(default=None, allow_inf_nan=False)
+    target_height_m: float | None = Field(default=None, allow_inf_nan=False)
+    pl_confirmed: bool = False
+    PL_fraction: float | None = Field(default=None, ge=0, le=1, allow_inf_nan=False)
+    source_root_name: str = ''
+    prediction_mm_per_pixel: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+    calibration_confirmed: bool = False
+    use_history: bool = False
+
+
 class ChatInput(BaseModel):
     message: str = Field(min_length=1, max_length=12000)
     flow_config_id: str | None = None
     knowledge_mode: bool = False
     knowledge_document_ids: list[str] | None = None
+    optimization: OptimizationInput | None = None
     holdup_result_id: str | None = None
 
 
@@ -399,6 +476,56 @@ async def chat(session_id: str, payload: ChatInput):
         raise ToolError("请先在右上角「运行设置」配置 LLM 地址、模型名称和 API Key。")
     if payload.flow_config_id and payload.flow_config_id not in session.flow_configs:
         raise ToolError("流态任务配置已失效，请重新确认。")
+    optimization = None
+    if payload.optimization:
+        config = payload.optimization
+        asset=None
+        if not config.use_history:
+            asset=next((a for a in session.assets if a['id']==config.asset_id and a['kind']=='image'),None)
+            if not asset: raise ToolError('请先添加一张当前工况图片。')
+            session.resolve(asset['path'])
+        if config.current_q is None and config.current_ug_m_s is None:
+            raise ToolError('请输入当前气体流量 Q。')
+        if config.current_q is not None and config.current_ug_m_s is not None:
+            raise ToolError('请只提供当前 Q 或 Ug 中的一项。')
+        if (config.prediction_mm_per_pixel is not None) != config.calibration_confirmed:
+            raise ToolError('显示毫米需要填写比例尺，并确认它适用于当前照片及模型训练照片。')
+        current_q = config.current_q if config.current_q is not None else config.current_ug_m_s / 0.00325
+        heights = available_prediction_heights()
+        if config.target_height_m is not None and config.height_m is None:
+            raise ToolError('输入目标高度时也必须输入数值型当前高度。')
+        if config.height_m is not None:
+            from app.continuous_height_predictor import predict_continuous
+            if config.PL_fraction is None: raise ToolError('请输入颗粒装载量 PL。')
+            predict_continuous(current_q,config.target_q,config.salinity_wt_pct,config.PL_fraction,config.height_m,config.target_height_m)
+        elif config.height_id not in heights:
+            raise ToolError(f'当前预测模型支持高度 {"、".join(heights)}。')
+        elif config.height_id == 'H3':
+            from app.h3_bubble_predictor import predict_h3
+            if config.PL_fraction is None:
+                raise ToolError('请输入颗粒装载量 PL。')
+            predict_h3(current_q, config.target_q, config.salinity_wt_pct, config.PL_fraction, config.source_root_name)
+        elif abs(config.salinity_wt_pct - 1.0) > 1e-9 or not config.pl_confirmed:
+            raise ToolError(f'当前预测模型支持高度 {"、".join(heights)}、盐度 1 wt%、PL 10%；请核对并确认实际工况。')
+        if not 1.5 - 1e-9 <= current_q <= 2.3 + 1e-9:
+            raise ToolError('当前 Q 超出模型范围 1.5–2.3 m³/h。')
+        if not 1.5 - 1e-9 <= config.target_q <= 2.3 + 1e-9:
+            raise ToolError('目标 Q 超出模型范围 1.5–2.3 m³/h。')
+        source={'use_history':True} if config.use_history else {'image_path':asset['path']}
+        if config.use_history:
+            if config.height_m is None:raise ToolError('请选择历史工况的拍摄高度。')
+            if not any(abs(row['current_q']-current_q)<1e-9 and abs(row['height_m']-config.height_m)<1e-9 and abs(row['salinity_wt_pct']-config.salinity_wt_pct)<1e-9 and abs(row['PL_fraction']-config.PL_fraction)<1e-9 for row in available_conditions()):
+                raise ToolError('没有严格匹配的历史工况，请选择数据库中已有的当前工况。')
+        optimization = {**source, 'current_q': current_q,
+                        'target_q': config.target_q, 'salinity_wt_pct': config.salinity_wt_pct,
+                        'PL_fraction': config.PL_fraction if config.height_m is not None or config.height_id == 'H3' else .1}
+        if config.height_m is not None: optimization['height_m'] = config.height_m
+        else: optimization['height_id'] = config.height_id
+        if config.target_height_m is not None: optimization['target_height_m'] = config.target_height_m
+        if config.height_m is None and config.height_id == 'H3': optimization['source_root_name'] = config.source_root_name
+        if config.prediction_mm_per_pixel is not None:
+            optimization['prediction_mm_per_pixel'] = config.prediction_mm_per_pixel
+            optimization['calibration_confirmed'] = True
     if payload.holdup_result_id and session.results.get(payload.holdup_result_id, {}).get("kind") != "gas_holdup":
         raise ToolError("找不到本会话的气含率结果，请重新估算。")
     available_ids = {document["id"] for document in knowledge_store.documents()}
@@ -410,7 +537,8 @@ async def chat(session_id: str, payload: ChatInput):
     run = Run(session.id)
     runs[run.id] = run
     run.task = asyncio.create_task(run_agent(run, session, settings.model_copy(), registry, payload.message.strip(), payload.flow_config_id,
-                                           payload.knowledge_mode, payload.knowledge_document_ids, payload.holdup_result_id))
+                                           payload.knowledge_mode, payload.knowledge_document_ids, optimization,
+                                           holdup_result_id=payload.holdup_result_id))
     return {"run_id": run.id}
 
 

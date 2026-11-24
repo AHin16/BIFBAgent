@@ -51,7 +51,7 @@ def main():
     parser = argparse.ArgumentParser(description="BIFB 智能科研助手独立窗口")
     parser.add_argument("--port", type=int, default=8000)
     arguments = parser.parse_args()
-    from PySide6.QtCore import QFile, QIODevice, QObject, QStandardPaths, QTimer, QUrl, Slot
+    from PySide6.QtCore import QFile, QIODevice, QObject, QStandardPaths, QTimer, QUrl, Signal, Slot
     from PySide6.QtGui import QDesktopServices, QIcon
     from PySide6.QtNetwork import QLocalServer, QLocalSocket
     from PySide6.QtWebChannel import QWebChannel
@@ -95,6 +95,21 @@ def main():
             logger.debug("UI %s:%s %s", source, line, message)
 
     class DesktopBridge(QObject):
+        localImageDropped = Signal(str)
+
+        def __init__(self, parent=None):
+            super().__init__(parent)
+            self.optimization_active = False
+
+        @Slot(bool)
+        def setOptimizationActive(self, active):
+            self.optimization_active = active
+
+        @Slot(result=str)
+        def chooseOptimizationImage(self):
+            path, _ = QFileDialog.getOpenFileName(window, "选择当前工况图片", "", "图片 (*.jpg *.jpeg *.png *.tif *.tiff *.bmp *.webp);;所有文件 (*)")
+            return json.dumps({"path": path, "cancelled": not bool(path)}, ensure_ascii=False)
+
         @Slot(result=str)
         def chooseFolder(self):
             path = QFileDialog.getExistingDirectory(window, "选择实验图片文件夹", "", QFileDialog.ShowDirsOnly)
@@ -123,7 +138,31 @@ def main():
     window.setWindowIcon(QIcon(str(ROOT / "app/static/brand.svg")))
     window.resize(1480, 960)
     window.setMinimumSize(1000, 700)
-    view = QWebEngineView(window)
+    class ResearchView(QWebEngineView):
+        def dragEnterEvent(self, event):
+            if bridge.optimization_active and event.mimeData().hasUrls():
+                event.acceptProposedAction()
+            else:
+                super().dragEnterEvent(event)
+
+        def dragMoveEvent(self, event):
+            if bridge.optimization_active and event.mimeData().hasUrls():
+                event.acceptProposedAction()
+            else:
+                super().dragMoveEvent(event)
+
+        def dropEvent(self, event):
+            if bridge.optimization_active and event.mimeData().hasUrls():
+                urls = event.mimeData().urls()
+                if len(urls)==1 and urls[0].isLocalFile():
+                    bridge.localImageDropped.emit(urls[0].toLocalFile())
+                    event.acceptProposedAction()
+                else:
+                    event.ignore()
+            else:
+                super().dropEvent(event)
+
+    view = ResearchView(window)
     profile = QWebEngineProfile(view)
     page = LocalPage(profile, view)
     view.setPage(page)

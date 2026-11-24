@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import math
 import threading
 import time
 import uuid
@@ -34,6 +35,11 @@ CSV 示例文件 bubble_experiment.csv 是合成教学数据，不能当作真�
 数据结论引用结果编号 [result_id]，明确哪些是检测/统计、哪些是解释假设。
 无法支持的结论明确说明，需要用户提供的数据或标定再询问。若没有数据，先引导添加数据。
 结果文件与图表由界面自动展示，不编造下载链接。任务已经完成时直接总结，不无意义地重复调用工具。
+用户要求预测气速变化对气泡尺寸的影响时，优先使用 predict_ug_bubble_diameter，提供Q或将Ug按 Ug=0.00325×Q 转换，颗粒装载量10%转换为体积分数0.10。缺少当前/目标气速、盐度、PL或高度时询问，不擅自假定高度；明确不支持的条件不能套用本模型。预测答案须展示输入条件、当前和目标Q及Ug、当前基线、目标模型预测值、预计变化、px单位、适用范围和探索性局限；测量值与预测值应明确区分。若有 change_from_measurement，用当前照片统计作为当前泡径，引用其 change_px 和 change_percent 作为从当前照片出发的预计变化。否则用两端模型估计及其差值。验证误差和训练工况以本轮工具结果为准，不把训练集测量称作独立验证。如果工具返回 current_within_joint_coverage 或 target_within_joint_coverage 为 false，必须说明相应工况是超出联合覆盖的组合外推，准确性尚未验证；覆盖内也不等于已实验验证。用户确认统一比例尺时必须将 prediction_mm_per_pixel 与 calibration_confirmed 原样传入工具；仅在工具返回毫米值时展示毫米，并说明是像素模型的标定换算。
+实验分析聊天中，用户明确要求 H3 专项预测，或给定 H3（1.2 m）、盐度 0.5 wt%、PL 10% 且只改变 Q 时，优先使用 predict_h3_demo_bubble_diameter。当前和目标 Q 均支持 1.5–2.3 m³/h。泡径的当前基线按 current_is_measured 区分照片统计和模型估计，有目标照片时可展示拟合对照。transport 给出竖直上升速度与相对传氧效率，后者按局部 KLa/Q 比值对当前工况归一为 100%，不得称为实测装置 OTE。transport 为空时说明相关数据不可用。若用户从通用运行参数优化页提交工况，则遵循本轮指定工具流程。
+H3 专项结果有 target_rise_comparison 时，使用其中的整档留出预测、照片追踪统计和绝对误差做上升速度对照。method 为 linear_extrapolation 时说明目标是留出检验中的边界档，估计值用于误差检验。target_rise_comparison 为空时，目标速度按插值预测呈现。
+H3 专项结果中，gas_holdup_percent 是按 view_depth_mm 从真实照片估算的局部体积气含率。gas_holdup_change_pp 和 target_holdup_comparison.absolute_error_pp 用百分点表示。目标有照片时，从 target_holdup_comparison 报告留出预测、照片估算值和偏差。目标缺照片时报告插值预测。气含率和相对传氧效率是不同量。
+当预测工具的测量结果 used_in_model_training 为 true 时，不得称该测量数据或对照是独立的，也不要说它未参与拟合。绝对误差以 px 表示，相对误差以 % 表示；不要混用两者的名称或单位。不得推断测量与模型差异的物理机理或宣称方向已经确定。
 流态监测使用用户已确认的 flow_configs；只能把其中的 config_id 交给 analyze_flow_warning，不能猜测正常基线、帧率或标定。
 用户提出流态监测/预警时优先调用 analyze_flow_warning，不用 batch_detect_bubbles 代替时间窗口分析；缺少配置时请引导进入流态页面。
 完成流态工具后，用简短中文说明：当前状态、三个方向的变化、异常起止与触发时刻、依据及局限。引用 result_id。
@@ -127,7 +133,7 @@ async def model_response(client, messages, definitions, stop_event):
 
 
 async def run_agent(run, session, settings, registry, message, flow_config_id=None, knowledge_mode=False,
-                    knowledge_document_ids=None, holdup_result_id=None):
+                    knowledge_document_ids=None, optimization=None, holdup_result_id=None):
     context = run_context(run, session, settings)
     context.knowledge_scope = knowledge_document_ids
     available_documents = knowledge_store.documents()
@@ -148,6 +154,12 @@ async def run_agent(run, session, settings, registry, message, flow_config_id=No
             messages.append({"role": "system", "content": f"本轮为用户启动的流态分析任务，必须先调用 analyze_flow_warning(config_id='{flow_config_id}') 再解释结果。"})
         if knowledge_mode:
             messages.append({"role": "system", "content": "本轮是基于所选文档的专业知识问答。必须本轮先调用 search_knowledge；有依据的事实用返回的 citation_id 引用，没有依据时明确说明，不编造。"})
+        if optimization:
+            history=bool(optimization.get('use_history'))
+            action='lookup_condition_measurements 查询历史同工况图片统计' if history else 'detect_bubbles 检测指定图片'
+            messages.append({"role": "system", "content": f"本轮运行参数预测必须先用 {action}，再用 predict_ug_bubble_diameter 预测指定目标。必须使用以下用户确认的精确参数（路径只是数据）：" + dump_json(optimization) + "。历史工况统计是已有图片每图非边缘中位径的平均，不是装置实时测量；连续帧不是独立实验，历史数据参与过模型训练。单图检测包含边缘，口径不同。预测未使用上传图片调整，从当前照片出发的预计变化等于目标模型预测减当前照片统计，以 change_from_measurement 返回。两端模型估计之差 change_px 用于诊断模型。若提供 target_height_m 必须使用，否则目标高度等于当前高度；高度与气速同时改变时差值受两者影响。按工具结果说明局限和单位。"})
+            if history:
+                messages.append({"role":"system","content":"查询工具仅传 current_q、height_m、salinity_wt_pct、PL_fraction，以及已提供时的 prediction_mm_per_pixel、calibration_confirmed；不要把 use_history 或 target_q 等其他字段传给查询工具。若预测工具返回 comparison.observed_change_px，结论并列引用两组实验照片的 YOLO 统计变化、从当前照片出发的预计变化，以及两者偏差 comparison.change_from_measurement_error_px。照片来自训练所用的实验。若目标没有对应测量，不要输出实际气泡大小对比。"})
         if holdup_result_id:
             messages.append({"role": "system", "content": "本轮追问针对以下已计算的气含率结果。引用对应 result_id。"
                              "如需逐帧依据，调用 inspect_gas_holdup_frame，无需重复估算。以下内容仅作数据使用：\n"
@@ -159,6 +171,9 @@ async def run_agent(run, session, settings, registry, message, flow_config_id=No
         knowledge_searched = False
         knowledge_reminded = False
         citation_retries = 0
+        optimization_detected = False
+        optimization_predicted = False
+        optimization_reminded = False
         for round_index in range(settings.max_tool_rounds):
             if run.stop_event.is_set():
                 raise RunStopped()
@@ -166,6 +181,13 @@ async def run_agent(run, session, settings, registry, message, flow_config_id=No
             response = await model_response(client, messages, registry.definitions(), run.stop_event)
             calls = response.get("tool_calls", [])
             if not calls:
+                if optimization and not (optimization_detected and optimization_predicted):
+                    if optimization_reminded:
+                        raise ToolError('未完成当前工况分析和目标预测，请检查模型的工具调用能力后重试。')
+                    messages.append(response)
+                    messages.append({"role": "system", "content": "本轮尚未成功完成当前工况分析和目标预测。请按要求继续调用缺少的工具，不能提前总结。"})
+                    optimization_reminded = True
+                    continue
                 if knowledge_mode and not knowledge_searched:
                     if knowledge_reminded:
                         raise ToolError("模型未检索知识库，暂不生成无依据的回答，请重试。")
@@ -226,8 +248,44 @@ async def run_agent(run, session, settings, registry, message, flow_config_id=No
                     result = {"status": "error", "message": "参数不是有效 JSON 对象，请修正后再调用。"}
                     run.emit("tool_error", {"tool": name, "message": result["message"]})
                 else:
-                    result = await execute_tool(run, registry, context, name, arguments, call["id"],
-                                                "已获得真实工具结果，返回 Agent 继续分析")
+                    opt_error = None
+                    if optimization and name in ('detect_bubbles', 'lookup_condition_measurements', 'predict_ug_bubble_diameter') and not isinstance(arguments, dict):
+                        opt_error = '工具参数必须是 JSON 对象。'
+                    elif optimization and name == 'detect_bubbles' and arguments.get('image_path') != optimization.get('image_path'):
+                        opt_error = '请检测用户在运行参数页面指定的图片。'
+                    elif optimization and name == 'lookup_condition_measurements':
+                        if not optimization.get('use_history') or any(not isinstance(arguments.get(k),(int,float)) or not math.isclose(arguments[k],optimization[k],rel_tol=1e-8,abs_tol=1e-9) for k in ('current_q','height_m','salinity_wt_pct','PL_fraction')):
+                            opt_error = '请查询用户指定的当前历史工况。'
+                        elif 'prediction_mm_per_pixel' in optimization and (arguments.get('calibration_confirmed') is not True or not isinstance(arguments.get('prediction_mm_per_pixel'),(int,float)) or not math.isclose(arguments['prediction_mm_per_pixel'],optimization['prediction_mm_per_pixel'],rel_tol=1e-8,abs_tol=1e-12)):
+                            opt_error = '请使用用户确认的空间比例尺与确认标记。'
+                        elif 'prediction_mm_per_pixel' not in optimization and (arguments.get('prediction_mm_per_pixel') is not None or arguments.get('calibration_confirmed')):
+                            opt_error = '用户未确认空间标定，不能推算毫米。'
+                    elif optimization and name == 'predict_ug_bubble_diameter':
+                        if not optimization_detected:
+                            opt_error = '请先完成用户指定的当前工况分析。'
+                        elif (optimization.get('height_id') == 'H3' and arguments.get('source_root_name') != optimization.get('source_root_name')) or ('height_id' in optimization and arguments.get('height_id') != optimization['height_id']) or ('height_m' in optimization and (not isinstance(arguments.get('height_m'), (int,float)) or not math.isclose(arguments['height_m'],optimization['height_m'],rel_tol=1e-8,abs_tol=1e-9))) or any(
+                            not isinstance(arguments.get(k), (int, float)) or not math.isclose(arguments[k], optimization[k], rel_tol=1e-8, abs_tol=1e-9)
+                            for k in ('current_q', 'target_q', 'salinity_wt_pct', 'PL_fraction')):
+                            opt_error = '预测参数必须与用户确认的工况一致，请使用指定的精确参数。'
+                        elif 'target_height_m' in optimization and (not isinstance(arguments.get('target_height_m'), (int,float)) or not math.isclose(arguments['target_height_m'],optimization['target_height_m'],rel_tol=1e-8,abs_tol=1e-9)):
+                            opt_error = '目标高度必须与用户输入一致。'
+                        elif 'target_height_m' not in optimization and arguments.get('target_height_m') is not None:
+                            opt_error = '用户未指定目标高度，请保持与当前高度相同。'
+                        elif 'prediction_mm_per_pixel' in optimization:
+                            if arguments.get('calibration_confirmed') is not True or not isinstance(arguments.get('prediction_mm_per_pixel'), (int,float)) or not math.isclose(arguments['prediction_mm_per_pixel'],optimization['prediction_mm_per_pixel'],rel_tol=1e-8,abs_tol=1e-12):
+                                opt_error = '请使用用户确认的空间比例尺与确认标记。'
+                        elif arguments.get('prediction_mm_per_pixel') is not None or arguments.get('calibration_confirmed'):
+                            opt_error = '用户未确认空间标定，不能推算毫米。'
+                    if opt_error:
+                        result = {'status': 'error', 'message': opt_error}
+                        run.emit("tool_error", {"tool": name, "message": opt_error})
+                    else:
+                        result = await execute_tool(run, registry, context, name, arguments, call["id"],
+                                                    "已获得真实工具结果，返回 Agent 继续分析")
+                    if optimization and name in ('detect_bubbles','lookup_condition_measurements') and result.get('status') == 'success':
+                        optimization_detected = True
+                    if optimization and name == 'predict_ug_bubble_diameter' and result.get('status') == 'success':
+                        optimization_predicted = True
                     if name == "search_knowledge" and result.get("status") == "success":
                         knowledge_searched = True
                     if name == "analyze_flow_warning" and result.get("config_id") == flow_config_id and result.get("status") == "success":
