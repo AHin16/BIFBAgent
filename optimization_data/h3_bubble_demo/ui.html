@@ -63,7 +63,7 @@
     .validation { margin-top: 20px; }
     .transport { margin-top: 20px; }
     .transport p { color: var(--muted); font-size: 13px; }
-    .transport .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .transport .result-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .transport .metric > span { display: block; margin-top: 6px; color: var(--muted); font-size: 13px; }
     .rise-photo-comparison { margin: 14px 0; padding: 12px 0; border-block: 1px solid var(--line); }
     .rise-photo-comparison h3 { margin: 0 0 6px; font-size: 15px; }
@@ -82,6 +82,7 @@
     @media (max-width: 760px) {
       main { padding: 16px 16px 30px; } .intro { padding-top: 25px; }
       .layout { grid-template-columns: 1fr; gap: 13px; } .panel { padding: 15px; }
+      .transport .result-grid { grid-template-columns: 1fr; }
       canvas { height: 220px; }
     }
     @media (max-width: 420px) {
@@ -151,13 +152,18 @@
       </section>
     </div>
     <section id="transport" class="panel transport" aria-labelledby="transport-title" hidden>
-      <div class="result-heading"><h2 id="transport-title">气泡上升速度与相对传氧效率</h2><span class="status" id="transport-status" role="status"></span></div>
+      <div class="result-heading"><h2 id="transport-title">上升速度、气含率与传氧</h2><span class="status" id="transport-status" role="status"></span></div>
       <div id="transport-results" hidden>
         <div class="result-grid">
           <div class="metric">
             <p id="target-rise-label">目标竖直上升速度</p>
             <strong><span id="target-rise"></span> <small>mm/s</small></strong>
             <span id="rise-comparison"></span>
+          </div>
+          <div class="metric">
+            <p id="target-holdup-label">目标体积气含率</p>
+            <strong><span id="target-holdup"></span> <small>%</small></strong>
+            <span id="holdup-comparison"></span>
           </div>
           <div class="metric predicted">
             <p>目标相对传氧效率</p>
@@ -166,13 +172,17 @@
           </div>
         </div>
         <section id="rise-photo-comparison" class="rise-photo-comparison" aria-labelledby="rise-comparison-title" hidden>
-          <h3 id="rise-comparison-title">目标上升速度 · 照片对照</h3>
+          <h3 id="rise-comparison-title">目标工况 · 照片对照</h3>
           <div class="table-wrap"><table>
-            <thead><tr><th scope="col">整档留出预测 (mm/s)</th><th scope="col">照片追踪统计 (mm/s)</th><th scope="col">绝对误差 (mm/s)</th></tr></thead>
-            <tbody><tr><td id="rise-holdout-prediction"></td><td id="rise-photo-observed"></td><td id="rise-holdout-error"></td></tr></tbody>
+            <thead><tr><th scope="col">指标</th><th scope="col">整档留出预测</th><th scope="col">照片分析结果</th><th scope="col">绝对误差</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">上升速度</th><td id="rise-holdout-prediction"></td><td id="rise-photo-observed"></td><td id="rise-holdout-error"></td></tr>
+              <tr><th scope="row">体积气含率</th><td id="holdup-holdout-prediction"></td><td id="holdup-photo-observed"></td><td id="holdup-holdout-error"></td></tr>
+            </tbody>
           </table></div>
           <p id="rise-holdout-note"></p>
         </section>
+        <p id="holdup-depth-note"></p>
         <p>相对传氧效率按局部估算的 K<sub>L</sub>a/Q 比值计算，当前工况为 100%。计算假设两档的有效视野深度与溶解氧驱动力可比，以上升速度近似气液滑移速度。</p>
         <details>
           <summary>测速依据与留出误差</summary>
@@ -212,7 +222,7 @@
     const demo = JSON.parse(document.getElementById("demo-data").textContent);
     const transportEnabled = __H3_TRANSPORT_ENABLED__;
     const byId = id => document.getElementById(id);
-    if (transportEnabled) byId("intro-description").textContent = "比较不同进气量下的泡径、上升速度与相对传氧效率。";
+    if (transportEnabled) byId("intro-description").textContent = "比较不同进气量下的泡径、上升速度、气含率与相对传氧效率。";
     const currentInput = byId("current");
     const targetInput = byId("target");
     const measured = new Map(demo.measurements.map(row => [row.q_m3_h, row]));
@@ -341,11 +351,19 @@
         byId("diameter-mm").hidden = false;
         byId("target-rise").textContent = size(data.target.rise_mm_s);
         byId("target-rise-label").textContent = data.target.is_measured_flow ? "目标上升速度 · 照片统计" : "目标上升速度 · 插值预测";
+        byId("target-holdup").textContent = size(data.target.gas_holdup_percent);
+        byId("target-holdup-label").textContent = data.target.is_measured_flow ? "目标气含率 · 照片估算" : "目标气含率 · 插值预测";
+        byId("holdup-comparison").textContent = `当前 ${size(data.current.gas_holdup_percent)}%，变化 ${signed(data.gas_holdup_change_pp)} 个百分点。`;
+        byId("holdup-depth-note").textContent = `体积气含率取 H3 局部视野，按 ${data.view_depth_mm} mm 视野深度及等效球体积估算。`;
         const comparison = data.target_rise_comparison;
-        if (comparison) {
-          byId("rise-holdout-prediction").textContent = size(comparison.prediction_mm_s);
-          byId("rise-photo-observed").textContent = size(comparison.observed_mm_s);
-          byId("rise-holdout-error").textContent = size(comparison.absolute_error_mm_s);
+        const holdup = data.target_holdup_comparison;
+        if (comparison && holdup) {
+          byId("rise-holdout-prediction").textContent = `${size(comparison.prediction_mm_s)} mm/s`;
+          byId("rise-photo-observed").textContent = `${size(comparison.observed_mm_s)} mm/s`;
+          byId("rise-holdout-error").textContent = `${size(comparison.absolute_error_mm_s)} mm/s`;
+          byId("holdup-holdout-prediction").textContent = `${size(holdup.prediction_percent)}%`;
+          byId("holdup-photo-observed").textContent = `${size(holdup.observed_percent)}%`;
+          byId("holdup-holdout-error").textContent = `${size(holdup.absolute_error_pp)} 个百分点`;
           const methodNote = comparison.method === "linear_extrapolation"
             ? "目标是边界档，整档留出后用其余三档线性外推，仅用于检验误差。"
             : "整档留出目标照片，用其余档位中相邻的两档插值预测。";
@@ -357,9 +375,10 @@
         byId("rise-comparison").textContent = `${basis} ${size(data.current.rise_mm_s)} mm/s，变化 ${signed(data.rise_change_mm_s)} mm/s。${uncertaintyNote}`;
         byId("target-oxygen").textContent = size(data.relative_oxygen_efficiency_percent);
         byId("oxygen-comparison").textContent = `相对当前变化 ${signed(data.oxygen_efficiency_change_percent)}%。`;
-        byId("transport-status").textContent = data.target.is_measured_flow ? "目标速度有追踪统计" : "目标速度按相邻档位插值";
+        byId("transport-status").textContent = data.target.is_measured_flow ? "目标有照片可对照" : "未拍摄档位 · 区间内插值";
         const mae = data.validation.interior_mae_mm_s;
-        byId("rise-validation").textContent = `两个内部档位整档留出的平均误差：相邻插值 ${size(mae.neighbor)} mm/s，全区间线性 ${size(mae.linear)} mm/s，均值基准 ${size(mae.mean)} mm/s。每档只有一个采集序列，多个窗口用于检查波动。`;
+        const holdupMae = data.holdup_validation.interior_mae_pp;
+        byId("rise-validation").textContent = `内部两档整档留出的平均误差：速度相邻插值 ${size(mae.neighbor)} mm/s，全区间线性 ${size(mae.linear)} mm/s，均值基准 ${size(mae.mean)} mm/s。气含率相邻插值 ${size(holdupMae.neighbor)} 个百分点。每档有一个采集序列，多个窗口用于检查波动。`;
         byId("rise-rows").replaceChildren();
         for (const row of data.measured_levels) {
           const range = row.window_rise_mm_s;

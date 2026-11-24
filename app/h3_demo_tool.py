@@ -15,7 +15,7 @@ def register_h3_demo_tool(registry):
     @registry.register(
         "H3 专项气泡尺寸预测。适用固定工况为高度 H3（1.2 m）、盐度 0.5 wt%、PL 10%，"
         "输入当前和目标进气量 Q，均可在 1.5–2.3 m³/h 内任取。"
-        "返回目标泡径、上升速度变化、相对传氧效率估算及可用的照片对照。"
+        "返回目标泡径、上升速度、体积气含率、相对传氧效率及可用的照片对照。"
     )
     def predict_h3_demo_bubble_diameter(context, current_q: float, target_q: float):
         try:

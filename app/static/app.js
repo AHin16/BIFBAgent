@@ -231,11 +231,17 @@ function resultCard(result, tool) {
     if (result.observed_d50_px != null) metrics.push([result.observed_d50_px, "目标实际气泡大小 / px"]);
     if (result.transport) {
       metrics.push([result.transport.rise_change_mm_s, "预计上升速度变化 / mm/s"],
+                   [result.transport.target.gas_holdup_percent, result.transport.target.is_measured_flow ? "照片估算气含率 / %" : "目标预测气含率 / %"],
                    [result.transport.relative_oxygen_efficiency_percent, "相对传氧效率 / %"]);
       const comparison = result.transport.target_rise_comparison;
       if (comparison) {
         const method = comparison.method === "linear_extrapolation" ? "边界外推" : "相邻插值";
         card.append(element("div", "result-limitation", `目标上升速度整档留出预测 ${formatNumber(comparison.prediction_mm_s)} mm/s（${method}），照片追踪统计 ${formatNumber(comparison.observed_mm_s)} mm/s，绝对误差 ${formatNumber(comparison.absolute_error_mm_s)} mm/s。`));
+      }
+      const holdup = result.transport.target_holdup_comparison;
+      if (holdup) {
+        const method = holdup.method === "linear_extrapolation" ? "边界外推" : "相邻插值";
+        card.append(element("div", "result-limitation", `目标气含率整档留出预测 ${formatNumber(holdup.prediction_percent)}%（${method}），照片估算 ${formatNumber(holdup.observed_percent)}%，绝对误差 ${formatNumber(holdup.absolute_error_pp)} 个百分点。`));
       }
       card.append(element("div", "result-limitation", result.transport.limitations[1]));
     }

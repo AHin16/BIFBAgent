@@ -30,6 +30,8 @@ conda run --no-capture-output -n BIFBAgent python -m pip install -r requirements
 
 速度与传氧模块读取 `data/variation_evaluation/h3_pl10/transport_sequence_96/measurements.json`。在已有索引和原始序列可访问时，可运行 `python -m optimization_data.h3_bubble_demo.measure_flow` 提取四档各三个连续窗口，再用 `python -m optimization_data.h3_bubble_demo.transport` 导出模型结果与留出验证报告。每个窗口输出轨迹运动 CSV。
 
+H3 专项的体积气含率使用确认的 8 mm 视野深度，从真实照片的分割掩膜估算气泡等效球总体积。已拍摄档位可对照照片估算值与整档留出预测，未拍摄档位使用相邻气量插值。气含率变化量和误差以百分点表示。
+
 迁移到另一台机器时，从团队共享位置按原相对路径放置以下统计和模型文件：
 
 - H3 专项预测使用 `data/h3_confirmed/continuous_height/conditions.csv` 和上述 `measurements.json`。

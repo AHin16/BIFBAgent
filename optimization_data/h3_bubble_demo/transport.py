@@ -9,6 +9,7 @@ from .model import FLOW_LEVELS, ROOT, validate_flow
 
 MEASUREMENTS = ROOT / "data/variation_evaluation/h3_pl10/transport_sequence_96/measurements.json"
 FEATURES = ("rise_mm_s", "d32_mm", "interfacial_area_times_depth")
+H3_VIEW_DEPTH_MM = 8.0
 
 
 def interpolate(q, points):
@@ -42,6 +43,12 @@ class TransportModel:
             stats["valid_frames"] = sum(row["valid_frames"] for row in group)
             stats["rising_tracks"] = sum(row["rising_tracks"] for row in group)
             stats["window_rise_mm_s"] = [row["rise_mm_s"] for row in group]
+            window_holdup = [
+                100 * row["gas_volume_per_view_area_mm"] / H3_VIEW_DEPTH_MM for row in group
+            ]
+            if any(not isfinite(value) or not 0 <= value <= 100 for value in window_holdup):
+                raise ValueError(f"Q={q:g} 的照片气含率超出物理范围。")
+            stats["gas_holdup_percent"] = mean(window_holdup)
             self.conditions[q] = stats
 
     @classmethod
@@ -49,28 +56,46 @@ class TransportModel:
         with (path or MEASUREMENTS).open(encoding="utf-8") as stream:
             return cls(json.load(stream))
 
-    def validation(self):
+    def validation(self, feature="rise_mm_s", value_unit="mm_s", error_unit="mm_s"):
         rows = []
         for q in FLOW_LEVELS:
-            train = [(flow, row["rise_mm_s"]) for flow, row in self.conditions.items() if flow != q]
-            measured = self.conditions[q]["rise_mm_s"]
+            train = [(flow, row[feature]) for flow, row in self.conditions.items() if flow != q]
+            measured = self.conditions[q][feature]
             is_interior = train[0][0] < q < train[-1][0]
             fit = linear_regression([flow for flow, _ in train], [speed for _, speed in train])
             rows.append({
                 "q_m3_h": q,
                 "coverage": "interpolation" if is_interior else "extrapolation",
-                "measured_mm_s": measured,
-                "linear_mm_s": fit.intercept + fit.slope * q,
-                "neighbor_mm_s": interpolate(q, train) if is_interior else None,
-                "mean_mm_s": mean(speed for _, speed in train),
+                f"measured_{value_unit}": measured,
+                f"linear_{value_unit}": fit.intercept + fit.slope * q,
+                f"neighbor_{value_unit}": interpolate(q, train) if is_interior else None,
+                f"mean_{value_unit}": mean(value for _, value in train),
             })
         interior = [row for row in rows if row["coverage"] == "interpolation"]
         return {
             "folds": rows,
-            "interior_mae_mm_s": {
-                label: mean(abs(row[f"{label}_mm_s"] - row["measured_mm_s"]) for row in interior)
+            f"interior_mae_{error_unit}": {
+                label: mean(abs(row[f"{label}_{value_unit}"] - row[f"measured_{value_unit}"]) for row in interior)
                 for label in ("linear", "neighbor", "mean")
             },
+        }
+
+    def target_comparison(self, target_q, validation, value_unit, error_unit):
+        if target_q not in self.conditions:
+            return None
+        fold = next(row for row in validation["folds"] if row["q_m3_h"] == target_q)
+        estimate = fold[f"neighbor_{value_unit}"]
+        method = "neighbor_interpolation"
+        if estimate is None:
+            estimate = fold[f"linear_{value_unit}"]
+            method = "linear_extrapolation"
+        observed = fold[f"measured_{value_unit}"]
+        return {
+            "method": method,
+            f"prediction_{value_unit}": estimate,
+            f"observed_{value_unit}": observed,
+            f"absolute_error_{error_unit}": abs(estimate - observed),
+            "valid_frames": self.conditions[target_q]["valid_frames"],
         }
 
     def predict(self, current_q, target_q):
@@ -80,7 +105,7 @@ class TransportModel:
         def at_flow(q):
             estimates = {
                 key: interpolate(q, [(flow, row[key]) for flow, row in self.conditions.items()])
-                for key in FEATURES
+                for key in (*FEATURES, "gas_holdup_percent")
             }
             return {**estimates, "is_measured_flow": q in self.conditions}
 
@@ -88,25 +113,15 @@ class TransportModel:
         velocity_change = target["rise_mm_s"] - current["rise_mm_s"]
         oxygen_ratio = oxygen_proxy(target, target_q) / oxygen_proxy(current, current_q)
         validation = self.validation()
-        comparison = None
-        if target["is_measured_flow"]:
-            fold = next(row for row in validation["folds"] if row["q_m3_h"] == target_q)
-            estimate = fold["neighbor_mm_s"]
-            method = "neighbor_interpolation"
-            if estimate is None:
-                estimate = fold["linear_mm_s"]
-                method = "linear_extrapolation"
-            comparison = {
-                "method": method,
-                "prediction_mm_s": estimate,
-                "observed_mm_s": fold["measured_mm_s"],
-                "absolute_error_mm_s": abs(estimate - fold["measured_mm_s"]),
-                "valid_frames": self.conditions[target_q]["valid_frames"],
-            }
+        holdup_validation = self.validation("gas_holdup_percent", "percent", "pp")
         return {
             "current": current,
             "target": target,
-            "target_rise_comparison": comparison,
+            "target_rise_comparison": self.target_comparison(target_q, validation, "mm_s", "mm_s"),
+            "target_holdup_comparison": self.target_comparison(target_q, holdup_validation, "percent", "pp"),
+            "gas_holdup_change_pp": target["gas_holdup_percent"] - current["gas_holdup_percent"],
+            "view_depth_mm": H3_VIEW_DEPTH_MM,
+            "holdup_validation": holdup_validation,
             "rise_change_mm_s": velocity_change,
             "rise_change_percent": 100 * velocity_change / current["rise_mm_s"],
             "relative_oxygen_efficiency_percent": 100 * oxygen_ratio,
@@ -124,6 +139,7 @@ class TransportModel:
                 "速度是固定视野内上升轨迹的竖直速度，每个工况统计同一序列的三个窗口。未采集的气量使用相邻档位线性插值。",
                 "相对传氧效率以当前工况为 100%，用局部估算的 KLa/Q 比值表示，假设视野深度和氧浓度驱动力可比，并以上升速度近似滑移速度。",
                 "该指标用于筛选工况，实际装置氧传递效率仍需溶解氧或尾气数据验证。",
+                "体积气含率采用 H3 确认的 8 mm 视野深度，由照片分割和等效球体积估算，表示局部视野内的气相体积分数。",
             ],
         }
 
