@@ -7,7 +7,7 @@ const examplePrompts = {image: "检测这张气泡图片，统计气泡数量、
 Object.assign(toolNames, {search_knowledge: "知识库 · 检索原文", read_knowledge_excerpt: "知识库 · 核对原文", get_experiment_context: "实验 · 获取已确认背景"});
 Object.assign(toolNames, {estimate_gas_holdup: "气含率 · 等效球体积估算", inspect_gas_holdup_frame: "气含率 · 逐帧数据查询", track_bubbles: "气泡追踪 · 轨迹与运动测量"});
 toolNames.predict_ug_bubble_diameter = "气速变化 · 气泡尺寸预测";
-toolNames.predict_h3_demo_bubble_diameter = "H3 · 0.5 wt% 气泡尺寸专项预测";
+toolNames.predict_h3_demo_bubble_diameter = "污水曝气参数优化";
 toolNames.lookup_condition_measurements = "当前工况 · 多图统计";
 
 function element(tag, className, text) {
@@ -47,7 +47,7 @@ function syncOptimizationDrop() {
 }
 
 function showView(view) {
-  const titles = {home: "首页", workbench: "实验分析", flow: "流态监测预警", holdup: "气含率估算", optimization: "运行参数优化", knowledge: "专业知识问答"};
+  const titles = {home: "首页", workbench: "实验分析", flow: "流态监测预警", holdup: "气含率估算", optimization: "污水曝气参数优化", knowledge: "专业知识问答"};
   state.view = view;
   syncOptimizationDrop();
   sessionStorage.setItem("bifb-view", view);
@@ -60,18 +60,11 @@ function showView(view) {
   });
   if (view === "workbench") byId("message-input").focus({preventScroll: true});
   if (view === "knowledge") window.KnowledgeUI?.refresh();
-  if (view === "optimization") refreshPredictionHeights().catch((error) => { byId("optimization-supported").textContent = error.message; });
+  if (view === "optimization") {
+    const frame = byId("optimization-h3-frame");
+    if (!frame.hasAttribute("src")) frame.src = frame.dataset.src;
+  }
   window.scrollTo({top: 0, behavior: "instant"});
-}
-
-function showOptimizationMode(useH3) {
-  const frame = byId("optimization-h3-frame");
-  byId("optimization-general").hidden = useH3;
-  byId("optimization-h3").hidden = !useH3;
-  byId("optimization-general-mode").setAttribute("aria-pressed", String(!useH3));
-  byId("optimization-h3-mode").setAttribute("aria-pressed", String(useH3));
-  if (useH3 && !frame.hasAttribute("src")) frame.src = frame.dataset.src;
-  syncOptimizationDrop();
 }
 
 async function pickFolderSelection() {
@@ -178,7 +171,7 @@ function renderMarkdown(target, text) {
 function addMessage(role, text, extra = "") {
   byId("welcome")?.remove();
   const node = element("article", `chat-message ${role} ${extra}`);
-  node.append(element("div", "message-label", role === "user" ? "你 · 研究任务" : "BIFB · 科研助手"));
+  node.append(element("div", "message-label", role === "user" ? "你 · 研究任务" : "污水处理 · 科研助手"));
   const body = element("div", "message-body");
   renderMarkdown(body, text);
   node.append(body);
@@ -245,7 +238,7 @@ function resultCard(result, tool) {
       }
       card.append(element("div", "result-limitation", result.transport.limitations[1]));
     }
-    card.append(element("div", "result-limitation", `H3（${result.height_m} m） · 盐度 ${result.salinity_wt_pct} wt% · PL ${result.PL_fraction * 100}% · Q ${result.current_q} → ${result.target_q} m³/h。`));
+    card.append(element("div", "result-limitation", `模拟污水实验 · 观测高度 ${result.height_m} m · 盐度 ${result.salinity_wt_pct} wt% · PL ${result.PL_fraction * 100}% · Q ${result.current_q} → ${result.target_q} m³/h。`));
   }
   else if (result.kind === "flow_warning") metrics = [[result.processed_frames, "待测帧数"], [result.window_count, "时间窗口数"], [result.event_count, "预警事件数"]];
   else if (result.kind === "gas_holdup") metrics = [[result.gas_holdup_percent?.mean, "平均体积气含率 / %"], [result.bubble_area_ratio_percent?.mean, "平均二维面积占比 / %"], [result.valid_frames, `有效帧数 / 共 ${result.total_frames} 帧`]];
@@ -950,8 +943,6 @@ async function stopAnalysis() {
 }
 
 byId("chat-form").addEventListener("submit", submitTask);
-byId("optimization-general-mode").addEventListener("click", () => showOptimizationMode(false));
-byId("optimization-h3-mode").addEventListener("click", () => showOptimizationMode(true));
 let h3FrameObserver;
 byId("optimization-h3-frame").addEventListener("load", (event) => {
   const frame = event.currentTarget;

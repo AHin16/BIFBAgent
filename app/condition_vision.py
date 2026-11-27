@@ -25,7 +25,7 @@ def available_conditions():
 
 
 def register_condition_vision(registry):
-    @registry.register('查询历史盐水实验工况的现有逐图片YOLO统计，不重新识别：输入当前 Q、高度、盐度及 PL。严格匹配同一工况，返回每图非边缘气泡中位径的平均值、图片间分布、数量与来源。历史结果不是实时数据，也不是独立重复实验。')
+    @registry.register('查询历史模拟污水曝气实验工况的现有逐图片YOLO统计，不重新识别：输入当前 Q、高度、盐度及 PL。严格匹配同一工况，返回每图非边缘气泡中位径的平均值、图片间分布、数量与来源。历史结果不是实时数据，也不是独立重复实验。')
     def lookup_condition_measurements(context,current_q:float,height_m:float,salinity_wt_pct:float,PL_fraction:float,prediction_mm_per_pixel:float|None=None,calibration_confirmed:bool=False):
         if not all(math.isfinite(float(v)) for v in (current_q,height_m,salinity_wt_pct,PL_fraction)):
             raise ToolError('工况参数必须是有效数值。')
