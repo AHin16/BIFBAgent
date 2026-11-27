@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#bd2030">
-  <title>BIFB · 多相流智能分析与优化 Agent</title>
+  <title>污水处理智能分析与优化 Agent</title>
   <link rel="icon" href="/static/brand.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/style.css">
   <script src="/static/app.js" defer></script>
@@ -12,7 +12,10 @@
 </head>
 <body>
   <aside class="sidebar">
-    <a href="#home" class="brand" data-nav="home"><img src="/static/brand.svg" alt=""><span>BIFB<span class="brand-sub">多相流智能科研助手</span></span></a>
+    <a href="#home" class="brand" data-nav="home" aria-label="污水处理智能分析与优化助手首页">
+      <img src="/static/brand.svg" alt="">
+      <span>污水处理<span class="brand-sub">智能分析与优化助手</span></span>
+    </a>
     <div class="sidebar-label">科研工作空间</div>
     <nav class="navigation" aria-label="主导航">
       <button class="nav-item active" data-nav="home" aria-current="page"><svg><use href="/static/icons.svg#home"></use></svg>首页</button>
@@ -25,7 +28,7 @@
     <div class="sidebar-bottom">
       <div class="local-note"><span class="tiny-dot"></span> 本地实验数据工作空间</div>
       <button id="new-session" class="button new-session"><svg><use href="/static/icons.svg#plus"></use></svg>新建研究会话</button>
-      <div class="sidebar-version">BIFB Research Assistant <span>DEMO</span></div>
+      <div class="sidebar-version">Wastewater Agent <span>DEMO</span></div>
     </div>
   </aside>
   <main class="app-main">
@@ -35,9 +38,9 @@
     </header>
     <section id="home-view" class="home-view" aria-label="首页">
       <div class="hero">
-        <div class="hero-eyebrow"><span></span> MULTIPHASE FLOW · INTELLIGENT RESEARCH</div>
-        <h1><em>BIFB</em> 多相流智能分析与优化 Agent</h1>
-        <p>面向气泡诱导逆流化床的智能实验分析与科研探索</p>
+        <div class="hero-eyebrow"><span></span> WASTEWATER TREATMENT · PROCESS OPTIMIZATION</div>
+        <h1><em>污水处理</em>智能分析与优化 Agent</h1>
+        <p>面向污水处理工艺的实验数据分析与运行参数优化</p>
         <div class="hero-caption"><span>真实视觉检测</span><i></i><span>专业数据计算</span><i></i><span>可追溯的科研解释</span></div>
       </div>
       <div class="module-heading"><h2>从实验观察到科研洞见</h2><span>选择研究方向，或直接描述你的问题</span></div>
@@ -49,7 +52,7 @@
         <button class="feature-card" data-nav="knowledge"><span class="feature-icon"><svg><use href="/static/icons.svg#book"></use></svg></span><h3>专业知识问答</h3><p>原文检索 · 有据可查</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
       </div>
       <section class="welcome-card">
-        <div class="welcome-heading"><span class="robot-icon"><svg><use href="/static/icons.svg#robot"></use></svg></span><div><h2>欢迎使用 BIFB 智能分析与优化 Agent</h2><p>用自然语言提出研究任务，让 Agent 组织分析流程。</p></div></div>
+        <div class="welcome-heading"><span class="robot-icon"><svg><use href="/static/icons.svg#robot"></use></svg></span><div><h2>欢迎使用污水处理智能分析与优化Agent</h2><p>用自然语言提出研究任务，让 Agent 组织分析流程。</p></div></div>
         <div class="home-suggestions">
           <button data-home-prompt="分析这个实验文件夹里的气泡图片，统计数量和尺寸分布。"><svg><use href="/static/icons.svg#image"></use></svg>分析气泡图像的尺寸分布<span>↗</span></button>
           <button data-home-prompt="分析这个 CSV，看看不同气速下的气泡直径变化，并比较不同工况。"><svg><use href="/static/icons.svg#chart"></use></svg>探索气速与气泡直径的关系<span>↗</span></button>

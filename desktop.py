@@ -134,7 +134,7 @@ def main():
                 super().closeEvent(event)
 
     window = ResearchWindow()
-    window.setWindowTitle("BIFB · 多相流智能分析与优化 Agent")
+    window.setWindowTitle("污水处理智能分析与优化 Agent")
     window.setWindowIcon(QIcon(str(ROOT / "app/static/brand.svg")))
     window.resize(1480, 960)
     window.setMinimumSize(1000, 700)
