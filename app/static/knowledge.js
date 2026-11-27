@@ -78,7 +78,7 @@
 
   function addKnowledgeMessage(role, text, citations = []) {
     byId("knowledge-welcome")?.remove();
-    const article = element("article", `chat-message ${role}`); article.append(element("div", "message-label", role === "user" ? "你 · 专业问题" : "BIFB · 有据问答"));
+    const article = element("article", `chat-message ${role}`); article.append(element("div", "message-label", role === "user" ? "你 · 专业问题" : "污水处理 · 有据问答"));
     const body = element("div", "message-body"); renderMarkdown(body, text); article.append(body);
     if (citations.length) {
       const links = element("div", "citation-links");

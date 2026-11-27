@@ -56,7 +56,7 @@ def main():
     application = QApplication.instance() or QApplication(sys.argv[:1])
     parent = QWidget()
     parent.setWindowFlags(Qt.Tool | Qt.WindowStaysOnTopHint)
-    parent.setWindowTitle("BIFB · 选择本地文件")
+    parent.setWindowTitle("污水处理 · 选择本地文件")
     parent.resize(1, 1)
     parent.show()
     if arguments.kind == "model":

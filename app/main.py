@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 # Windows registry MIME entries may report image/svg, which Chromium rejects.
 mimetypes.init()
 mimetypes.add_type("image/svg+xml", ".svg")
-app = FastAPI(title="BIFB 智能科研助手", version="0.1.0")
+app = FastAPI(title="污水处理智能分析与优化 Agent", version="0.1.0")
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "[::1]", "testserver"])
 app.mount("/static", StaticFiles(directory=ROOT / "app/static"), name="static")
 app.mount("/artifacts", StaticFiles(directory=DATA / "outputs"), name="artifacts")
@@ -107,7 +107,7 @@ def h3_bubble_demo():
         logger.exception("Unable to load H3 bubble demo")
         return HTMLResponse(
             '<!doctype html><html lang="zh-CN"><meta charset="utf-8">'
-            '<p role="alert">H3 专项预测暂不可用，请检查本地四档照片统计。'
+            '<p role="alert">污水曝气参数优化暂不可用，请检查本地四档照片统计。'
             '<a href="/optimization/h3-demo">重新加载</a></p></html>',
             status_code=503,
         )

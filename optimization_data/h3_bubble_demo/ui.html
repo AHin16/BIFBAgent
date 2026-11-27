@@ -3,27 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f3ee">
-  <title>BIFB｜调气后的泡径预测</title>
+  <meta name="theme-color" content="#faf9fb">
+  <title>污水曝气参数优化</title>
   <style>
     :root {
-      color-scheme: light; --ink: #172b27; --muted: #4e605a; --paper: #f5f3ee;
-      --card: #fffefa; --line: #deded4; --green: #154b40; --rust: #a33b28;
-      font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+      color-scheme: light; --ink: #24232b; --muted: #65616d; --paper: #faf9fb;
+      --card: #ffffff; --line: #eeeaf0; --red: #bd2030; --red-dark: #9e1422;
+      font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
       line-height: 1.55; color: var(--ink); background: var(--paper);
     }
     * { box-sizing: border-box; }
     body { margin: 0; }
-    main { max-width: 1232px; margin: auto; padding: 25px 32px 48px; }
+    main { max-width: 1232px; margin: auto; padding: 0 0 38px; }
     h1, h2, p { margin: 0; }
-    h1 { font-size: clamp(31px, 4vw, 53px); line-height: 1.18; letter-spacing: -.06em; }
     h2 { font-size: 20px; letter-spacing: -.025em; }
-    header { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
-    .brand { display: flex; align-items: center; gap: 11px; font-size: 15px; font-weight: 700; }
-    .brand b { padding: 4px 9px; background: var(--green); color: white; border-radius: 5px; letter-spacing: .06em; }
-    header a { color: var(--green); font-size: 14px; text-underline-offset: 4px; white-space: nowrap; }
-    .intro { padding: 32px 0 22px; }
-    .intro p { margin-top: 10px; color: var(--muted); }
+    .intro { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; padding: 5px 0 12px; }
+    .intro p { font-size: 13px; color: var(--muted); }
+    .intro a { color: var(--red-dark); font-size: 13px; text-underline-offset: 4px; }
     .scope { display: flex; flex-wrap: wrap; gap: 10px 24px; margin: 0; padding: 13px 0; border-block: 1px solid var(--line); }
     .scope div { display: flex; gap: 8px; align-items: baseline; }
     dt { color: var(--muted); font-size: 13px; }
@@ -33,32 +29,32 @@
     form { display: grid; gap: 17px; padding-top: 16px; }
     label { display: block; margin-bottom: 5px; font-size: 14px; font-weight: 650; }
     select, input, button { font: inherit; }
-    select, input { width: 100%; min-height: 44px; border: 1px solid #aebbb3; border-radius: 6px; color: var(--ink); background: white; padding: 6px 10px; }
+    select, input { width: 100%; min-height: 44px; border: 1px solid #d8ced8; border-radius: 6px; color: var(--ink); background: white; padding: 6px 10px; }
     button { cursor: pointer; }
-    button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid #337963; outline-offset: 3px; }
+    button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid #bd2030; outline-offset: 3px; }
     .field-note { margin-top: 5px; font-size: 12px; color: var(--muted); }
     .presets { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 7px; }
-    .presets button { border: 1px solid var(--line); border-radius: 4px; background: var(--paper); color: var(--green); padding: 3px 9px; font-size: 12px; }
-    .presets button[aria-pressed="true"] { border-color: var(--green); background: #e6f0ea; font-weight: 700; }
-    .run { padding: 10px 12px; background: var(--green); color: white; border: none; border-radius: 6px; font-weight: 700; }
-    .run:hover { background: #0e3d33; }
+    .presets button { border: 1px solid var(--line); border-radius: 4px; background: var(--paper); color: var(--red); padding: 3px 9px; font-size: 12px; }
+    .presets button[aria-pressed="true"] { border-color: var(--red); background: #fbebee; font-weight: 700; }
+    .run { padding: 10px 12px; background: var(--red); color: white; border: none; border-radius: 6px; font-weight: 700; }
+    .run:hover { background: #9e1422; }
     .current-note { padding-top: 13px; margin-top: 18px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
-    .status { font-size: 12px; color: var(--green); white-space: nowrap; }
+    .status { font-size: 12px; color: var(--red); white-space: nowrap; }
     .result-heading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 20px; }
     .result-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 13px 0 11px; }
-    .metric { padding: 11px 12px; background: #eef2ec; border-radius: 7px; }
-    .metric.predicted { background: #f5e9e0; }
+    .metric { padding: 11px 12px; background: #f6f3f6; border-radius: 7px; }
+    .metric.predicted { background: #fbebee; }
     .metric p { color: var(--muted); font-size: 12px; }
     .metric strong { display: block; margin-top: 4px; font-size: clamp(22px, 3.1vw, 35px); letter-spacing: -.04em; font-variant-numeric: tabular-nums; line-height: 1.12; }
     .metric strong small { font-size: 11px; letter-spacing: 0; font-weight: 500; }
-    .metric.predicted strong { color: var(--rust); }
+    .metric.predicted strong { color: var(--red-dark); }
     .comparison { color: var(--muted); font-size: 13px; min-height: 2.8em; }
     figure { margin: 13px 0 0; padding-top: 13px; border-top: 1px solid var(--line); }
     figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; }
     figcaption > strong { font-size: 15px; }
     .legend { display: flex; gap: 13px; flex-wrap: wrap; color: var(--muted); font-size: 12px; }
-    .legend .sample { display: inline-block; width: 11px; margin-right: 4px; text-align: center; color: var(--green); }
-    .legend .fit { color: var(--rust); }
+    .legend .sample { display: inline-block; width: 11px; margin-right: 4px; text-align: center; color: var(--red); }
+    .legend .fit { color: var(--red-dark); }
     canvas { display: block; width: 100%; height: 245px; }
     .validation { margin-top: 20px; }
     .transport { margin-top: 20px; }
@@ -74,13 +70,13 @@
     th, td { text-align: right; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
     th:first-child, td:first-child { text-align: left; padding-left: 0; }
     th { color: var(--muted); font-weight: 600; font-size: 12px; }
-    tr.example { background: #eef2ec; }
+    tr.example { background: #f6f3f6; }
     tr.example td:first-child { padding-left: 8px; }
     details { margin-top: 14px; font-size: 14px; }
-    details summary { color: var(--green); cursor: pointer; font-weight: 650; }
+    details summary { color: var(--red); cursor: pointer; font-weight: 650; }
     details .table-wrap { margin-top: 8px; }
     @media (max-width: 760px) {
-      main { padding: 16px 16px 30px; } .intro { padding-top: 25px; }
+      main { padding-bottom: 30px; }
       .layout { grid-template-columns: 1fr; gap: 13px; } .panel { padding: 15px; }
       .transport .result-grid { grid-template-columns: 1fr; }
       canvas { height: 220px; }
@@ -92,32 +88,28 @@
 </head>
 <body>
   <main>
-    <header>
-      <div class="brand"><b>BIFB</b><span>气泡尺寸专项预测</span></div>
-      <a href="#validation">留出验证</a>
-    </header>
-    <section class="intro" aria-labelledby="title">
-      <h1 id="title">调气后，气泡会变多大？</h1>
-      <p id="intro-description">比较不同进气量下的气泡尺寸。</p>
-    </section>
+    <div class="intro">
+      <p>实验数据来自模拟污水曝气试验，使用配制的含盐介质。</p>
+      <a href="#validation">查看模型验证</a>
+    </div>
     <dl class="scope" aria-label="适用工况">
-      <div><dt>拍摄高度</dt><dd>H3 · 1.2 m</dd></div>
+      <div><dt>观测高度</dt><dd>1.2 m</dd></div>
       <div><dt>盐度</dt><dd>0.5 wt%</dd></div>
       <div><dt>颗粒装载量</dt><dd>10%</dd></div>
-      <div><dt>进气量范围</dt><dd>1.5–2.3 m³/h</dd></div>
+      <div><dt>供气量范围</dt><dd>1.5–2.3 m³/h</dd></div>
     </dl>
     <div class="layout">
       <section class="panel" aria-labelledby="inputs-title">
         <h2 id="inputs-title">工况设置</h2>
         <form id="controls">
           <div>
-            <label for="current">当前进气量 Q（m³/h）</label>
+            <label for="current">当前供气量 Q（m³/h）</label>
             <input id="current" type="number" min="1.5" max="2.3" step="any" value="1.5" list="measured-flow-levels" required>
             <datalist id="measured-flow-levels"></datalist>
             <p class="field-note">已拍摄档位使用照片统计，其他气量使用模型估计。</p>
           </div>
           <div>
-            <label for="target">目标进气量 Q（m³/h）</label>
+            <label for="target">目标供气量 Q（m³/h）</label>
             <input id="target" type="number" min="1.5" max="2.3" step="any" value="2.0" required aria-describedby="target-hint">
             <p id="target-hint" class="field-note">区间内可输入小数，例如 1.9。</p>
             <div class="presets" id="presets" aria-label="目标气量快捷选择">
@@ -144,7 +136,7 @@
         </div>
         <figure>
           <figcaption>
-            <strong>进气量与泡径</strong>
+            <strong>供气量与泡径</strong>
             <div class="legend"><span><i class="sample">●</i>照片统计</span><span><i class="sample fit">━</i>线性拟合</span><span><i class="sample fit">◇</i>目标估计</span></div>
           </figcaption>
           <canvas id="curve" role="img" aria-label="四档气量的照片泡径与线性预测"></canvas>
@@ -166,7 +158,7 @@
             <span id="holdup-comparison"></span>
           </div>
           <div class="metric predicted">
-            <p>目标相对传氧效率</p>
+            <p>相对传氧效率 · 模型估算</p>
             <strong><span id="target-oxygen"></span> <small>%</small></strong>
             <span id="oxygen-comparison"></span>
           </div>
@@ -222,7 +214,6 @@
     const demo = JSON.parse(document.getElementById("demo-data").textContent);
     const transportEnabled = __H3_TRANSPORT_ENABLED__;
     const byId = id => document.getElementById(id);
-    if (transportEnabled) byId("intro-description").textContent = "比较不同进气量下的泡径、上升速度、气含率与相对传氧效率。";
     const currentInput = byId("current");
     const targetInput = byId("target");
     const measured = new Map(demo.measurements.map(row => [row.q_m3_h, row]));
@@ -272,35 +263,35 @@
         ctx.strokeStyle = color; ctx.lineWidth = weight; ctx.stroke();
       };
       ctx.font = "12px Microsoft YaHei, sans-serif";
-      ctx.fillStyle = "#4e605a";
+      ctx.fillStyle = "#65616d";
       ctx.textAlign = "left"; ctx.fillText("泡径 (px)", 4, 14);
       ctx.textAlign = "right";
       for (let tick = minPx; tick <= maxPx; tick += 5) {
-        line(left, y(tick), right, y(tick), "#d9e0d8");
+        line(left, y(tick), right, y(tick), "#e6e0e6");
         ctx.fillText(tick, left - 7, y(tick) + 4);
       }
       ctx.textAlign = "center";
       for (const q of levels) {
-        line(x(q), top, x(q), bottom, "#e2e6df");
+        line(x(q), top, x(q), bottom, "#eeeaf0");
         ctx.fillText(q.toFixed(1), x(q), bottom + 16);
       }
       ctx.fillText("进气量 Q (m³/h)", (left + right) / 2, height - 6);
       ctx.setLineDash([5, 4]);
-      line(x(levels[0]), y(fit(levels[0])), x(levels.at(-1)), y(fit(levels.at(-1))), "#a33b28", 2);
+      line(x(levels[0]), y(fit(levels[0])), x(levels.at(-1)), y(fit(levels.at(-1))), "#9e1422", 2);
       ctx.setLineDash([]);
       for (const row of demo.measurements) {
         const current = row.q_m3_h === currentQ;
         ctx.beginPath(); ctx.arc(x(row.q_m3_h), y(row.d50_px), current ? 6 : 4, 0, 2 * Math.PI);
-        ctx.fillStyle = "#154b40"; ctx.fill();
-        if (current) { ctx.lineWidth = 2; ctx.strokeStyle = "#fffefa"; ctx.stroke(); }
+        ctx.fillStyle = "#bd2030"; ctx.fill();
+        if (current) { ctx.lineWidth = 2; ctx.strokeStyle = "#ffffff"; ctx.stroke(); }
       }
       if (currentQ !== targetQ) {
         const px = x(targetQ), py = y(targetPx);
         ctx.beginPath(); ctx.moveTo(px, py - 7); ctx.lineTo(px + 7, py);
         ctx.lineTo(px, py + 7); ctx.lineTo(px - 7, py); ctx.closePath();
-        ctx.strokeStyle = "#a33b28"; ctx.lineWidth = 2; ctx.stroke();
+        ctx.strokeStyle = "#9e1422"; ctx.lineWidth = 2; ctx.stroke();
       }
-      canvas.setAttribute("aria-label", `当前 Q ${qFormat(currentQ)}，目标 Q ${qFormat(targetQ)}，目标泡径估计 ${size(targetPx)} px。绿色点为照片数据，棕色虚线为线性拟合。`);
+      canvas.setAttribute("aria-label", `当前 Q ${qFormat(currentQ)}，目标 Q ${qFormat(targetQ)}，目标泡径估计 ${size(targetPx)} px。实心圆为照片统计，红色虚线为线性拟合。`);
     }
 
     function render() {
@@ -354,7 +345,7 @@
         byId("target-holdup").textContent = size(data.target.gas_holdup_percent);
         byId("target-holdup-label").textContent = data.target.is_measured_flow ? "目标气含率 · 照片估算" : "目标气含率 · 插值预测";
         byId("holdup-comparison").textContent = `当前 ${size(data.current.gas_holdup_percent)}%，变化 ${signed(data.gas_holdup_change_pp)} 个百分点。`;
-        byId("holdup-depth-note").textContent = `体积气含率取 H3 局部视野，按 ${data.view_depth_mm} mm 视野深度及等效球体积估算。`;
+        byId("holdup-depth-note").textContent = `体积气含率取实验装置的局部视野，按 ${data.view_depth_mm} mm 视野深度及等效球体积估算。`;
         const comparison = data.target_rise_comparison;
         const holdup = data.target_holdup_comparison;
         if (comparison && holdup) {

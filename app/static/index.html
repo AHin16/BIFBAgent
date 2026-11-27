@@ -22,13 +22,13 @@
       <button class="nav-item" data-nav="workbench"><svg><use href="/static/icons.svg#image"></use></svg>实验分析</button>
       <button class="nav-item" data-nav="flow"><svg><use href="/static/icons.svg#layers"></use></svg>流态监测预警</button>
       <button class="nav-item" data-nav="holdup"><svg><use href="/static/icons.svg#flow"></use></svg>气含率估算</button>
-      <button class="nav-item" data-nav="optimization"><svg><use href="/static/icons.svg#settings"></use></svg>运行参数优化</button>
+      <button class="nav-item" data-nav="optimization"><svg><use href="/static/icons.svg#settings"></use></svg>曝气参数优化</button>
       <button class="nav-item" data-nav="knowledge"><svg><use href="/static/icons.svg#book"></use></svg>专业知识问答</button>
     </nav>
     <div class="sidebar-bottom">
       <div class="local-note"><span class="tiny-dot"></span> 本地实验数据工作空间</div>
       <button id="new-session" class="button new-session"><svg><use href="/static/icons.svg#plus"></use></svg>新建研究会话</button>
-      <div class="sidebar-version">Wastewater Agent <span>DEMO</span></div>
+      <div class="sidebar-version">Aeration Agent <span>DEMO</span></div>
     </div>
   </aside>
   <main class="app-main">
@@ -48,11 +48,11 @@
         <button class="feature-card" data-nav="workbench"><span class="feature-icon"><svg><use href="/static/icons.svg#image"></use></svg></span><h3>实验分析</h3><p>图像检测与追踪 · CSV 统计与比较</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-nav="flow"><span class="feature-icon"><svg><use href="/static/icons.svg#layers"></use></svg></span><h3>流态监测预警</h3><p>基线对比 · 持续异常分析</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-nav="holdup"><span class="feature-icon"><svg><use href="/static/icons.svg#chart"></use></svg></span><h3>气含率估算</h3><p>等效球体积 · 二维面积占比</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
-        <button class="feature-card" data-nav="optimization"><span class="feature-icon"><svg><use href="/static/icons.svg#settings"></use></svg></span><h3>运行参数优化</h3><p>当前气泡检测 · 目标气速预测</p><span class="feature-state available">探索性预测 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
+        <button class="feature-card" data-nav="optimization"><span class="feature-icon"><svg><use href="/static/icons.svg#settings"></use></svg></span><h3>污水曝气参数优化</h3><p>供气量对比 · 传氧表现估算</p><span class="feature-state available">探索性预测 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
         <button class="feature-card" data-nav="knowledge"><span class="feature-icon"><svg><use href="/static/icons.svg#book"></use></svg></span><h3>专业知识问答</h3><p>原文检索 · 有据可查</p><span class="feature-state available">已开放 <svg><use href="/static/icons.svg#arrow"></use></svg></span></button>
       </div>
       <section class="welcome-card">
-        <div class="welcome-heading"><span class="robot-icon"><svg><use href="/static/icons.svg#robot"></use></svg></span><div><h2>欢迎使用污水处理智能分析与优化Agent</h2><p>用自然语言提出研究任务，让 Agent 组织分析流程。</p></div></div>
+        <div class="welcome-heading"><span class="robot-icon"><svg><use href="/static/icons.svg#robot"></use></svg></span><div><h2>欢迎使用污水处理智能分析与优化 Agent</h2><p>用自然语言提出研究任务，让 Agent 组织分析流程。</p></div></div>
         <div class="home-suggestions">
           <button data-home-prompt="分析这个实验文件夹里的气泡图片，统计数量和尺寸分布。"><svg><use href="/static/icons.svg#image"></use></svg>分析气泡图像的尺寸分布<span>↗</span></button>
           <button data-home-prompt="分析这个 CSV，看看不同气速下的气泡直径变化，并比较不同工况。"><svg><use href="/static/icons.svg#chart"></use></svg>探索气速与气泡直径的关系<span>↗</span></button>
@@ -73,7 +73,7 @@
           <p class="knowledge-note">支持文本型 PDF、TXT、Markdown。扫描件 OCR 正在推进中。页码按 PDF 第 1 页起计算，公式与表格请打开原页核验。</p>
         </aside>
         <section class="panel knowledge-chat"><div class="chat-heading"><span class="assistant-avatar"><svg><use href="/static/icons.svg#book"></use></svg></span><div><h2>专业问答助手</h2><p>检索原文 → 核对依据 → 回答问题</p></div></div>
-          <div id="knowledge-messages" class="messages" aria-live="polite"><div id="knowledge-welcome" class="welcome"><span class="eyebrow">ASK WITH EVIDENCE</span><h3>让知识，有据可查。</h3><p>已导入的文献可以长期保留。选择资料后提问，回答中的引用可直接查看原始页。</p><button class="prompt-chip" data-knowledge-prompt="这篇 BIFB 论文使用了怎样的实验装置、物料和气速范围？">论文的实验装置与适用条件 <span>↗</span></button><button class="prompt-chip" data-knowledge-prompt="根据这篇论文，气速对气泡尺寸和上升速度分别有什么影响？请说明适用条件并引用原文。">气速如何影响气泡尺寸和上升速度？ <span>↗</span></button><button class="prompt-chip" data-knowledge-prompt="论文描述了哪四种流化状态？是否可以直接用我们当前的预警指标判断具体流型？">流化状态与当前预警能否直接对应？ <span>↗</span></button></div></div>
+          <div id="knowledge-messages" class="messages" aria-live="polite"><div id="knowledge-welcome" class="welcome"><span class="eyebrow">ASK WITH EVIDENCE</span><h3>让知识，有据可查。</h3><p>已导入的文献可以长期保留。选择资料后提问，回答中的引用可直接查看原始页。</p><button class="prompt-chip" data-knowledge-prompt="这篇污水曝气研究使用了怎样的实验装置、介质和进气量范围？">论文的实验装置与适用条件 <span>↗</span></button><button class="prompt-chip" data-knowledge-prompt="根据这篇论文，气速对气泡尺寸和上升速度分别有什么影响？请说明适用条件并引用原文。">气速如何影响气泡尺寸和上升速度？ <span>↗</span></button><button class="prompt-chip" data-knowledge-prompt="论文描述了哪四种流化状态？是否可以直接用我们当前的预警指标判断具体流型？">流化状态与当前预警能否直接对应？ <span>↗</span></button></div></div>
           <form id="knowledge-form" class="composer"><div class="composer-input"><textarea id="knowledge-input" rows="3" aria-label="专业知识问题" placeholder="围绕所选资料提问，也可以结合刚才的实验结果…" maxlength="6000" required></textarea><div class="composer-bottom"><button id="knowledge-local-search" type="button" class="text-button">仅检索原文</button><button id="knowledge-send" type="submit" class="send-button" aria-label="发送知识问题"><svg><use href="/static/icons.svg#send"></use></svg></button></div></div><p>回答调用当前配置的 LLM · 发送问题所需片段 <button id="knowledge-stop" type="button" class="text-button" hidden>停止回答</button></p></form>
         </section>
         <aside class="panel knowledge-evidence"><div class="section-heading"><h2>原文与引用</h2><span class="result-badge">可核验</span></div><p id="knowledge-progress" class="knowledge-status" role="status">可先“仅检索原文”查看命中片段，无需调用模型。</p><div id="knowledge-evidence-list"><div class="evidence-empty"><svg><use href="/static/icons.svg#book"></use></svg><p>引用依据将显示在这里</p><span>检索相关度不等于结论可信度</span></div></div></aside>
@@ -109,16 +109,13 @@
         </div>
       </div>
     </section>
-    <section id="optimization-view" class="workbench-view" aria-label="运行参数优化" hidden>
-      <div class="workbench-title"><div><span class="eyebrow">GAS VELOCITY · BUBBLE SIZE</span><h1>运行参数优化</h1><p>根据当前工况的实验照片统计，预测调整进气量后的气泡尺寸。</p></div><button class="button secondary" data-nav="home">返回首页</button></div>
-      <div class="optimization-modes" role="group" aria-label="气泡预测模式">
-        <button id="optimization-general-mode" class="button" type="button" aria-pressed="true" aria-controls="optimization-general">多工况预测</button>
-        <button id="optimization-h3-mode" class="button" type="button" aria-pressed="false" aria-controls="optimization-h3">H3 · 0.5 wt% 专项预测</button>
+    <section id="optimization-view" class="workbench-view" aria-labelledby="optimization-title" hidden>
+      <div class="workbench-title">
+        <div><h1 id="optimization-title">污水曝气参数优化</h1><p>比较不同供气量下的泡径、上升速度、气含率和相对传氧表现。</p></div>
+        <button class="button secondary" data-nav="home">返回首页</button>
       </div>
-      <div id="optimization-h3" hidden>
-        <iframe id="optimization-h3-frame" title="H3 · 0.5 wt% 盐度的气泡尺寸专项预测" data-src="/optimization/h3-demo"></iframe>
-      </div>
-      <div id="optimization-general" class="optimization-layout">
+      <iframe id="optimization-h3-frame" title="污水曝气参数优化" data-src="/optimization/h3-demo"></iframe>
+      <div id="optimization-general" class="optimization-layout" hidden>
         <form id="optimization-form" class="panel flow-config optimization-config">
           <fieldset id="optimization-fields"><div class="section-heading"><h2>当前实验状态</h2><span class="result-badge">探索性模型</span></div>
             <label class="upload-zone" id="optimization-drop" tabindex="0" role="button" aria-label="选择当前气泡图片"><input id="optimization-file" type="file" accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.webp" hidden><svg><use href="/static/icons.svg#upload"></use></svg><strong>选择或拖入一张图片识别当前工况</strong><span>图片用于识别工况，气泡大小来自历史同工况多张图片统计</span></label>

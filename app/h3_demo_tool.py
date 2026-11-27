@@ -13,7 +13,7 @@ from optimization_data.h3_bubble_demo.transport import TransportModel
 
 def register_h3_demo_tool(registry):
     @registry.register(
-        "H3 专项气泡尺寸预测。适用固定工况为高度 H3（1.2 m）、盐度 0.5 wt%、PL 10%，"
+        "污水曝气参数优化。基于模拟污水曝气实验，固定工况为观测高度 1.2 m、盐度 0.5 wt%、颗粒装载量 10%，"
         "输入当前和目标进气量 Q，均可在 1.5–2.3 m³/h 内任取。"
         "返回目标泡径、上升速度、体积气含率、相对传氧效率及可用的照片对照。"
     )
@@ -21,7 +21,7 @@ def register_h3_demo_tool(registry):
         try:
             demo = BubbleDemo(load_measurements())
         except (OSError, ValueError, KeyError) as error:
-            raise ToolError("H3 专项预测的四档照片统计暂不可用，请检查本地工况数据。") from error
+            raise ToolError("污水曝气参数优化的四档照片统计暂不可用，请检查本地工况数据。") from error
         try:
             result = demo.predict(current_q, target_q)
         except ValueError as error:

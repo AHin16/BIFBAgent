@@ -11,7 +11,14 @@ OUTPUT = ROOT / "data/variation_evaluation/h3_pl10/standalone_bubble_demo.html"
 
 def render_demo_html(with_transport=False):
     demo = BubbleDemo(load_measurements())
-    payload = json.dumps(demo.ui_data(), ensure_ascii=False, allow_nan=False).replace("<", "\\u003c")
+    data = demo.ui_data()
+    sources = dict.fromkeys(row["source"] for row in data["measurements"])
+    display_names = {
+        source: f"模拟污水实验批次 {index}" for index, source in enumerate(sources, 1)
+    }
+    for row in data["measurements"]:
+        row["source"] = display_names[row["source"]]
+    payload = json.dumps(data, ensure_ascii=False, allow_nan=False).replace("<", "\\u003c")
     template = TEMPLATE.read_text(encoding="utf-8")
     marker = "__BUBBLE_DEMO_DATA__"
     if template.count(marker) != 1:

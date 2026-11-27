@@ -48,7 +48,7 @@ class LocalBackend:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="BIFB 智能科研助手独立窗口")
+    parser = argparse.ArgumentParser(description="污水处理智能分析与优化 Agent 独立窗口")
     parser.add_argument("--port", type=int, default=8000)
     arguments = parser.parse_args()
     from PySide6.QtCore import QFile, QIODevice, QObject, QStandardPaths, QTimer, QUrl, Signal, Slot
@@ -60,7 +60,7 @@ def main():
     from PySide6.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox
 
     application = QApplication(sys.argv)
-    application.setApplicationName("BIFB 智能科研助手")
+    application.setApplicationName("污水处理智能分析与优化 Agent")
     application.setOrganizationName("BIFB")
     instance_name = "bifb-desktop-" + hashlib.sha256(str(ROOT).lower().encode()).hexdigest()[:16]
     existing = QLocalSocket()
@@ -72,14 +72,14 @@ def main():
         return 0
     instance_server = QLocalServer()
     if not instance_server.listen(instance_name):
-        QMessageBox.warning(None, "BIFB", "程序正在启动，请稍候。")
+        QMessageBox.warning(None, "污水处理", "程序正在启动，请稍候。")
         return 0
 
     backend = LocalBackend(arguments.port)
     try:
         backend.start()
     except Exception as error:
-        QMessageBox.critical(None, "BIFB 启动失败", str(error))
+        QMessageBox.critical(None, "污水处理 Agent 启动失败", str(error))
         instance_server.close()
         return 1
 
